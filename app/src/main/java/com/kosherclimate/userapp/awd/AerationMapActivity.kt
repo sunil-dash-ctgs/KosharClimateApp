@@ -103,18 +103,19 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
             Log.e("pipe_installation_id", pipe_installation_id.toString())
         }
 
+        xxxxx = 1
+
+//        progress.progressHelper.barColor = Color.parseColor("#06c238")
+//        progress.titleText = "Checking"
+//        progress.contentText = " Checking location !!"
+//        progress.setCancelable(false)
+//        progress.show()
+//        locationReq()
 
         next = findViewById(R.id.fabNext)
         next.setOnClickListener {
-            xxxxx = 1
-
-            progress.progressHelper.barColor = Color.parseColor("#06c238")
-            progress.titleText = "Checking"
-            progress.contentText = " Checking location !!"
-            progress.setCancelable(false)
-            progress.show()
-
-            locationReq()
+            calculate()
+//            getLocationList()
         }
 
 
@@ -295,11 +296,11 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
     }
 
     private fun calculate (){
-       val cond = PolyUtil.containsLocation(LatLng(currentLatitude, currentLongitude), latlngList, false)
-        if (xxxxx == 1){
-            if(cond){
+//       val cond = PolyUtil.containsLocation(LatLng(currentLatitude, currentLongitude), latlngList, false)
+//        if (xxxxx == 1){
+//            if(cond){
                 var latlng = ArrayList<String>()
-
+//
                 for (i in 0 until latlngList.size){
                     val lat = latlngList[i].latitude
                     val lng = latlngList[i].longitude
@@ -307,8 +308,8 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
 
                     latlng.add(ll)
                 }
-
-                progress.dismiss()
+//
+//                progress.dismiss()
                 val intent = Intent(this, AerationImageActivity::class.java).apply {
                     putStringArrayListExtra("latlngList", latlng)
                     putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
@@ -323,22 +324,22 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                     putExtra("plot_no", plot_no)
                 }
                 startActivity(intent)
-            }
-            else{
-                progress.dismiss()
-
-                val WarningDialog = SweetAlertDialog(this@AerationMapActivity, SweetAlertDialog.WARNING_TYPE)
-
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = "You are not inside the marked polygon."
-                WarningDialog.confirmText = " OK "
-                WarningDialog.showCancelButton(false)
-                WarningDialog.setCancelable(false)
-                WarningDialog.setConfirmClickListener {
-                    WarningDialog.cancel()
-                }.show()
-            }
-        }
+//            }
+//            else{
+//                progress.dismiss()
+//
+//                val WarningDialog = SweetAlertDialog(this@AerationMapActivity, SweetAlertDialog.WARNING_TYPE)
+//
+//                WarningDialog.titleText = resources.getString(R.string.warning)
+//                WarningDialog.contentText = "You are not inside the marked polygon."
+//                WarningDialog.confirmText = " OK "
+//                WarningDialog.showCancelButton(false)
+//                WarningDialog.setCancelable(false)
+//                WarningDialog.setConfirmClickListener {
+//                    WarningDialog.cancel()
+//                }.show()
+//            }
+//        }
     }
 
     override fun onBackPressed() {

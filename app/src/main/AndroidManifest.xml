@@ -34,6 +34,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
         <activity
+            android:name=".editpolygon.EditPolygonActivity"
+            android:exported="false" />
+        <activity
             android:name=".addmoreplots.ExistingSubmitActivity"
             android:exported="false" />
         <activity

@@ -387,5 +387,12 @@
     <string name="rejected">अस्वीकार</string>
     <string name="pending">लंबित</string>
 
+    <!--    New Onboarding Process-->
+    <string name="total_area">Total Area in </string>
+    <string name="own_area">Own Area in </string>
+    <string name="lease_area">Lease Area in </string>
+    <string name="total_area_in_acres">Total Area in Acres</string>
+    <string name="own_area_in_acres">Own Area in Acres</string>
+    <string name="lease_area_in_acres">Lease Area in Acres</string>
 
 </resources>

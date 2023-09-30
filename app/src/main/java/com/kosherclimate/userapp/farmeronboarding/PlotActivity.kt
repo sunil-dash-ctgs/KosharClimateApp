@@ -75,9 +75,12 @@ class PlotActivity : AppCompatActivity() {
     var state_ID: String = ""
     var areaValue: Double = 0.0
 //    var leased: Boolean = false
-    var plotAreaList = ArrayList<String>()
+//    var plotAreaList = ArrayList<String>()
 //    var leasedList = ArrayList<String>()
-    var plotList = ArrayList<String>()
+//    var plotList = ArrayList<String>()
+
+    private  lateinit var areaAcres :String
+    private  lateinit var areaHectare :String
 
 
     private lateinit var imageRecyclerView: ImageRecyclerView
@@ -85,7 +88,7 @@ class PlotActivity : AppCompatActivity() {
 
     private lateinit var txtPercent: TextView
     private lateinit var txtUniqueID: TextView
-    private lateinit var txtPlot_Number: TextView
+//    private lateinit var txtPlot_Number: TextView
     private lateinit var txtAreaChooseText: TextView
     private lateinit var txtLandArea: TextView
     private lateinit var txtLandAreaUnit: TextView
@@ -134,18 +137,18 @@ class PlotActivity : AppCompatActivity() {
          */
         val bundle = intent.extras
         if (bundle != null) {
-            total_plot = bundle.getInt("total_plot")
-            plot_number = bundle.getInt("plot_number")
+            total_plot = 2
+//            plot_number = bundle.getInt("plot_number")
             unit = bundle.getString("area_unit")!!
             areaValue = bundle.getDouble("area_value")
 //            leasedList = bundle.getStringArrayList("leasedList")!!
-            plotList = bundle.getStringArrayList("areaHectare")!!
-            plotAreaList = bundle.getStringArrayList("areaAcres")!!
+            areaHectare = bundle.getString("areaHectare")!!
+            areaAcres = bundle.getString("areaAcres")!!
             state_ID = bundle.getString("state_id")!!
             unique_id = bundle.getString("unique_id")!!
             farmerId = bundle.getString("FarmerId")!!
-            latitude = bundle.getString("latitude")!!
-            longitude = bundle.getString("longitude")!!
+//            latitude = bundle.getString("latitude")!!
+//            longitude = bundle.getString("longitude")!!
         } else {
             Log.e("total_plot", "Nope")
         }
@@ -158,8 +161,8 @@ class PlotActivity : AppCompatActivity() {
         next = findViewById(R.id.plot_next)
         back = findViewById(R.id.plot_back)
 
-        txtPlot_Number = findViewById(R.id.plot_number)
-        txtPlot_Number.text = plot_number.toString()
+//        txtPlot_Number = findViewById(R.id.plot_number)
+//        txtPlot_Number.text = plot_number.toString()
 
         txtAreaChooseText = findViewById(R.id.area_choosen_text)
 
@@ -193,8 +196,10 @@ class PlotActivity : AppCompatActivity() {
         /**
          * Calling the below few lines as we are using the same activity multiple times.
          */
-        txtLandArea.text = plotList[plot_number - 1]
-        txtAutoAcres.text = plotAreaList[plot_number - 1]
+//        txtLandArea.text = plotList[plot_number - 1]
+        txtLandArea.text = areaAcres
+//        txtAutoAcres.text = plotAreaList[plot_number - 1]
+        txtAutoAcres.text = areaHectare
         txtLandAreaUnit.text = unit
 
 
@@ -421,7 +426,7 @@ class PlotActivity : AppCompatActivity() {
 
             val intent = Intent(this, TNCActivity::class.java).apply {
                 putStringArrayListExtra("imageList", arrayList)
-                putExtra("plot_number", txtPlot_Number.text.toString())
+//                putExtra("plot_number", txtPlot_Number.text.toString())
                 putExtra("plot", txtLandArea.text.toString())
                 putExtra("relationship", relationship)
                 putExtra("owner_name", edtOwner_Name.text.toString())
@@ -471,7 +476,7 @@ class PlotActivity : AppCompatActivity() {
         val UniqueID: RequestBody = txtUniqueID.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val AreaOther: RequestBody = editAreaChoose.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val AreaAcres: RequestBody = txtAutoAreaChoose.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val PlotNumber: RequestBody = txtPlot_Number.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+//        val PlotNumber: RequestBody = txtPlot_Number.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val Ownership: RequestBody = ownership.toRequestBody("text/plain".toMediaTypeOrNull())
         val SurveyNumber: RequestBody = edtSurvey_Number.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val TNCCarbonCredit: RequestBody = tncCC.toString().toRequestBody("text/plain".toMediaTypeOrNull())
@@ -480,7 +485,7 @@ class PlotActivity : AppCompatActivity() {
         val farmerUniqueID: MultipartBody.Part = createFormData("farmer_unique_id", null, UniqueID)
         val areaOther: MultipartBody.Part = createFormData("area_other_awd", null, AreaOther)
         val areaAcres: MultipartBody.Part = createFormData("area_acre_awd", null, AreaAcres)
-        val plotNumber: MultipartBody.Part = createFormData("plot_no", null, PlotNumber)
+//        val plotNumber: MultipartBody.Part = createFormData("plot_no", null, PlotNumber)
         val landOwnership: MultipartBody.Part = createFormData("land_ownership", null, Ownership)
         val surveyNumber: MultipartBody.Part = createFormData("survey_no", null, SurveyNumber)
         val tncCarbonCredit: MultipartBody.Part = createFormData("check_carbon_credit", null, TNCCarbonCredit)
@@ -549,7 +554,7 @@ class PlotActivity : AppCompatActivity() {
 
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.plotInfo("Bearer $token", farmerID, farmerUniqueID, plotNumber, landOwnership, ownerNameBody, pattaNumber, daagNumber,
+        retIn.plotInfo("Bearer $token", farmerID, farmerUniqueID, landOwnership, ownerNameBody, pattaNumber, daagNumber,
             khathaNumber, pattadharNumber, khatianNumber, affinityBody, surveyNumber, tncCarbonCredit, areaOther, areaAcres, creditBody)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
@@ -665,7 +670,7 @@ class PlotActivity : AppCompatActivity() {
             val SuccessDialog = SweetAlertDialog(this@PlotActivity, SweetAlertDialog.SUCCESS_TYPE)
 
             SuccessDialog.titleText = resources.getString(R.string.success)
-            SuccessDialog.contentText = "${resources.getString(R.string.plot_number)} $plot_number  ${resources.getString(R.string.submitted_successfully)}"
+            SuccessDialog.contentText = resources.getString(R.string.submitted_successfully)
             SuccessDialog.confirmText = resources.getString(R.string.ok)
             SuccessDialog.showCancelButton(false)
             SuccessDialog.setCancelable(false)
@@ -674,20 +679,22 @@ class PlotActivity : AppCompatActivity() {
 
                 cardview.visibility = View.GONE
 
-                val intent = Intent(this, PlotActivity::class.java).apply {
-                    putExtra("total_plot", total_plot - 1)
-                    putExtra("plot_number", plot_number + 1)
-                    putStringArrayListExtra("areaHectare", plotList)
-                    putStringArrayListExtra("areaAcres", plotAreaList)
-                    putExtra("area_unit", unit)
-                    putExtra("state_id", state_ID)
-                    putExtra("area_value", areaValue)
-                    putExtra("unique_id", unique_id)
-                    putExtra("FarmerId", farmerId)
-                    putExtra("latitude", latitude)
-                    putExtra("longitude", longitude)
-                }
-                startActivity(intent)
+                total_plot -= 1
+                checkData(arrayList)
+//                val intent = Intent(this, PlotActivity::class.java).apply {
+//                    putExtra("total_plot", total_plot - 1)
+//                    putExtra("plot_number", plot_number + 1)
+//                    putExtra("areaHectare", areaHectare)
+//                    putExtra("areaAcres", areaAcres)
+//                    putExtra("area_unit", unit)
+//                    putExtra("state_id", state_ID)
+//                    putExtra("area_value", areaValue)
+//                    putExtra("unique_id", unique_id)
+//                    putExtra("FarmerId", farmerId)
+//                    putExtra("latitude", latitude)
+//                    putExtra("longitude", longitude)
+//                }
+//                startActivity(intent)
             }.show()
 
             } else {
@@ -754,7 +761,7 @@ class PlotActivity : AppCompatActivity() {
                     else -> 0
                 }
 
-                val stampImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp | $latitude | $longitude")
+                val stampImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp ")
                 count += 1
 
                 try {

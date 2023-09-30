@@ -35,6 +35,8 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,8 +77,8 @@ class SubmitActivity : AppCompatActivity() {
     var affinityPath: String = ""
     var owner_name: String = ""
     var plot_number: String = ""
-    var latitude: String = ""
-    var longitude: String = ""
+//    var latitude: String = ""
+//    var longitude: String = ""
 
     var areaOther: String = ""
     var areaAcres: String = ""
@@ -121,14 +123,14 @@ class SubmitActivity : AppCompatActivity() {
         if (bundle != null) {
             plot = bundle.getString("plot")!!
             relationship = bundle.getString("relationship")!!
-            plot_number = bundle.getString("plot_number")!!
+//            plot_number = bundle.getString("plot_number")!!
             imageList = bundle.getStringArrayList("imageList")!!
             survey_number = bundle.getString("survey_number")!!
             unique_id = bundle.getString("unique_id")!!
             owner_name = bundle.getString("owner_name")!!
             farmerId = bundle.getString("FarmerId")!!
-            latitude = bundle.getString("latitude")!!
-            longitude = bundle.getString("longitude")!!
+//            latitude = bundle.getString("latitude")!!
+//            longitude = bundle.getString("longitude")!!
 
             areaOther = bundle.getString("area_other_awd")!!
             areaAcres = bundle.getString("area_acre_awd")!!
@@ -322,8 +324,9 @@ class SubmitActivity : AppCompatActivity() {
                     progressBarColor = Color.GREEN
                 }
                 txtPercent.text = "0 %"
-
-                sendData(imageList)
+Log.e("PRAMOD","VAILD Data")
+//                sendData(imageList)
+                lastScreenData()
             }
         })
     }
@@ -422,7 +425,7 @@ class SubmitActivity : AppCompatActivity() {
 
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.plotInfo("Bearer $token", farmerID, farmerUniqueID, plotNumber, landOwnership, ownerNameBody, pattaNumber, daagNumber, khathaNumber,
+        retIn.plotInfo("Bearer $token", farmerID, farmerUniqueID, landOwnership, ownerNameBody, pattaNumber, daagNumber, khathaNumber,
             pattadharNumber, khatianNumber, affinityBody, surveyNumber, tncCarbonCredit, areaOther, areaAcres, creditBody).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
@@ -492,6 +495,17 @@ class SubmitActivity : AppCompatActivity() {
                         if (response.code() == 200) {
                             arrayList.removeAt(0)
 
+                            if(response.body() != null){
+                                val jsonResponse = try {
+                                    response.body()?.string()?.let { JSONObject(it) }
+                                } catch (e: JSONException) {
+                                    Log.e("statusCode", "Error parsing JSON: ${e.message}")
+                                    null // Handle the case when JSON parsing fails
+                                }
+
+                                Log.e("Response", "Reposne from Api $jsonResponse")
+                            }
+
                             count += 1
                             percentage += 5
                             perProgressBar.apply {
@@ -551,6 +565,7 @@ class SubmitActivity : AppCompatActivity() {
 
 
     private fun lastScreenData() {
+        Log.e("PRAMOD","Last screen fun")
         Log.e("Here", "iuervniowetuewmqvoi")
 
         val file1 = File(image1)
@@ -676,7 +691,7 @@ class SubmitActivity : AppCompatActivity() {
                 }
 
                 Log.e("rotate", rotate.toString())
-                imgCamera1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp | $latitude | $longitude"))
+                imgCamera1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp "))
                 imgCamera1.rotation = rotate.toFloat()
 
                 try {
@@ -718,7 +733,7 @@ class SubmitActivity : AppCompatActivity() {
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                imgCamera2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp | $latitude | $longitude"))
+                imgCamera2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp "))
                 imgCamera2.rotation = rotate.toFloat()
 
                 try {
@@ -762,7 +777,7 @@ class SubmitActivity : AppCompatActivity() {
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                imgCamera3.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp | $latitude | $longitude"))
+                imgCamera3.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp "))
                 imgCamera3.rotation = rotate.toFloat()
 
                 try {

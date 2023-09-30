@@ -33,6 +33,7 @@ import android.provider.Settings
 import androidx.core.location.LocationManagerCompat
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.models.DistrictModel
+import com.kosherclimate.userapp.models.NewFarmerLocationModel
 import java.text.DecimalFormat
 
 class LocationActivity : AppCompatActivity(), LocationListener {
@@ -40,8 +41,6 @@ class LocationActivity : AppCompatActivity(), LocationListener {
     private val locationPermissionCode = 2
 
     lateinit var txtAddress: EditText
-    lateinit var txtLatitude: TextView
-    lateinit var txtLongitude: TextView
 
     lateinit var state_spinner: Spinner
     lateinit var district_spinner: Spinner
@@ -49,9 +48,11 @@ class LocationActivity : AppCompatActivity(), LocationListener {
     lateinit var village_spinner: Spinner
     lateinit var panchayat_spinner: Spinner
 
-    var plotAreaList = ArrayList<String>()
+    private  lateinit var areaAcres :String
+    private  lateinit var areaHectare :String
+//    var plotAreaList = ArrayList<String>()
     var leasedList = ArrayList<String>()
-    var plotList = ArrayList<String>()
+//    var plotList = ArrayList<String>()
     private var total_plot: Int = 0
     private var unique_id: String = ""
     private var COUNTRY: String = "India"
@@ -109,8 +110,8 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             total_plot = bundle.getInt("total_plot")
             unit = bundle.getString("area_unit")!!
             areaValue = bundle.getDouble("area_value")
-            plotList = bundle.getStringArrayList("areaHectare")!!
-            plotAreaList = bundle.getStringArrayList("areaAcres")!!
+            areaHectare = bundle.getString("areaHectare")!!
+            areaAcres = bundle.getString("areaAcres")!!
             unique_id = bundle.getString("unique_id")!!
             farmerId = bundle.getString("FarmerId")!!
 
@@ -131,14 +132,11 @@ class LocationActivity : AppCompatActivity(), LocationListener {
         village_spinner = findViewById(R.id.village)
         panchayat_spinner = findViewById(R.id.panchayat)
 
-        val locationIcon = findViewById<LinearLayout>(R.id.location_icon)
 
         val next = findViewById<Button>(R.id.location_Next)
         val back = findViewById<Button>(R.id.location_back)
 
         txtAddress = findViewById(R.id.remark)
-        txtLatitude = findViewById(R.id.latitude)
-        txtLongitude = findViewById(R.id.longitude)
 // Remove before giving to client.
 //        txtLatitude.text = "29.97689"
 //        txtLongitude.text = "31.13420"
@@ -189,12 +187,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             val WarningDialog =
                 SweetAlertDialog(this@LocationActivity, SweetAlertDialog.WARNING_TYPE)
 
-            if (txtLatitude.text.isEmpty() && txtLongitude.text.isEmpty()) {
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = resources.getString(R.string.location_warning)
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (stateNameList.isEmpty() || statePosition == 0) {
+            if (stateNameList.isEmpty() || statePosition == 0) {
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.state_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
@@ -230,30 +223,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             }
         }
 
-        /**
-         *  Getting the current location of the uer.
-         */
 
-        locationIcon.setOnClickListener {
-            val active = isLocationEnabled(this@LocationActivity)
-            Log.e("active", active.toString())
-
-            if (active) {
-                loaderTimer()
-                getLocation()
-            } else {
-                AlertDialog.Builder(this@LocationActivity)
-                    .setMessage(R.string.gps_network_not_enabled)
-                    .setPositiveButton(R.string.yes,
-                        DialogInterface.OnClickListener { paramDialogInterface, paramInt ->
-                            this@LocationActivity.startActivity(
-                                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            )
-                        })
-                    .setNegativeButton(R.string.no, null)
-                    .show()
-            }
-        }
     }
 
     private fun warnAboutDevOpt() {
@@ -284,8 +254,6 @@ class LocationActivity : AppCompatActivity(), LocationListener {
 
     private fun sendData() {
         val remarks = txtAddress.text.toString().trim()
-        val latitude = txtLatitude.text.toString().trim()
-        val longitude = txtLongitude.text.toString().trim()
 
         val state = stateIDList[statePosition].toString()
         val district = districtIDList[districtPosition].toString()
@@ -295,7 +263,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
 
         val country = COUNTRY
 
-        val farmerLocationModel = FarmerLocationModel(farmerId, unique_id, country, state, district, taluka, panchayat, village, remarks, latitude, longitude)
+        val farmerLocationModel = NewFarmerLocationModel(farmerId, unique_id, country, state, district, taluka, panchayat, village, remarks,)
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         retIn.farmerLocation("Bearer $token", farmerLocationModel).enqueue(object : Callback<ResponseBody> {
@@ -363,8 +331,6 @@ class LocationActivity : AppCompatActivity(), LocationListener {
         try {
             val df = DecimalFormat("#.#####")
 
-            txtLatitude.text = df.format(p0.latitude)
-            txtLongitude.text = df.format(p0.longitude)
         }
         catch (e: Exception){
             Log.e("location", "catch block")
@@ -397,17 +363,15 @@ class LocationActivity : AppCompatActivity(), LocationListener {
         progress.dismiss()
 
         val intent = Intent(this, PlotActivity::class.java).apply {
-            putStringArrayListExtra("areaHectare", plotList)
-            putStringArrayListExtra("areaAcres", plotAreaList)
+            putExtra("areaHectare", areaHectare)
+            putExtra("areaAcres", areaAcres)
             putExtra("area_unit", unit)
             putExtra("area_value", areaValue)
             putExtra("unique_id", unique_id)
-            putExtra("total_plot", total_plot)
+//            putExtra("total_plot", total_plot)
             putExtra("plot_number", 1)
             putExtra("FarmerId", farmerId)
             putExtra("state_id", state_ID)
-            putExtra("latitude", txtLatitude.text.toString())
-            putExtra("longitude", txtLongitude.text.toString())
 
         }
         startActivity(intent)

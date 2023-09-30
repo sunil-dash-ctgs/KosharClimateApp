@@ -36,12 +36,12 @@ class TNCActivity : AppCompatActivity() {
     private var relationship: String = ""
     private var patta_number: String = ""
     private var daag_number: String = ""
-    private var plot_number: String = ""
+//    private var plot_number: String = ""
     private var owner_name: String = ""
-    private var longitude: String = ""
+//    private var longitude: String = ""
     private var areaOther: String = ""
     private var areaAcres: String = ""
-    private var latitude: String = ""
+//    private var latitude: String = ""
     private var farmerId: String = ""
     private var plot: String = ""
 
@@ -62,14 +62,14 @@ class TNCActivity : AppCompatActivity() {
             whichTNC = bundle.getInt("tnc")
             plot = bundle.getString("plot")!!
             relationship = bundle.getString("relationship")!!
-            plot_number = bundle.getString("plot_number")!!
+//            plot_number = bundle.getString("plot_number")!!
             imageList = bundle.getStringArrayList("imageList")!!
             survey_number = bundle.getString("survey_number")!!
             unique_id = bundle.getString("unique_id")!!
             owner_name = bundle.getString("owner_name")!!
             farmerId = bundle.getString("FarmerId")!!
-            latitude = bundle.getString("latitude")!!
-            longitude = bundle.getString("longitude")!!
+//            latitude = bundle.getString("latitude")!!
+//            longitude = bundle.getString("longitude")!!
 
             areaOther = bundle.getString("area_other_awd")!!
             areaAcres = bundle.getString("area_acre_awd")!!
@@ -80,7 +80,7 @@ class TNCActivity : AppCompatActivity() {
             khatian_number = bundle.getString("khatian_number")!!
 
 
-            Log.e("plot_number", plot_number)
+//            Log.e("plot_number", plot_number)
         } else {
             Log.e("total_plot", "Nope")
         }
@@ -107,15 +107,15 @@ class TNCActivity : AppCompatActivity() {
         btnNext.setOnClickListener {
             val intent = Intent(this, SubmitActivity::class.java).apply {
                 putStringArrayListExtra("imageList", imageList)
-                putExtra("plot_number", plot_number)
+//                putExtra("plot_number", plot_number)
                 putExtra("plot", plot)
                 putExtra("relationship", relationship)
                 putExtra("owner_name", owner_name)
                 putExtra("unique_id", unique_id)
                 putExtra("survey_number", survey_number)
                 putExtra("FarmerId", farmerId)
-                putExtra("latitude", latitude)
-                putExtra("longitude", longitude)
+//                putExtra("latitude", latitude)
+//                putExtra("longitude", longitude)
                 putExtra("area_other_awd", areaOther)
                 putExtra("area_acre_awd", areaAcres)
                 putExtra("patta_number", patta_number)

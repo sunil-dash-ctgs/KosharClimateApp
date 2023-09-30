@@ -417,7 +417,7 @@
                         android:textSize="15sp" />
 
                     <TextView
-                        android:id="@+id/assam_resend_otp"
+                        android:id="@+id/tvCall"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
@@ -434,53 +434,53 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="15dp"
-            android:layout_weight="1"
-            android:visibility="visible"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:visibility="visible"-->
+<!--            android:orientation="vertical">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/otp"
-                android:fontFamily="@font/poppins_medium">
-            </TextView>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/otp"-->
+<!--                android:fontFamily="@font/poppins_medium">-->
+<!--            </TextView>-->
 
-            <LinearLayout
-                android:id="@+id/assam_otpLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/assam_otpLayout"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/editext_bg"
-                    android:layout_weight="1">
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/editext_bg"-->
+<!--                    android:layout_weight="1">-->
 
-                    <EditText
-                        android:id="@+id/assam_otp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginEnd="15dp"
-                        android:background="#00000000"
-                        android:fontFamily="@font/poppins_regular"
-                        android:hint="@string/otp"
-                        android:inputType="phone"
-                        android:maxLength="6"
-                        android:padding="10dp"
-                        android:textSize="15sp" />
+<!--                    <EditText-->
+<!--                        android:id="@+id/assam_otp"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_centerInParent="true"-->
+<!--                        android:layout_marginEnd="15dp"-->
+<!--                        android:background="#00000000"-->
+<!--                        android:fontFamily="@font/poppins_regular"-->
+<!--                        android:hint="@string/otp"-->
+<!--                        android:inputType="phone"-->
+<!--                        android:maxLength="6"-->
+<!--                        android:padding="10dp"-->
+<!--                        android:textSize="15sp" />-->
 
-                </RelativeLayout>
+<!--                </RelativeLayout>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -551,6 +551,63 @@
 
 
 
+        </LinearLayout>
+
+<!--        Total Area In -->
+        <LinearLayout
+            android:id="@+id/linearLayout36"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/idGVPlots"
+            tools:layout_editor_absoluteX="10dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvTotalArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/total_area" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/editext_bg">
+
+                        <EditText
+                            android:id="@+id/edTotalArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginEnd="15dp"
+                            android:background="#00000000"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="number"
+                            android:padding="10dp"
+                            android:textSize="15sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -561,9 +618,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_plot"
-                    android:fontFamily="@font/poppins_medium">
-                </TextView>
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/total_area_in_acres" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -573,14 +629,18 @@
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/editext_bg"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:background="@drawable/editext_bg">
 
-                        <Spinner
-                            android:id="@+id/assam_total_plot"
+                        <TextView
+                            android:id="@+id/tvTotalAreaInAcres"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:layout_marginEnd="15dp"
+                            android:background="#00000000"
                             android:fontFamily="@font/poppins_regular"
+                            android:hint="@string/area_hector"
                             android:padding="10dp"
                             android:textSize="15sp" />
 
@@ -592,13 +652,203 @@
 
         </LinearLayout>
 
-
+        <!--        Own Area In -->
         <LinearLayout
-            android:id="@+id/assam_layout_list"
+            android:id="@+id/ll36"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/idGVPlots"
+            tools:layout_editor_absoluteX="10dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvOwnArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/own_area" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/editext_bg">
+
+                        <EditText
+                            android:id="@+id/edOwnArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginEnd="15dp"
+                            android:background="#00000000"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="number"
+                            android:padding="10dp"
+                            android:textSize="15sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/own_area_in_acres" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/editext_bg">
+
+                        <TextView
+                            android:id="@+id/tvOwnAreaInAcres"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:layout_marginEnd="15dp"
+                            android:background="#00000000"
+                            android:fontFamily="@font/poppins_regular"
+                            android:hint="@string/area_hector"
+                            android:padding="10dp"
+                            android:textSize="15sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
+        <!--        Lease Area In -->
+        <LinearLayout
+            android:id="@+id/lLayout36"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/idGVPlots"
+            tools:layout_editor_absoluteX="10dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvLeaseArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/lease_area" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/editext_bg">
+
+                        <EditText
+                            android:id="@+id/edLeaseArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginEnd="15dp"
+                            android:background="#00000000"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="number"
+                            android:padding="10dp"
+                            android:textSize="15sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/lease_area_in_acres" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/editext_bg">
+
+                        <TextView
+                            android:id="@+id/tvLeaseAreaInAcres"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:layout_marginEnd="15dp"
+                            android:background="#00000000"
+                            android:fontFamily="@font/poppins_regular"
+                            android:hint="@string/area_hector"
+                            android:padding="10dp"
+                            android:textSize="15sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

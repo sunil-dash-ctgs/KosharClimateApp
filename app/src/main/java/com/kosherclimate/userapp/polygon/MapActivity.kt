@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -19,43 +18,43 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.lifecycleScope
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.kosherclimate.userapp.R
-import com.kosherclimate.userapp.models.CheckPolygonModel
-import com.kosherclimate.userapp.network.ApiClient
-import com.kosherclimate.userapp.network.ApiInterface
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnPolygonClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.google.maps.android.PolyUtil
 import com.google.maps.android.SphericalUtil
+import com.kosherclimate.userapp.BuildConfig
+import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.editpolygon.EditPolygonActivity
+import com.kosherclimate.userapp.models.CheckPolygonModel
+import com.kosherclimate.userapp.models.polygonmodel.LatLongModel
+import com.kosherclimate.userapp.models.polygonmodel.PolygonsModelValue
+import com.kosherclimate.userapp.network.ApiClient
+import com.kosherclimate.userapp.network.ApiInterface
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 import java.text.DecimalFormat
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolygonOptions
-import com.google.maps.android.PolyUtil
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
-import com.google.android.gms.maps.model.Marker
-import com.kosherclimate.userapp.BuildConfig
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-import kotlin.collections.ArrayList
 
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -64,6 +63,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private var mCurrLocationMarker: Marker? = null
     private lateinit var mMap: GoogleMap
+
+
+    private lateinit var polygonLists: List<PolygonsModelValue>
+    var count: Int = 0
 
     var handler: Handler = Handler()
     var runnable: Runnable? = null
@@ -81,7 +84,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var farmer_plot_uniqueid: String = ""
     private var editable: Boolean = false
 
-    private var polygon_date_time : String = ""
+    private var polygon_date_time: String = ""
     var farmer_name: String = ""
     var threshold: String = ""
 
@@ -99,7 +102,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var token: String = ""
 
-    private lateinit var  delete: ImageView
+    private lateinit var delete: ImageView
     private lateinit var back: ImageView
     private lateinit var undo: ImageView
     private lateinit var save: ImageView
@@ -114,8 +117,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         progress = SweetAlertDialog(this@MapActivity, SweetAlertDialog.PROGRESS_TYPE)
-        val sharedPreference =  getSharedPreferences("PREFERENCE_NAME", MODE_PRIVATE)
-        token = sharedPreference.getString("token","")!!
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", MODE_PRIVATE)
+        token = sharedPreference.getString("token", "")!!
 
         val bundle = intent.extras
         if (bundle != null) {
@@ -165,7 +168,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             editable = false
             mMap.clear()
 
-               getRadiusPolygon(firstLat, firstLng)
+            getRadiusPolygon(firstLat, firstLng)
         }
 
         edit.setOnClickListener {
@@ -258,17 +261,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 //Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment = supportFragmentManager.findFragmentById(R.id.googleMapFragment) as SupportMapFragment
+        mapFragment =
+            supportFragmentManager.findFragmentById(R.id.googleMapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        fusedLocationProviderClient =  LocationServices.getFusedLocationProviderClient(this@MapActivity)
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this@MapActivity)
         gpsCheck()
         showAcres()
     }
 
     private fun warnAboutDevOpt() {
-        val adb = Settings.Secure.getInt(this.contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0)
-        if(adb == 1) {
+        val adb = Settings.Secure.getInt(
+            this.contentResolver,
+            Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+            0
+        )
+        if (adb == 1) {
             android.app.AlertDialog.Builder(this@MapActivity)
                 .setTitle("Developer Option Detected")
                 .setMessage("Developer options are enabled on phone. Disable to continue using the app.")
@@ -305,8 +314,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     gpsCheck()
                 }
                 .show()
-        }
-        else{
+        } else {
             checkLocationPermission()
         }
     }
@@ -318,11 +326,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
-        }
-        else{
+        } else {
             val task = fusedLocationProviderClient.lastLocation
             task.addOnSuccessListener { location ->
                 if (location != null) {
@@ -331,14 +345,73 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
                         firstLat = latLng.latitude
                         firstLng = latLng.longitude
-
-                        Log.e("getCurrentLocation", latLng.latitude.toString() + "-" + latLng.longitude)
+                        Log.e(
+                            "getCurrentLocation",
+                            latLng.latitude.toString() + "-" + latLng.longitude
+                        )
+                        polygonsListApi(LatLongModel(firstLat.toString(), firstLng.toString()))
                         getRadiusPolygon(firstLat, firstLng)
                     })
                 }
 
             }
         }
+    }
+
+    private fun polygonsListApi(latLongModel: LatLongModel) {
+        Log.d("PRAMOD", "Stateed Function")
+        val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+
+        apiInterface.getListOfPolygon("Bearer $token", latLongModel)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    Log.d("PRAMOD", "Api Hit")
+                    Log.d("PRAMOD", "${response.code()}")
+                    if (response.code() == 200) {
+                        if (response.body() != null) {
+                            val responseBody = response.body()
+// Parse the response JSON into a list of YourDataModel
+                            val gson = Gson()
+                            polygonLists = gson.fromJson(
+                                responseBody!!.string(),
+                                object : TypeToken<List<PolygonsModelValue>>() {}.type
+                            )
+
+                            // Now you can work with the list of data models
+                            for (data in polygonLists) {
+                                Log.d("PRAMOD", "gid: ${data.gid}, fid: ${data.fid}")
+
+                                // Handle the "ranges" data as needed
+                                for (range in data.ranges) {
+                                    Log.d("PRAMOD", "lat: ${range.lat}, lng: ${range.lng}")
+                                    count++
+                                }
+                            }
+//                        val jsonResponse = try {
+//                            response.body()?.string()?.let { JSONObject(it) }
+//                        } catch (e: JSONException) {
+//                            Log.e("PRAMOD", "Error parsing JSON: ${e.message}")
+//                            null // Handle the case when JSON parsing fails
+//                        }
+//                        Log.d("PRAMOD","fff ${jsonResponse?.get("0")}")
+//                        Log.d("PRAMOD","fff ${jsonResponse?.length()}")
+                            pLotPolyGon()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e("PRAMOD", "API Request Failed", t)
+                    Toast.makeText(
+                        this@MapActivity,
+                        "Internet Connection Issue",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
     private fun getRadiusPolygon(firstLat: Double, firstLng: Double) {
@@ -352,83 +425,95 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
 
-        apiInterface.polygonNearby("Bearer $token", farmer_plot_uniqueid, firstLat, firstLng).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.code() == 200){
-                    if (response.body() != null) {
-                        progress.dismiss()
+        apiInterface.polygonNearby("Bearer $token", farmer_plot_uniqueid, firstLat, firstLng)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.code() == 200) {
+                        if (response.body() != null) {
+                            progress.dismiss()
 
-                        val jsonArray = JSONArray(response.body()!!.string())
+                            val jsonArray = JSONArray(response.body()!!.string())
 
-                        for (i in 0 until jsonArray.length()){
+                            for (i in 0 until jsonArray.length()) {
 
-                            var innerArray = jsonArray.getJSONArray(i)
-                            for (k in 0 until innerArray.length()){
+                                var innerArray = jsonArray.getJSONArray(i)
+                                for (k in 0 until innerArray.length()) {
 
-                                val innerObject = innerArray.getJSONObject(k)
-                                val rangeArray = innerObject.getJSONArray("ranges")
-                                for (j in 0 until rangeArray.length()){
-                                    val jsonObject1 = rangeArray.getJSONObject(j)
+                                    val innerObject = innerArray.getJSONObject(k)
+                                    val rangeArray = innerObject.getJSONArray("ranges")
+                                    for (j in 0 until rangeArray.length()) {
+                                        val jsonObject1 = rangeArray.getJSONObject(j)
 
-                                    val latitude = jsonObject1.optString("lat").toDouble()
-                                    val longitude = jsonObject1.optString("lng").toDouble()
+                                        val latitude = jsonObject1.optString("lat").toDouble()
+                                        val longitude = jsonObject1.optString("lng").toDouble()
 
-                                    val latLng = LatLng(latitude, longitude)
-                                    nearbyPolygonList.add(latLng)
-                                    one.add(latLng)
+                                        val latLng = LatLng(latitude, longitude)
+                                        nearbyPolygonList.add(latLng)
+                                        one.add(latLng)
+                                    }
+
+                                    Log.e("NearbyPolygonList", nearbyPolygonList.toString())
+                                    insideNearbyPolygonList.add(nearbyPolygonList)
+                                    Log.e(
+                                        "insideNearbyPolygonList",
+                                        insideNearbyPolygonList.toString()
+                                    )
+
+                                    val polygonOptions = PolygonOptions()
+
+                                    for (j in 0 until nearbyPolygonList.size) {
+                                        val latitude = nearbyPolygonList[j].latitude
+                                        val longitude = nearbyPolygonList[j].longitude
+
+                                        polygonOptions.add(LatLng(latitude, longitude))
+                                        polygonOptions.strokeColor(Color.CYAN)
+                                        polygonOptions.strokeWidth(4f)
+                                        polygonOptions.fillColor(Color.CYAN)
+                                        val polygon: Polygon = mMap.addPolygon(polygonOptions)
+                                    }
+                                    nearbyPolygonList.clear()
                                 }
 
-                                Log.e("NearbyPolygonList", nearbyPolygonList.toString())
-                                insideNearbyPolygonList.add(nearbyPolygonList)
-                                Log.e("insideNearbyPolygonList", insideNearbyPolygonList.toString())
-
-                                val polygonOptions = PolygonOptions()
-
-                                for (j in 0 until nearbyPolygonList.size){
-                                    val latitude = nearbyPolygonList[j].latitude
-                                    val longitude = nearbyPolygonList[j].longitude
-
-                                    polygonOptions.add(LatLng(latitude,longitude))
-                                    polygonOptions.strokeColor(Color.CYAN)
-                                    polygonOptions.strokeWidth(4f)
-                                    polygonOptions.fillColor(Color.CYAN)
-                                    val polygon: Polygon = mMap.addPolygon(polygonOptions)
-                                }
-                                nearbyPolygonList.clear()
                             }
-
+                        } else if (response.body() == null) {
+                            progress.dismiss()
                         }
-                    }
-                    else if(response.body() == null){
+                    } else {
                         progress.dismiss()
                     }
                 }
-                else{
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     progress.dismiss()
+                    Toast.makeText(
+                        this@MapActivity,
+                        "Internet Connection Issue",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            }
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                progress.dismiss()
-                Toast.makeText(this@MapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
-            }
-        })
+            })
     }
 
     private fun plotMultiplePolygons() {
-        if (insideNearbyPolygonList.isEmpty()){
+        if (insideNearbyPolygonList.isEmpty()) {
             Log.e("polygonListEmpty", "Polygon List is Empty")
-        }
-        else{
+        } else {
             val latLng = insideNearbyPolygonList[0]
             drawPolygons(latLng)
         }
     }
 
     private fun drawPolygons(latLng: ArrayList<LatLng>) {
-        for (j in 0 until latLng.size){
+        for (j in 0 until latLng.size) {
             val latitude = latLng[j].latitude
             val longitude = latLng[j].longitude
-            mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(latitude, longitude)).title(j.toString()))
+            mMap.addMarker(
+                MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(latitude, longitude))
+                    .title(j.toString())
+            )
             Log.e("marker_added", "Marker Added")
         }
 
@@ -446,14 +531,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
                 Log.e("else", "if_Small")
                 AlertDialog.Builder(this)
                     .setTitle("Location Required")
                     .setMessage("The app needs to access current location, please accept to use location functionality")
                     .setPositiveButton(
-                        "OK") { _, _ ->
+                        "OK"
+                    ) { _, _ ->
                         requestLocationPermission()
                     }
                     .create()
@@ -464,7 +558,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     .setTitle("Location Required")
                     .setMessage("The app needs to access current location, please accept to use location functionality")
                     .setPositiveButton(
-                        "OK") { _, _ ->
+                        "OK"
+                    ) { _, _ ->
                         requestLocationPermission()
                     }
                     .create()
@@ -477,16 +572,46 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSIONS_REQUEST_LOCATION)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            MY_PERMISSIONS_REQUEST_LOCATION
+        )
     }
 
+    // Function to sort vertices in clockwise order
+    private fun sortVerticesClockwise(vertices: List<LatLng>): List<LatLng> {
+        // Find the centroid of the polygon (average of all vertices)
+        val centroid = LatLng(
+            vertices.map { it.latitude }.average(),
+            vertices.map { it.longitude }.average()
+        )
+
+        // Sort the vertices based on their angle relative to the centroid
+        val sortedVertices = vertices.sortedBy { angleToVertex(centroid, it) }
+
+        return sortedVertices
+    }
+
+    // Function to calculate the angle between two LatLng points
+    private fun angleToVertex(center: LatLng, vertex: LatLng): Double {
+        val angle = Math.toDegrees(Math.atan2(vertex.longitude - center.longitude, vertex.latitude - center.latitude))
+        return if (angle < 0) angle + 360 else angle
+    }
     @SuppressLint("PotentialBehaviorOverride", "SetTextI18n")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         mMap.uiSettings.isMapToolbarEnabled = false
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
 
@@ -494,6 +619,30 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isCompassEnabled = true
+
+
+        mMap.setOnPolygonClickListener(OnPolygonClickListener {
+            Log.e("PRAMOD","CLICKED ON POL${it}")
+            it.fillColor = Color.RED
+            val vertices = it.points
+
+            // Sort the vertices in clockwise order
+            val sortedVertices = sortVerticesClockwise(vertices)
+             var latLngList = ArrayList<String>()
+            // Now, sortedVertices contains the LatLng vertices in clockwise order
+            for (vertex in sortedVertices) {
+                Log.d("PRAMOD", "Latitude: ${vertex.latitude}, Longitude: ${vertex.longitude}")
+                latLngList.add(LatLng(vertex.latitude,vertex.longitude).toString())
+            }
+            Log.d("PRAMOD", "Latitude: $firstLat, Longitude: $firstLng")
+            val intent = Intent(this, EditPolygonActivity::class.java).apply {
+
+                putExtra("latitude", firstLat.toString())
+                putExtra("longitude", firstLng.toString())
+                putStringArrayListExtra("polygon_lat_lng", latLngList)
+            }
+            startActivity(intent)
+        })
 
         undo.setOnClickListener {
             try {
@@ -508,7 +657,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     two.removeAt(two.size - 1)
                     polygon?.remove()
 
-                    val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker, null)
+                    val pickupMarkerDrawable =
+                        resources.getDrawable(R.drawable.ic_location_marker, null)
                     for (i in latLngArrayListPolygon.indices)
                         if (i == 0) {
                             polygonOptions = PolygonOptions().add(latLngArrayListPolygon[0])
@@ -563,7 +713,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        mMap.setOnMapClickListener {  latLng ->
+        mMap.setOnMapClickListener { latLng ->
             if (editable) {
 
                 progress.progressHelper.barColor = Color.parseColor("#06c238")
@@ -589,6 +739,32 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+
+    }
+
+    fun pLotPolyGon() {
+        //        Pramod Code
+        try {
+
+            for (data in polygonLists) {
+                Log.d("PRAMOD", "gid: ${data.gid}, fid: ${data.fid}")
+
+                // Handle the "ranges" data as needed
+                val options = PolygonOptions()
+                for (range in data.ranges) {
+                    options.add(LatLng(range.lat.toDouble(), range.lng.toDouble()))
+                }
+                options.strokeColor(Color.RED)
+                options.strokeWidth(4f)
+                options.fillColor(Color.argb(50, 255, 0, 0))
+                polygon = mMap.addPolygon(options)
+                polygon!!.isClickable = true;
+
+
+            }
+        } catch (e: Exception) {
+            Log.e("PRAMOD", ">>>> $e")
+        }
     }
 
     private fun pointsOverlap(title: String?, marker: Marker) {
@@ -596,31 +772,40 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.e("latitude_longitude", latLng.toString())
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        val checkPolygonModel = CheckPolygonModel(farmer_plot_uniqueid, latLng.latitude, latLng.longitude)
+        val checkPolygonModel =
+            CheckPolygonModel(farmer_plot_uniqueid, latLng.latitude, latLng.longitude)
 
-        apiInterface.checkCoordinates("Bearer $token", checkPolygonModel).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.code() == 200){
-                    Toast.makeText(this@MapActivity, "Point overlapping", Toast.LENGTH_SHORT).show()
-                    pointOverlappingMsg()
+        apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.code() == 200) {
+                        Toast.makeText(this@MapActivity, "Point overlapping", Toast.LENGTH_SHORT)
+                            .show()
+                        pointOverlappingMsg()
+                        resetMarkers()
+                    } else if (response.code() == 422) {
+                        updateMarkerOnDrag(title!!, marker, true)
+                        getRadiusPolygon(firstLat, firstLng)
+                    } else {
+                        resetMarkers()
+                        getRadiusPolygon(firstLat, firstLng)
+                        Log.e("CheckCoordinates", response.code().toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(
+                        this@MapActivity,
+                        "Internet Connection Issue",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    progress.dismiss()
                     resetMarkers()
                 }
-                else if (response.code() == 422){
-                    updateMarkerOnDrag(title!!, marker, true)
-                    getRadiusPolygon(firstLat, firstLng)
-                }
-                else{
-                    resetMarkers()
-                    getRadiusPolygon(firstLat, firstLng)
-                    Log.e("CheckCoordinates", response.code().toString())
-                }
-            }
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@MapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
-                progress.dismiss()
-                resetMarkers()
-            }
-        })
+            })
     }
 
     private fun updateMarkerOnDrag(latLng: String, marker: Marker, ready: Boolean) {
@@ -634,7 +819,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         Log.e("dragged", latLngArrayListPolygon.toString())
-        if (ready){
+        if (ready) {
             mMap.clear()
             plotPolygons(latLngArrayListPolygon)
         }
@@ -643,15 +828,25 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun resetMarkers() {
         mMap.clear()
 
-        val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker,null)
+        val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker, null)
         var mark: Marker?
 
-        for (j in 0 until latLngArrayListPolygon.size){
+        for (j in 0 until latLngArrayListPolygon.size) {
             val latitude = latLngArrayListPolygon[j].latitude
             val longitude = latLngArrayListPolygon[j].longitude
-            mark = mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(latitude, longitude)).icon(BitmapDescriptorFactory
-                .fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth, pickupMarkerDrawable.intrinsicHeight, null)))
-                .draggable(true).title(j.toString()))
+            mark = mMap.addMarker(
+                MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(latitude, longitude)).icon(
+                    BitmapDescriptorFactory
+                        .fromBitmap(
+                            pickupMarkerDrawable.toBitmap(
+                                pickupMarkerDrawable.intrinsicWidth,
+                                pickupMarkerDrawable.intrinsicHeight,
+                                null
+                            )
+                        )
+                )
+                    .draggable(true).title(j.toString())
+            )
             mark?.tag = j.toString()
         }
 
@@ -668,15 +863,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun plotPolygons(latLng: ArrayList<LatLng>) {
-        val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker,null)
+        val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker, null)
         var mark: Marker?
 
-        for (j in 0 until latLng.size){
+        for (j in 0 until latLng.size) {
             val latitude = latLng[j].latitude
             val longitude = latLng[j].longitude
-            mark = mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(latitude, longitude))
-                .icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth, pickupMarkerDrawable.intrinsicHeight,
-                    null))).draggable(true).title(j.toString()))
+            mark = mMap.addMarker(
+                MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(latitude, longitude))
+                    .icon(
+                        BitmapDescriptorFactory.fromBitmap(
+                            pickupMarkerDrawable.toBitmap(
+                                pickupMarkerDrawable.intrinsicWidth,
+                                pickupMarkerDrawable.intrinsicHeight,
+                                null
+                            )
+                        )
+                    ).draggable(true).title(j.toString())
+            )
             mark?.tag = j.toString()
         }
 
@@ -689,41 +893,52 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         calculateDistance(latLngArrayListPolygon)
     }
 
-    private fun checkCoordinates(latLng: LatLng){
+    private fun checkCoordinates(latLng: LatLng) {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
 
-        val checkPolygonModel = CheckPolygonModel(farmer_plot_uniqueid, latLng.latitude, latLng.longitude)
-        apiInterface.checkCoordinates("Bearer $token", checkPolygonModel).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.code() == 200){
-                    if (response.body() != null){
-                        val jsonObject = JSONObject(response.body()!!.string())
-                        val status  =  jsonObject.optBoolean("status")
+        val checkPolygonModel =
+            CheckPolygonModel(farmer_plot_uniqueid, latLng.latitude, latLng.longitude)
+        apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.code() == 200) {
+                        if (response.body() != null) {
+                            val jsonObject = JSONObject(response.body()!!.string())
+                            val status = jsonObject.optBoolean("status")
 
+                            progress.dismiss()
+
+                            pointOverlappingMsg()
+                            Toast.makeText(
+                                this@MapActivity,
+                                "Point overlapping",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            progress.dismiss()
+                        }
+                    } else if (response.code() == 422) {
                         progress.dismiss()
-
-                        pointOverlappingMsg()
-                        Toast.makeText(this@MapActivity, "Point overlapping", Toast.LENGTH_SHORT).show()
-                    }
-                    else{
+                        addMarker(latLng)
+                    } else {
                         progress.dismiss()
+                        Log.e("CheckCoordinaters", response.code().toString())
                     }
                 }
-                else if (response.code() == 422){
-                    progress.dismiss()
-                    addMarker(latLng)
-                }
-                else{
-                    progress.dismiss()
-                    Log.e("CheckCoordinaters", response.code().toString())
-                }
-            }
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@MapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
-                progress.dismiss()
 
-            }
-        })
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(
+                        this@MapActivity,
+                        "Internet Connection Issue",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    progress.dismiss()
+
+                }
+            })
     }
 
     private fun pointOverlappingMsg() {
@@ -741,7 +956,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val distance = SphericalUtil.computeDistanceBetween(latLng, LATLNG)
 
         if (latLngArrayListPolygon.size == 0 && distance > 20) {
-            Toast.makeText(this@MapActivity, "Distance is greater than 10 meters", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@MapActivity,
+                "Distance is greater than 10 meters",
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
             var count = 0
             two.add(latLng)
@@ -755,9 +974,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     two.removeAt(two.size - 1)
                     count = 1
 
-                    val WarningDialog = SweetAlertDialog(this@MapActivity, SweetAlertDialog.WARNING_TYPE)
+                    val WarningDialog =
+                        SweetAlertDialog(this@MapActivity, SweetAlertDialog.WARNING_TYPE)
                     WarningDialog.titleText = resources.getString(R.string.warning)
-                    WarningDialog.contentText = resources.getString(R.string.point_overlapping_warning)
+                    WarningDialog.contentText =
+                        resources.getString(R.string.point_overlapping_warning)
                     WarningDialog.confirmText = resources.getString(R.string.ok)
                     WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
 
@@ -766,10 +987,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             if (count == 0) {
-                val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker,null)
-                mCurrLocationMarker = mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth,
-                        pickupMarkerDrawable.intrinsicHeight, null))))
+                val pickupMarkerDrawable =
+                    resources.getDrawable(R.drawable.ic_location_marker, null)
+                mCurrLocationMarker = mMap.addMarker(
+                    MarkerOptions().anchor(0.5f, 0.5f).position(latLng)
+                        .icon(
+                            BitmapDescriptorFactory.fromBitmap(
+                                pickupMarkerDrawable.toBitmap(
+                                    pickupMarkerDrawable.intrinsicWidth,
+                                    pickupMarkerDrawable.intrinsicHeight, null
+                                )
+                            )
+                        )
+                )
                 mCurrLocationMarker?.tag = latLng
 
                 val c: Calendar = Calendar.getInstance()
@@ -786,10 +1016,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 for (i in latLngArrayListPolygon.indices) if (i == 0) {
                     val titleNumber = latLngArrayListPolygon.size - 1
-                    val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker,null)
-                    mCurrLocationMarker = mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(latLng)
-                            .icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth,
-                                pickupMarkerDrawable.intrinsicHeight, null))).draggable(true).title(titleNumber.toString()))
+                    val pickupMarkerDrawable =
+                        resources.getDrawable(R.drawable.ic_location_marker, null)
+                    mCurrLocationMarker = mMap.addMarker(
+                        MarkerOptions().anchor(0.5f, 0.5f).position(latLng)
+                            .icon(
+                                BitmapDescriptorFactory.fromBitmap(
+                                    pickupMarkerDrawable.toBitmap(
+                                        pickupMarkerDrawable.intrinsicWidth,
+                                        pickupMarkerDrawable.intrinsicHeight, null
+                                    )
+                                )
+                            ).draggable(true).title(titleNumber.toString())
+                    )
                     polygonOptions = PolygonOptions().add(latLngArrayListPolygon[0])
 
                 } else {
@@ -804,11 +1043,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 for (i in latLngArrayListPolygon.indices) {
-                    val pickupMarkerDrawable = resources.getDrawable(R.drawable.ic_location_marker,null)
+                    val pickupMarkerDrawable =
+                        resources.getDrawable(R.drawable.ic_location_marker, null)
                     mCurrLocationMarker = mMap.addMarker(
                         MarkerOptions().anchor(0.5f, 0.5f).position(latLngArrayListPolygon[i])
-                            .icon(BitmapDescriptorFactory.fromBitmap(pickupMarkerDrawable.toBitmap(pickupMarkerDrawable.intrinsicWidth,
-                                pickupMarkerDrawable.intrinsicHeight, null))))
+                            .icon(
+                                BitmapDescriptorFactory.fromBitmap(
+                                    pickupMarkerDrawable.toBitmap(
+                                        pickupMarkerDrawable.intrinsicWidth,
+                                        pickupMarkerDrawable.intrinsicHeight, null
+                                    )
+                                )
+                            )
+                    )
                 }
 
 // Getting the marker Lat & Lng and storing it in variable. It is accessible from "latLng".
@@ -820,8 +1067,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.e("Polygon", Polygon_lat_lng.toString())
 
 //                txtPolygon.text = ""
-            }
-            else{
+            } else {
                 count = 0
             }
         }
@@ -852,7 +1098,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         return stringList
     }
-
 
 
     private fun adjustPolygonWithRespectTo(point: LatLng) {
@@ -910,7 +1155,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission", "SetTextI18n")
-        private fun getLocationAccuracy() {
+    private fun getLocationAccuracy() {
         val startingNumber = 20
         var currentNumber = startingNumber
 

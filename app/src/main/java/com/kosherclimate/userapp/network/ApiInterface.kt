@@ -3,6 +3,7 @@ package com.kosherclimate.userapp.network
 import WeatherResponseModel
 import com.kosherclimate.userapp.models.*
 import com.kosherclimate.userapp.models.WeatherForecastModel
+import com.kosherclimate.userapp.models.polygonmodel.LatLongModel
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -179,7 +180,7 @@ interface ApiInterface {
 
     @Headers("Accept: application/json")
     @POST("V1/farmer/location/info")
-    fun farmerLocation(@Header( "Authorization") token: String, @Body farmerLocationModel: FarmerLocationModel): Call<ResponseBody>
+    fun farmerLocation(@Header( "Authorization") token: String, @Body farmerLocationModel: NewFarmerLocationModel): Call<ResponseBody>
 
     @Headers("Accept: application/json")
     @POST("V1/onboarding/store/location")
@@ -190,7 +191,7 @@ interface ApiInterface {
     @Headers("Accept: application/json")
     @POST("V1/farmer/plot")
     fun plotInfo(@Header( "Authorization") token: String, @Part farmer_id: MultipartBody.Part, @Part farmer_unique_id: MultipartBody.Part,
-                 @Part plot_no: MultipartBody.Part, @Part land_ownership: MultipartBody.Part,  @Part actual_owner_name: MultipartBody.Part,
+                  @Part land_ownership: MultipartBody.Part,  @Part actual_owner_name: MultipartBody.Part,
                  @Part patta_number: MultipartBody.Part, @Part daag_number: MultipartBody.Part,  @Part khatha_number: MultipartBody.Part,
                  @Part pattadhar_number: MultipartBody.Part, @Part khatian_number: MultipartBody.Part, @Part sign_affidavit: MultipartBody.Part,
                  @Part survey_no: MultipartBody.Part, @Part check_carbon_credit: MultipartBody.Part, @Part area_other_awd: MultipartBody.Part,
@@ -210,7 +211,7 @@ interface ApiInterface {
 
     @Multipart
     @Headers("Accept: application/json")
-    @POST("V1/farmer")
+    @POST("V1/farmer/images")
     fun lastScreen(@Header( "Authorization") token: String, @Part screen: MultipartBody.Part, @Part farmer_id: MultipartBody.Part, @Part date_survey: MultipartBody.Part,
                    @Part time_survey: MultipartBody.Part, @Part farmer_photo: MultipartBody.Part, @Part aadhaar_photo: MultipartBody.Part,
                    @Part others_photo: MultipartBody.Part, @Part plotowner_sign: MultipartBody.Part, @Part farmer_uniqueId: MultipartBody.Part): Call<ResponseBody>
@@ -539,5 +540,11 @@ interface ApiInterface {
     @Headers("Accept: application/json")
     @GET("V1/search/surveyid/list")
     fun getExistingPlotDetails(@Header( "Authorization") token: String,@Query("data") data: String) :Call<ResponseBody>
+
+
+    /*** Get List Of Plots near Me*/
+    @Headers("Accept: application/json")
+    @POST("V1/check/polyon/short_by")
+    fun getListOfPolygon(@Header( "Authorization") token: String, @Body latLong: LatLongModel) : Call<ResponseBody>
 
 }

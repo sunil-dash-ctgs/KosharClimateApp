@@ -43,6 +43,15 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
     private lateinit var mMap: GoogleMap
     private lateinit var mapFragment: SupportMapFragment
 
+    val latLongList = arrayListOf(
+        LatLng(19.203769559837284,72.85898009799581),
+        LatLng(19.203336660979417,72.86102121297296),
+        LatLng( 19.201687078050867,72.86033601598231),
+        LatLng(19.201773658781633,72.85838658229329),
+        // Add more LatLng objects as needed
+    )
+
+
     private var Polygon_lat_lng = ArrayList<String>()
     private val latLngslist = java.util.ArrayList<LatLng>()
 
@@ -81,7 +90,7 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pipe_map)
-
+        Log.e("HWREE","HERE in MapSubmitedActivvity")
         val bundle = intent.extras
         if (bundle != null) {
 
@@ -103,6 +112,7 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
             Polygon_lat_lng = bundle.getStringArrayList("polygon_lat_lng")!!
             status = bundle.getInt("status")
             polygon_status = bundle.getInt("polygon_status")
+            Log.e("TTTETETTE", Polygon_lat_lng.toString())
         } else {
             Log.e("area", "Nope")
         }
@@ -123,7 +133,7 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
 
         save.setOnClickListener {
             var isInside = isLatLngInsidePolygon(latLngslist)
-            Log.e("pipe_map_location",isInside.toString())
+            Log.e("pipe_map_location",isInside.toString() + "  ${status != 0}")
             if(isInside){
                 if (status != 0) {
                     val intent = Intent(this, LandInfoSubmittedPreviewActivity::class.java).apply {
@@ -238,6 +248,14 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
             polygonOptions.fillColor(0x33FF0000)
             polygon = mMap.addPolygon(polygonOptions)
         }
+//        for(i in latLongList){
+//            mMap.clear()
+//            polygonOptions.add(i)
+//            polygonOptions.strokeColor(Color.BLACK)
+//            polygonOptions.strokeWidth(5f)
+//            polygonOptions.fillColor(0x33FF0000)
+//            polygon = mMap.addPolygon(polygonOptions)
+//        }
 
         for (i in 0 until LAT.size){
             mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(LAT[i], LNG[i])))
@@ -245,7 +263,7 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
 
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isCompassEnabled = true
-        mMap.setMinZoomPreference(15f)
+//        mMap.setMinZoomPreference(15f)
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
     }
 
@@ -305,3 +323,12 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
         imageLng = df.format(location.longitude).toString()
     }
 }
+
+data class PlygonLatLon (
+    val ranges: List<Range>
+)
+
+data class Range (
+    val lat: String,
+    val lng: String
+)

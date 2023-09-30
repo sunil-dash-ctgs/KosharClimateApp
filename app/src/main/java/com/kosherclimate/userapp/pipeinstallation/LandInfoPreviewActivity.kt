@@ -150,6 +150,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
         btnBack = findViewById(R.id.land_Info_Pre_Btn_Back)
         btnSubmit = findViewById(R.id.land_Info_Pre_Btn_Submit)
+        btnSubmit.visibility = View.VISIBLE
 
         farmer_recyclerView = findViewById(R.id.ImagePreviewPipeInstallation)
         linearList = findViewById(R.id.layout_list)

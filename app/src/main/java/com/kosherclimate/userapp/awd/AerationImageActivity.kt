@@ -372,14 +372,14 @@ class AerationImageActivity : AppCompatActivity() {
             val df = DecimalFormat("#####")
             val distance = df.format(SphericalUtil.computeDistanceBetween(LatLng(imageLat.toDouble(), imageLng.toDouble()), LatLng(pipeImageLatitude, pipeImageLongitude)))
 
-            if(distance.toDouble() < 15) {
+            if(distance.toDouble() < 30) {
                 stop()
             }
             else{
                 val WarningDialog = SweetAlertDialog(this@AerationImageActivity, SweetAlertDialog.WARNING_TYPE)
 
                 WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = "Distance cannot be less than ${15} meters"
+                WarningDialog.contentText = "Distance cannot be less than ${30} meters"
                 WarningDialog.confirmText = " OK "
                 WarningDialog.showCancelButton(false)
                 WarningDialog.setCancelable(false)

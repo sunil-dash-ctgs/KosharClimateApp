@@ -375,7 +375,7 @@
     <string name="back">Back</string>
     <string name="previous">Prev</string>
     <string name="resend">RESEND</string>
-    <string name="send">SEND</string>
+    <string name="send">CALL</string>
     <string name="home">Home</string>
     <string name="submit">Submit</string>
     <string name="success">Success</string>
@@ -390,6 +390,15 @@
 
 
     <!--    Existing plots Screen-->
+
+
+<!--    New Onboarding Process-->
+    <string name="total_area">Total Area in </string>
+    <string name="own_area">Own Area in </string>
+    <string name="lease_area">Lease Area in </string>
+    <string name="total_area_in_acres">Total Area in Acres</string>
+    <string name="own_area_in_acres">Own Area in Acres</string>
+    <string name="lease_area_in_acres">Lease Area in Acres</string>
 
 
 </resources>

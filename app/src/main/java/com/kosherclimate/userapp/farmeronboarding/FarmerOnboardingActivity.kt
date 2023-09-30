@@ -38,6 +38,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Locale
 
 class FarmerOnboardingActivity : AppCompatActivity() {
     val access = arrayOf("--Select--", "Own Number", "Relatives Number")
@@ -48,15 +49,14 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
     private lateinit var edtFarmerName: EditText
     private lateinit var edtMobile: EditText
-    private lateinit var edtotp: EditText
+//    private lateinit var edtotp: EditText
     private lateinit var edtGuardian: EditText
     private lateinit var edtAadhar: EditText
     private lateinit var txtUniqueID: TextView
-    private lateinit var linearList: LinearLayout
-    private lateinit var otpLAYOUT: LinearLayout
-    private lateinit var plot_spinner: Spinner
+//    private lateinit var linearList: LinearLayout
+//    private lateinit var otpLAYOUT: LinearLayout
+//    private lateinit var plot_spinner: Spinner
     private lateinit var owner_spinner: Spinner
-    private lateinit var resendOTP: TextView
     private lateinit var valid_nonValid: TextView
 
     private lateinit var radioGroup: RadioGroup
@@ -69,6 +69,21 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     var bValue: Double = 0.0
     var p: Int = 0
     var i: Int = 1
+
+//    New onboarding Process changes
+    private  lateinit var tvCall : TextView
+    private  lateinit var tvTotalArea : TextView
+    private  lateinit var tvOwnArea : TextView
+    private  lateinit var tvLeaseArea : TextView
+
+    private  lateinit var edTotalArea : EditText
+    private  lateinit var edOwnArea : EditText
+    private  lateinit var edLeaseArea : EditText
+
+    private  lateinit var tvTotalAreaInAcres : TextView
+    private  lateinit var tvOwnAreaInAcres : TextView
+    private  lateinit var tvLeaseAreaInAcres : TextView
+//    New onboarding Process changes
 
     var realtionshipIDList = java.util.ArrayList<Int>()
     var relationshipNameList = java.util.ArrayList<String>()
@@ -134,24 +149,79 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
         val access_spinner = findViewById<Spinner>(R.id.assam_mobile_access)
         owner_spinner = findViewById(R.id.assam_relationship)
-        plot_spinner = findViewById(R.id.assam_total_plot)
 
         edtFarmerName = findViewById(R.id.assam_farmer_name)
         edtMobile = findViewById(R.id.assam_mobile)
         edtGuardian = findViewById(R.id.assam_guardian_name)
         edtAadhar = findViewById(R.id.aadhar_number)
-        linearList = findViewById(R.id.assam_layout_list)
+//        linearList = findViewById(R.id.assam_layout_list)
         txtUniqueID = findViewById(R.id.assam_plot_id)
-        otpLAYOUT = findViewById(R.id.assam_otpLayout)
-        edtotp = findViewById(R.id.assam_otp)
-        resendOTP = findViewById(R.id.assam_resend_otp)
         valid_nonValid = findViewById(R.id.assam_valid_nonValid)
 
         radioGroup = findViewById(R.id.assam_radioGroup)
 
-        token = sharedPreference.getString("token","")!!
-        edtotp.isEnabled = false
+//        New Onboarding Process changes
+        tvCall = findViewById(R.id.tvCall)
+        tvTotalArea = findViewById(R.id.tvTotalArea)
+        tvOwnArea = findViewById(R.id.tvOwnArea)
+        tvLeaseArea = findViewById(R.id.tvLeaseArea)
 
+        edTotalArea = findViewById(R.id.edTotalArea)
+        edOwnArea = findViewById(R.id.edOwnArea)
+        edLeaseArea = findViewById(R.id.edLeaseArea)
+
+        tvTotalAreaInAcres = findViewById(R.id.tvTotalAreaInAcres)
+        tvOwnAreaInAcres = findViewById(R.id.tvOwnAreaInAcres)
+        tvLeaseAreaInAcres = findViewById(R.id.tvLeaseAreaInAcres)
+//        New Onboarding Process changes
+
+        token = sharedPreference.getString("token","")!!
+
+
+//        New Onboarding Process changes
+        if (state.lowercase(Locale.ROOT) == "assam"){
+            tvTotalArea.setText("${tvTotalArea.text} Bigha")
+            tvOwnArea.setText("${tvOwnArea.text} Bigha")
+            tvLeaseArea.setText("${tvLeaseArea.text} Bigha")
+        }else{
+            tvTotalArea.setText("${tvTotalArea.text} Acres")
+            tvOwnArea.setText("${tvOwnArea.text} Acres")
+            tvLeaseArea.setText("${tvLeaseArea.text} Acres")
+        }
+
+        edTotalArea.addTextChangedListener(object  :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                tvTotalAreaInAcres.setText(acresCalculation(edTotalArea.text.toString()))
+            }
+
+        })
+
+        edOwnArea.addTextChangedListener(object  :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                tvOwnAreaInAcres.setText(acresCalculation(edOwnArea.text.toString()))
+            }
+
+        })
+
+        edLeaseArea.addTextChangedListener(object  :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                tvLeaseAreaInAcres.setText(acresCalculation(edLeaseArea.text.toString()))
+            }
+
+        })
+//        New Onboarding Process changes
 
         /**
          * Getting the current application version
@@ -185,26 +255,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             }
         }
 
-        /**
-         * Number of plot spinner is getting assigned to a adapter here.
-         * Also, getting the position.
-         */
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, plots)
-        plot_spinner.adapter = adapter
 
-        plot_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                Log.e("access", plots[position])
-                if (close == 0) {
-                    p = position
-                    addView(p)
-                }
-
-
-                enablePlotSpinner()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
 
 
         /**
@@ -227,49 +278,8 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         })
 
 
-        /**
-         * Added a watcher on the OTP EditText.
-         * Auto verify otp on once text length reaches to 5.
-         */
-        edtotp.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (edtotp.text.length > 5){
-                    valid_nonValid.text = resources.getString(R.string.veriying_otp)
-                    valid_nonValid.setTextColor(Color.parseColor("#06c238"))
-                    verifyOTP(edtotp.text.toString())
-                }
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
 
-        /**
-         * Resend OTP code.
-         */
-        resendOTP.setOnClickListener {
-            val WarningDialog =
-                SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
 
-            if (edtMobile.text.length < 10) {
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = resources.getString(R.string.mobile_valid_warning)
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener {
-                    WarningDialog.cancel()
-                }.show()
-            } else {
-                progress.progressHelper.barColor = Color.parseColor("#06c238")
-                progress.titleText = resources.getString(R.string.sending)
-                progress.contentText = resources.getString(R.string.otp_sending)
-                progress.setCancelable(false)
-                progress.show()
-
-                generateOTP(edtMobile.text.toString())
-
-            }
-        }
 
 
         back_button.setOnClickListener {
@@ -324,32 +334,17 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.mobile_length_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (edtotp.text.isEmpty()) {
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = resources.getString(R.string.enter_otp_warning)
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (txtUniqueID.text.isEmpty()) {
+            }  else if (txtUniqueID.text.isEmpty()) {
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.missing_farmer_id_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (!isOTPvalid) {
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = resources.getString(R.string.invalid_otp_warning)
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (p == 0) {
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = resources.getString(R.string.number_plot_warning)
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else {
+            }else {
                 plotNumberList.clear()
                 plotAreaList.clear()
                 plotList.clear()
-
-                checkIfValidAndRead()
+                sendData()
+//                checkIfValidAndRead()
             }
         }
 
@@ -357,178 +352,99 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Generate OTP API call here.
-     */
-    private fun generateOTP(mobile: String) {
-        val mobileVerifyModel = MobileVerifyModel(mobile)
-
-        val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.generateOTP(mobileVerifyModel).enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerOnboardingActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.code() == 200) {
-                    if (response.body() != null) {
-                        progress.dismiss()
-
-                        object : CountDownTimer(30000, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                resendOTP.isEnabled = false
-                                resendOTP.text =  "${millisUntilFinished / 1000}"
-                                resendOTP.setTextColor(Color.parseColor("#FF1E00"))
-                            }
-
-                            override fun onFinish() {
-                                resendOTP.text =  resources.getString(R.string.resend)
-                                resendOTP.isEnabled = true
-                            }
-                        }.start()
-
-                        edtotp.isEnabled = true
-                    }
-                }
-                else{
-                    Log.e("statusCode", "Not 200")
-                }
-            }
-        })
-    }
 
 
-    /**
-     * Verify OTP API call here.
-     */
-    private fun verifyOTP(otp: String) {
-        val verifyOtpModel = VerifyOtpModel(edtMobile.text.toString(), otp)
-
-        val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.verifyOTP(verifyOtpModel).enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerOnboardingActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.code() == 200) {
-                    if (response.body() != null) {
-                        isOTPvalid = true
-                        valid_nonValid.text = resources.getString(R.string.valid_otp)
-                        valid_nonValid.setTextColor(Color.parseColor("#06c238"))
-
-                        edtMobile.isEnabled = false
-                        edtotp.isEnabled = false
-                        resendOTP.visibility = View.GONE
-
-                        clear = true
 
 
-                        /**
-                         * After otp verification successfully enabling the number of plots spinner to be edited.
-                         */
-                        enablePlotSpinner()
-                    }
-                }
-                else if(response.code() == 422){
-                    isOTPvalid = false
-                    valid_nonValid.text = resources.getString(R.string.invalid_otp_warning)
-                    valid_nonValid.setTextColor(Color.parseColor("#FF1E00"))
-                }
-            }
-        })
-    }
-
-
-    /**
-     * Checking if all the data is present in the area of lands fields.
-     */
-    private fun checkIfValidAndRead() {
-        lkjs = 0
-
-        for (i in 0 until linearList.childCount) {
-            val cricketerView: View = linearList.getChildAt(i)
-
-            val editTextPlotName = cricketerView.findViewById<View>(R.id.assam_plot_number) as TextView
-            val editTextLandArea = cricketerView.findViewById<View>(R.id.assam_area_bigha) as EditText
-            val editTextHectareName = cricketerView.findViewById<View>(R.id.assam_area_hector) as EditText
-
-            if (editTextPlotName.text.toString() != "") {
-                Log.e("PlotName", editTextPlotName.text.toString())
-                plotNumberList.add(editTextPlotName.text.toString())
-            } else {
-                break
-            }
-
-            if (editTextLandArea.text.toString() != "") {
-                Log.e("LandArea", editTextLandArea.text.toString())
-                plotList.add(editTextLandArea.text.toString())
-            }
-            else {
-                break
-            }
-
-            if (editTextHectareName.text.toString() != "") {
-                Log.e("LandAreaAcres", editTextHectareName.text.toString())
-                plotAreaList.add(editTextHectareName.text.toString())
-            }
-            else {
-                break
-            }
-
-
-        }
-
-
-        first@ for (i in 0 until plotList.size) {
-            val plotDouble = plotList[i].toDouble()
-            if (plotDouble < minBValue) {
-                Log.e("sdfkfjs", "fjksdfskdf")
-
-                val WarningDialog = SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
-
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = "${resources.getString(R.string.area_less_warning)}  ${minBValue.toString()}"
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener {
-                    Log.e("Next Screen", lkjs.toString())
-                    WarningDialog.cancel()
-                }.show()
-
-                lkjs = 1
-                Log.e("Next Screen", lkjs.toString())
-                break@first
-            }
-        }
-
-
-        /**
-         * If all data is present the sending the data through API.
-         */
-        Log.e("Next Screen", lkjs.toString())
-        if (lkjs == 0 && plotList.size == p){
-            Log.e("insidesetdata", "fjksdfskdf")
-            Log.e("plotList", plotList.size.toString())
-            Log.e("plots", p.toString())
-
-            sendData()
-        }
-//        else{
-//            plotNumberList.clear()
-//            plotAreaList.clear()
-//            plotList.clear()
+//    /**
+//     * Checking if all the data is present in the area of lands fields.
+//     */
+//    private fun checkIfValidAndRead() {
+//        lkjs = 0
 //
-//            val WarningDialog = SweetAlertDialog(this@AssamFarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
+//        for (i in 0 until linearList.childCount) {
+//            val cricketerView: View = linearList.getChildAt(i)
 //
-//            WarningDialog.titleText = resources.getString(R.string.warning)
-//            WarningDialog.contentText = resources.getString(R.string.area_cannot_warning)
-//            WarningDialog.confirmText = resources.getString(R.string.ok)
-//            WarningDialog.setCancelClickListener {
-//                Log.e("Next Screen", lkjs.toString())
-//                WarningDialog.cancel()
-//            }.show()
+//            val editTextPlotName = cricketerView.findViewById<View>(R.id.assam_plot_number) as TextView
+//            val editTextLandArea = cricketerView.findViewById<View>(R.id.assam_area_bigha) as EditText
+//            val editTextHectareName = cricketerView.findViewById<View>(R.id.assam_area_hector) as EditText
+//
+//            if (editTextPlotName.text.toString() != "") {
+//                Log.e("PlotName", editTextPlotName.text.toString())
+//                plotNumberList.add(editTextPlotName.text.toString())
+//            } else {
+//                break
+//            }
+//
+//            if (editTextLandArea.text.toString() != "") {
+//                Log.e("LandArea", editTextLandArea.text.toString())
+//                plotList.add(editTextLandArea.text.toString())
+//            }
+//            else {
+//                break
+//            }
+//
+//            if (editTextHectareName.text.toString() != "") {
+//                Log.e("LandAreaAcres", editTextHectareName.text.toString())
+//                plotAreaList.add(editTextHectareName.text.toString())
+//            }
+//            else {
+//                break
+//            }
+//
+//
 //        }
-    }
+//
+//
+//        first@ for (i in 0 until plotList.size) {
+//            val plotDouble = plotList[i].toDouble()
+//            if (plotDouble < minBValue) {
+//                Log.e("sdfkfjs", "fjksdfskdf")
+//
+//                val WarningDialog = SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
+//
+//                WarningDialog.titleText = resources.getString(R.string.warning)
+//                WarningDialog.contentText = "${resources.getString(R.string.area_less_warning)}  ${minBValue.toString()}"
+//                WarningDialog.confirmText = resources.getString(R.string.ok)
+//                WarningDialog.setCancelClickListener {
+//                    Log.e("Next Screen", lkjs.toString())
+//                    WarningDialog.cancel()
+//                }.show()
+//
+//                lkjs = 1
+//                Log.e("Next Screen", lkjs.toString())
+//                break@first
+//            }
+//        }
+//
+//
+//        /**
+//         * If all data is present the sending the data through API.
+//         */
+//        Log.e("Next Screen", lkjs.toString())
+//        if (lkjs == 0 && plotList.size == p){
+//            Log.e("insidesetdata", "fjksdfskdf")
+//            Log.e("plotList", plotList.size.toString())
+//            Log.e("plots", p.toString())
+//
+//            sendData()
+//        }
+////        else{
+////            plotNumberList.clear()
+////            plotAreaList.clear()
+////            plotList.clear()
+////
+////            val WarningDialog = SweetAlertDialog(this@AssamFarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
+////
+////            WarningDialog.titleText = resources.getString(R.string.warning)
+////            WarningDialog.contentText = resources.getString(R.string.area_cannot_warning)
+////            WarningDialog.confirmText = resources.getString(R.string.ok)
+////            WarningDialog.setCancelClickListener {
+////                Log.e("Next Screen", lkjs.toString())
+////                WarningDialog.cancel()
+////            }.show()
+////        }
+//    }
 
 
     /**
@@ -538,7 +454,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         val intSelectButton: Int = radioGroup.checkedRadioButtonId
         radioButton = findViewById(intSelectButton)
 
-        Log.e("Entered sendData", "Entered sendData")
+        Log.e("PRAMOD", "Entered sendData")
         progress.progressHelper.barColor = Color.parseColor("#06c238")
         progress.titleText = resources.getString(R.string.loading)
         progress.contentText = resources.getString(R.string.data_send)
@@ -571,7 +487,8 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
 
         val farmerInfo = FarmerInfoModel(farmer_name, mobile_access, relationship, mobile, txtUniqueID.text.toString(), plotList.size.toString(),
-            plot_details_arrayList, radioButton.text.toString(), guardian, org, aadhar)
+             radioButton.text.toString(), guardian, org, aadhar,
+            tvTotalAreaInAcres.text.toString(),tvOwnAreaInAcres.text.toString(),tvLeaseAreaInAcres.text.toString())
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         retIn.farmerInfo("Bearer $token", farmerInfo).enqueue(object : Callback<ResponseBody> {
@@ -589,7 +506,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                t.message?.let { Log.e("access", it) }
+                t.message?.let { Log.e("PRAMOD", it) }
                 progress.dismiss()
             }
         })
@@ -608,11 +525,13 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             putExtra("FarmerId", FarmerId)
             putExtra("area_unit", unit)
             putExtra("area_value", areaValue)
-            putStringArrayListExtra("areaAcres", plotAreaList)
-            putStringArrayListExtra("areaHectare", plotList)
+            putExtra("areaAcres", edTotalArea.text.toString())
+            putExtra("areaHectare", tvTotalAreaInAcres.text.toString())
 
             putExtra("state", state)
             putExtra("state_id", state_id)
+
+//            putExtra("total_area", edT)
 
             Log.e("state_id", state_id)
         }
@@ -620,93 +539,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Dynamically adding the view to add the areas of the plots.
-     */
-    private fun addView(position: Int) {
-        if (position != 0) {
-            close = 1
 
-            val plotView = layoutInflater.inflate(R.layout.row_add_unique_assam, null, false)
-            var unitNmae = plotView.findViewById<View>(R.id.area_unit_name) as TextView
-            var plotName = plotView.findViewById<View>(R.id.assam_plot_number) as TextView
-            var areaBigha = plotView.findViewById<View>(R.id.assam_area_bigha) as EditText
-            var areaHectare = plotView.findViewById<View>(R.id.assam_area_hector) as EditText
-            var closeButton = plotView.findViewById<View>(R.id.assam_image_close) as ImageView
-
-
-            /**
-             * Adding the area with some validation.
-             */
-
-            areaBigha.filters = arrayOf(
-                com.kosherclimate.userapp.utils.DecimalDigitsInputFilter(
-                    3,
-                    2,
-                    maxBValue
-                )
-            )
-
-            /**
-             * Adding a listener to the area of land for calculation & filling the data in area in acres.
-             */
-            areaBigha.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                override fun afterTextChanged(p0: Editable?) {
-                    areaHectare.setText(acresCalculation(areaBigha.text.toString()))
-                }
-            })
-
-
-            var j: Int = i++
-            plotName.text = j.toString()
-            unitNmae.text = unit
-
-            /**
-             * Will close the dynamically added view.
-             */
-            closeButton.setOnClickListener(View.OnClickListener {
-                try {
-                    Log.e("childCount_", linearList.childCount.toString())
-                    Log.e("plotName", j.toString())
-
-                    if( linearList.childCount != j){
-                        Log.e("childCount_if", linearList.childCount.toString())
-
-                    }
-                    else{
-                        Log.e("childCount_else", linearList.childCount.toString())
-
-                        var count: Int = linearList.childCount - 1
-                        plot_spinner.setSelection(count)
-
-                        if (count == 0) {
-                            Log.e("count_if", count.toString())
-                            clear = true
-                            close = 0
-                            plot_spinner.isEnabled = true
-                            plot_spinner.isClickable = true
-
-                            removeView(plotView)
-                        } else {
-                            Log.e("count_else", count.toString())
-                            removeView(plotView)
-                        }
-                        i = 1
-                    }
-
-                }
-                catch (_: java.lang.Exception){
-                }
-            })
-
-            linearList.addView(plotView)
-            addView(position - 1)
-        }
-    }
 
 
     /**
@@ -723,26 +556,8 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Clicking of x icon to remove the view is here.
-     */
-    private fun removeView(view: View) {
-        linearList.removeView(view)
-    }
 
 
-    private fun enablePlotSpinner() {
-        if(clear){
-            plot_spinner.isEnabled = true
-            plot_spinner.isClickable = true
-
-            clear = false
-        }
-        else{
-            plot_spinner.isEnabled = false
-            plot_spinner.isClickable = false
-        }
-    }
 
 
     /**
