@@ -664,18 +664,18 @@ class PlotActivity : AppCompatActivity() {
 
         if (total_plot != 1) {
             cardview.visibility = View.GONE
-            back.isEnabled = true
+            back.isEnabled = false
             next.isEnabled = true
 
-            val SuccessDialog = SweetAlertDialog(this@PlotActivity, SweetAlertDialog.SUCCESS_TYPE)
-
-            SuccessDialog.titleText = resources.getString(R.string.success)
-            SuccessDialog.contentText = resources.getString(R.string.submitted_successfully)
-            SuccessDialog.confirmText = resources.getString(R.string.ok)
-            SuccessDialog.showCancelButton(false)
-            SuccessDialog.setCancelable(false)
-            SuccessDialog.setConfirmClickListener {
-                SuccessDialog.cancel()
+//            val SuccessDialog = SweetAlertDialog(this@PlotActivity, SweetAlertDialog.SUCCESS_TYPE)
+//
+//            SuccessDialog.titleText = resources.getString(R.string.success)
+//            SuccessDialog.contentText = resources.getString(R.string.submitted_successfully)
+//            SuccessDialog.confirmText = resources.getString(R.string.ok)
+//            SuccessDialog.showCancelButton(false)
+//            SuccessDialog.setCancelable(false)
+//            SuccessDialog.setConfirmClickListener {
+//                SuccessDialog.cancel()
 
                 cardview.visibility = View.GONE
 
@@ -695,7 +695,7 @@ class PlotActivity : AppCompatActivity() {
 //                    putExtra("longitude", longitude)
 //                }
 //                startActivity(intent)
-            }.show()
+//            }.show()
 
             } else {
             cardview.visibility = View.GONE

@@ -17,14 +17,17 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.models.FarmerUniqueIdModel
+import com.kosherclimate.userapp.models.existingplots.UniqueIDModel
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.polygon.Submitted.PolygonMapSubmittedActivity
 import okhttp3.ResponseBody
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Locale
 
 class PolygonActivity : AppCompatActivity() {
     private var Polygon_lat_lng = ArrayList<String>()
@@ -51,6 +54,12 @@ class PolygonActivity : AppCompatActivity() {
     var PlotArea = ArrayList<String>()
     var FarmerPlotUniqueID = ArrayList<String>()
 
+
+    private var nextPlot: Int = 0
+    private var nextPlotId :String = ""
+    private var lastPlotId :String = ""
+
+
     private lateinit var btnBack: Button
     private lateinit var btnCaptureData: Button
 
@@ -62,7 +71,7 @@ class PolygonActivity : AppCompatActivity() {
         progress = SweetAlertDialog(this@PolygonActivity, SweetAlertDialog.PROGRESS_TYPE)
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", MODE_PRIVATE)
         token = sharedPreference.getString("token", "")!!
-
+        Log.e("PRAMOD", "TOKEN = $token")
         edtMobile_number = findViewById(R.id.pipe_mobile_number)
         edtFarmer_name = findViewById(R.id.pipe_farmer_name)
         txtArea = findViewById(R.id.pipe_plot_area)
@@ -98,7 +107,21 @@ class PolygonActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.sub_plot_unique_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else {
+            } else  if (SUBPLOT == "Create Plot" ) {
+                getSubPlot()
+                if(lastPlotId == nextPlotId){
+                    WarningDialog.titleText = resources.getString(R.string.warning)
+                    WarningDialog.contentText = resources.getString(R.string.fill_previous_plot)
+                    WarningDialog.confirmText = resources.getString(R.string.ok)
+                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+
+                }else{
+                    Log.e("PRAMOD"," Success")
+                 checkData()
+                }
+
+            }else{
+                Log.e("PRAMOD"," Success 2")
                 checkData()
             }
         }
@@ -279,20 +302,20 @@ class PolygonActivity : AppCompatActivity() {
     }
 
     private fun nextScreen() {
-        if(txtArea.text == "0.0"){
-            val WarningDialog = SweetAlertDialog(this@PolygonActivity, SweetAlertDialog.WARNING_TYPE)
+        if (txtArea.text == "0.0") {
+            val WarningDialog =
+                SweetAlertDialog(this@PolygonActivity, SweetAlertDialog.WARNING_TYPE)
             WarningDialog.titleText = resources.getString(R.string.warning)
             WarningDialog.contentText = resources.getString(R.string.area_in_acres_warning)
             WarningDialog.confirmText = resources.getString(R.string.ok)
             WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-        }
-        else {
+        } else {
             val intent = Intent(this, MapActivity::class.java).apply {
                 putExtra("area", PlotArea[subPlotUniquePosition - 1])
                 putExtra("unique_id", FarmerUniqueList[farmerUniquePosition])
                 putExtra("sub_plot_no", SubPlotList[subPlotUniquePosition - 1])
                 putExtra("farmer_id", IDList[farmerUniquePosition].toString())
-                putExtra("farmer_plot_uniqueid", FarmerPlotUniqueID[subPlotUniquePosition])
+                putExtra("farmer_plot_uniqueid", nextPlotId)
                 putExtra("farmer_name", edtFarmer_name.text.toString())
                 putExtra("threshold", threshold)
 //            putExtra("area_acers", )
@@ -322,9 +345,11 @@ class PolygonActivity : AppCompatActivity() {
 
                         val stringResponse = JSONObject(response.body()!!.string())
                         val jsonArray = stringResponse.optJSONArray("list")
+                        Log.e("PRAMOD", jsonArray.length().toString())
 
                         if (jsonArray.length() == 0) {
-                            Log.e("length", jsonArray.length().toString())
+                            Log.e("PRAMOD", "got Farmer Lists")
+                            Log.e("PRAMOD", jsonArray.toString())
 
                             IDList.clear()
                             FarmerUniqueList.clear()
@@ -394,7 +419,9 @@ class PolygonActivity : AppCompatActivity() {
                     if (response.body() != null) {
                         val stringResponse = JSONObject(response.body()!!.string())
                         val jsonArray = stringResponse.optJSONArray("plotlist")
-
+                        Log.e("PRAMOD", "got sub plots Lists")
+                        Log.e("PRAMOD", jsonArray.toString())
+                        getLastPlotId(jsonArray)
                         FarmerPlotUniqueID.add("--Select--")
 
                         for (i in 0 until jsonArray.length()) {
@@ -404,13 +431,23 @@ class PolygonActivity : AppCompatActivity() {
                             val farmer_plot_uniqueid = jsonObject.optString("farmer_plot_uniqueid")
 
                             val jsonApproved = jsonObject.getJSONObject("apprv_farmer_plot")
-                            val area_in_acers = jsonApproved.optString("area_acre_awd")
+                            val area_in_acers = jsonObject.optString("area_in_acers")
 
                             SubPlotList.add(plot_no.toString())
                             PlotArea.add(area_in_acers.toString())
                             FarmerPlotUniqueID.add(farmer_plot_uniqueid.toString())
                         }
+                        if (SubPlotList.isNotEmpty()) {
+                            SubPlotList.add(SubPlotList.last().toString())
+                            PlotArea.add(PlotArea.last().toString())
+                        }
+
+                        FarmerPlotUniqueID.add("Create Plot")
                         progress.dismiss()
+                        Log.e("PRAMOD", ">>>>>>>>>>>>>>")
+                        Log.e("PRAMOD", FarmerPlotUniqueID.toString())
+                        Log.e("PRAMOD", SubPlotList.toString())
+                        Log.e("PRAMOD", PlotArea.toString())
                         plotSpinner()
                     }
                 } else {
@@ -439,7 +476,6 @@ class PolygonActivity : AppCompatActivity() {
             ) {
                 farmerUniquePosition = position
                 UNIQURID = FarmerUniqueList[farmerUniquePosition]
-
                 getPlots()
             }
 
@@ -459,6 +495,10 @@ class PolygonActivity : AppCompatActivity() {
             ) {
                 subPlotUniquePosition = position
                 SUBPLOT = FarmerPlotUniqueID[subPlotUniquePosition]
+                if(SUBPLOT == "Create Plot"){
+                    lastPlotId = FarmerPlotUniqueID[subPlotUniquePosition -1]
+                }
+                Log.e("PRAMOD", "SUb $SUBPLOT $lastPlotId")
 
                 if (position != 0) {
                     println(
@@ -481,7 +521,7 @@ class PolygonActivity : AppCompatActivity() {
 
 
     private fun getFarmerName() {
-        var plotUniqueIDName: String = FarmerPlotUniqueID[subPlotUniquePosition]
+        var plotUniqueIDName: String = FarmerPlotUniqueID[1]
         Log.e("plotUniqueIDName", plotUniqueIDName)
 
         val farmerUniqueIdModel = FarmerUniqueIdModel(plotUniqueIDName)
@@ -499,6 +539,9 @@ class PolygonActivity : AppCompatActivity() {
                         val farmer_name = jsonObject2.optString("farmer_name")
 
                         edtFarmer_name.text = farmer_name
+                        Log.e("PRAMOD", "SUB Plot is $SUBPLOT")
+                            getSubPlot()
+
                     }
                 } else if (response.code() == 422) {
                     val stringResponse = JSONObject(response.errorBody()!!.string())
@@ -552,6 +595,53 @@ class PolygonActivity : AppCompatActivity() {
                 t.message?.let { Log.e("access", it) }
             }
         })
+    }
+
+    private fun getSubPlot() {
+        Log.e("PRAMOD", "$UNIQURID")
+        val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+        val requestBody = JSONObject()
+        var uniqueIdModel = UniqueIDModel(UNIQURID)
+        requestBody.put("farmer_uniqueId", UNIQURID)
+        apiInterface.getPlotId("Bearer $token", UNIQURID)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    Log.e("PRAMOD", ">>> ${response.code()}")
+                    if (response.code() == 200) {
+                        if (response.body() != null) {
+                            val stringResponse = JSONObject(response.body()!!.string())
+                            val plotIDD = stringResponse.getString("plot_id")
+                    Log.e("PRAMOD", " >.. $plotIDD")
+                            Log.e("PRAMOD", " >.. $stringResponse")
+                            nextPlotId = plotIDD.toString()
+                        }
+                    }
+
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    t.message?.let { Log.e("PRAMOD", it) }
+                }
+
+            })
+
+    }
+
+    fun getLastPlotId(jsonArray: JSONArray) {
+        val mutableList: MutableList<Int> = mutableListOf(11,2,5,8,4,3)
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val plot_no = jsonObject.optString("plot_no")
+            mutableList.add(plot_no.trim().toInt())
+
+        }
+        val sortedList = mutableList.sorted() // Sorts the list in ascending order
+        Log.e("PRAMOD","Pramod  $mutableList $sortedList")
+        Log.e("PRAMOD","Pramod  $mutableList ${sortedList.last()}")
+        nextPlot = sortedList.last() + 1
     }
 
     private fun backScreen() {

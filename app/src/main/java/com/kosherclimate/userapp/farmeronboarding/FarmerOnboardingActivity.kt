@@ -291,6 +291,28 @@ class FarmerOnboardingActivity : AppCompatActivity() {
          * Checking if all required data are present or not after clicking next button.
          */
         next_button.setOnClickListener {
+
+
+            var totalArea :Double? = if (edTotalArea.text.isNullOrEmpty()){
+                0.0
+            }else{
+                edTotalArea.text.toString().toDouble()
+            }
+
+            var ownArea :Double? = if (edOwnArea.text.isNullOrEmpty()){
+                0.0
+            }else{
+                edOwnArea.text.toString().toDouble()
+            }
+
+            var leasesArea :Double? = if (edLeaseArea.text.isNullOrEmpty()){
+                0.0
+            }else{
+                edLeaseArea.text.toString().toDouble()
+            }
+
+
+
             val WarningDialog =
                 SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
 
@@ -339,7 +361,24 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.missing_farmer_id_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            }else {
+            } else if (txtUniqueID.text.isEmpty()) {
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = resources.getString(R.string.missing_farmer_id_warning)
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            }else if (totalArea == 0.0) {
+                Log.e("PRAMOD","$totalArea $ownArea $leasesArea")
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = resources.getString(R.string.cannot_be_empty_total_area)
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            }else if (totalArea!! < (ownArea!! + leasesArea!!)) {
+                Log.e("PRAMOD","$totalArea $ownArea $leasesArea")
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = resources.getString(R.string.exeeding_total)
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            }else  {
                 plotNumberList.clear()
                 plotAreaList.clear()
                 plotList.clear()

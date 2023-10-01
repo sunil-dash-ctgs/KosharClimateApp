@@ -211,7 +211,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/plot_area_acres"
+            android:text="@string/total_area_in_acres"
             android:fontFamily="@font/poppins_medium">
         </TextView>
 

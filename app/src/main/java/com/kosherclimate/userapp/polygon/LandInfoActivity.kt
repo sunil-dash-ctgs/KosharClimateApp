@@ -73,6 +73,9 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var txtUnit: TextView
     private lateinit var txtArea: TextView
 
+    private lateinit var tvFarmerUid: TextView
+    private lateinit var tvPlotNo: TextView
+
     private var polygon_date_time: String = ""
 
     private lateinit var mMap: GoogleMap
@@ -97,6 +100,11 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
         txtUnit = findViewById(R.id.pipe_area_unit)
         txtArea = findViewById(R.id.pipe_area)
 
+//        new
+        tvFarmerUid =findViewById(R.id.farmer_uid)
+        tvPlotNo = findViewById(R.id.plot_no)
+//        new
+
         progress = SweetAlertDialog(this@LandInfoActivity, SweetAlertDialog.PROGRESS_TYPE)
 
         val bundle = intent.extras
@@ -115,13 +123,18 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
             farmer_name = bundle.getString("farmer_name")!!
             txtLatitude.text = LocationList[0].latitude.toString()
             txtLongitude.text = LocationList[0].longitude.toString()
-            txtArea.text = polygon_area.toString()
+            val formattedValue = String.format("%.4f", polygon_area)
+            Log.e("PRAMOD",">>>>>>$formattedValue  $polygon_area")
+            txtArea.text = formattedValue
             getAddress(txtLatitude.text.toString(), txtLongitude.text.toString())
         } else {
             Log.e("total_plot", "Nope")
         }
 
         txtUnit.text = "Acers"
+
+        tvFarmerUid.text = farmer_id.toString()
+        tvPlotNo.text = getPlotNumber()
 
         btnBack.setOnClickListener {
             super.onBackPressed()
@@ -168,6 +181,12 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         Log.e("stringList", latLngList.toString())
         return latLngList
+    }
+
+    fun getPlotNumber(): String {
+        var split =  farmer_plot_uniqueid.split("P")
+        Log.e("PRAMOD",">>>>>>>> $split")
+        return split[1].toString()
     }
 
     private fun sendData() {

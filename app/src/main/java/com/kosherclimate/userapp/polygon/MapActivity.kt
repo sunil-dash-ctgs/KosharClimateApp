@@ -636,10 +636,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             Log.d("PRAMOD", "Latitude: $firstLat, Longitude: $firstLng")
             val intent = Intent(this, EditPolygonActivity::class.java).apply {
-
                 putExtra("latitude", firstLat.toString())
                 putExtra("longitude", firstLng.toString())
                 putStringArrayListExtra("polygon_lat_lng", latLngList)
+                putExtra("area", area)
+                putExtra("unique_id", unique_id)
+                putExtra("sub_plot_no", sub_plot_no)
+                putExtra("farmer_id", farmer_id)
+                putExtra("polygon_area", polygon_area)
+                putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
+                putExtra("polygon_date_time", polygon_date_time)
+                putExtra("farmer_name", farmer_name)
+                putExtra("threshold", threshold)
+
             }
             startActivity(intent)
         })

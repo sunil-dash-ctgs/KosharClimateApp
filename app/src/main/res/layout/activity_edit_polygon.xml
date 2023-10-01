@@ -149,7 +149,7 @@
     <LinearLayout
         android:id="@+id/edit_poly_menuLayout"
         android:layout_width="50dp"
-        android:layout_height="200dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="5dp"
@@ -158,43 +158,43 @@
         android:visibility="visible"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/edit"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:src="@drawable/edit">
-        </ImageView>
+<!--        <ImageView-->
+<!--            android:id="@+id/edit"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:src="@drawable/edit">-->
+<!--        </ImageView>-->
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-        </View>
+<!--        <View-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1">-->
+<!--        </View>-->
 
-        <ImageView
-            android:id="@+id/backArrow"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
+<!--        <ImageView-->
+<!--            android:id="@+id/backArrow"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_gravity="center"-->
 
-            android:src="@drawable/back_arrow">
-        </ImageView>
+<!--            android:src="@drawable/back_arrow">-->
+<!--        </ImageView>-->
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-        </View>
+<!--        <View-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1">-->
+<!--        </View>-->
 
-        <ImageView
-            android:id="@+id/bin"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:src="@drawable/bin">
-        </ImageView>
+<!--        <ImageView-->
+<!--            android:id="@+id/bin"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:src="@drawable/bin">-->
+<!--        </ImageView>-->
 
         <View
             android:layout_width="0dp"

@@ -391,8 +391,8 @@
     <string name="own_area_in_acres">Own Area in Acres</string>
     <string name="lease_area_in_acres">Lease Area in Acres</string>
 
-
-
+    <string name="exeeding_total">Own Area and Lease Area Combine cannot be More than Total Area</string>
+    <string name="cannot_be_empty_total_area">Total Area Cannot be Empty</string>
 
 
 

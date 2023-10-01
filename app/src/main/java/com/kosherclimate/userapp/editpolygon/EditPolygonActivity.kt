@@ -1,6 +1,7 @@
 package com.kosherclimate.userapp.editpolygon
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -16,6 +17,7 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -24,7 +26,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.polygon.LandInfoActivity
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class EditPolygonActivity : AppCompatActivity() , OnMapReadyCallback, LocationListener {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -57,6 +62,9 @@ class EditPolygonActivity : AppCompatActivity() , OnMapReadyCallback, LocationLi
     private var imageLat: String = ""
     private var imageLng: String = ""
 
+    private  var polygonArea:Double = 0.0
+
+    private var markerIds = ArrayList<String>()
 
     private var status: Int = 0
     private var polygon_status: Int = 0
@@ -66,6 +74,10 @@ class EditPolygonActivity : AppCompatActivity() , OnMapReadyCallback, LocationLi
     lateinit var save: ImageView
     lateinit var back: ImageView
     lateinit var txtArea: TextView
+
+    var threshold: String = ""
+    private var polygon_date_time: String = ""
+    private var farmer_plot_uniqueid: String = ""
 
 //    Drageable marker
 private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
@@ -82,15 +94,13 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
 //            farmer_id = bundle.getString("farmer_id")!!
             latitude = bundle.getString("latitude")!!
             longitude = bundle.getString("longitude")!!
-//            state = bundle.getString("state")!!
-//            district = bundle.getString("district")!!
-//            taluka = bundle.getString("taluka")!!
-//            village = bundle.getString("village")!!
-//            khasara_no = bundle.getString("khasara_no")!!
-//            acers_units = bundle.getString("acers_units")!!
-//            area_in_acers  = bundle.getString("area_in_acers")!!
-//            area  = bundle.getString("area")!!
-//            farmer_name = bundle.getString("farmer_name")!!
+            area = bundle.getString("area")!!
+            unique_id = bundle.getString("unique_id")!!
+            sub_plot_no = bundle.getString("sub_plot_no")!!
+            farmer_id = bundle.getString("farmer_id")!!
+            farmer_plot_uniqueid = bundle.getString("farmer_plot_uniqueid")!!
+            threshold = bundle.getString("threshold")!!
+            farmer_name = bundle.getString("farmer_name")!!
 
             Polygon_lat_lng = bundle.getStringArrayList("polygon_lat_lng")!!
 //            status = bundle.getInt("status")
@@ -102,8 +112,31 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
 
         save = findViewById(R.id.editPolySaveLocation)
         back = findViewById(R.id.editPolyBack)
-//        txtArea = findViewById(R.id.pipe_polygon_area)
+        txtArea = findViewById(R.id.edit_polygon_area)
 
+        val c: Calendar = Calendar.getInstance()
+        val dfi = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate: String = dfi.format(c.time)
+        polygon_date_time = formattedDate
+
+
+//        onsaved clicked Licker
+        save.setOnClickListener {
+            val stringList = convertLatLngListToStringList(latLngslist)
+            val intent = Intent(this, LandInfoActivity::class.java).apply {
+                putExtra("locationList", stringList)
+                putExtra("area", area)
+                putExtra("unique_id", unique_id)
+                putExtra("sub_plot_no", sub_plot_no)
+                putExtra("farmer_id", farmer_id)
+                putExtra("polygon_area", polygonArea)
+                putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
+                putExtra("polygon_date_time", polygon_date_time)
+                putExtra("farmer_name", farmer_name)
+            }
+            startActivity(intent)
+            finish()
+        }
 
         back.setOnClickListener {
             mMap.clear()
@@ -130,8 +163,11 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         task.addOnSuccessListener { location ->
             if (location != null) {
                 mapFragment.getMapAsync {
-                    val latLng = LatLng(latitude.toDouble(), longitude.toDouble())
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                    val dfgdg: String =  Polygon_lat_lng[0].replace("[^0-9,.-]".toRegex(), "")
+                    val lati: Double = dfgdg.split(",").first().toDouble()
+                    val longi: Double = dfgdg.split(",").last().toDouble()
+                    val latLng = LatLng(lati, longi)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19f))
 
 //                    imageLat = latLng.latitude.toString()
 //                    imageLng = latLng.longitude.toString()
@@ -139,6 +175,35 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
                 }
             }
         }
+    }
+
+//*** **/
+    fun updatePolygon(){
+        markerList.clear()
+        markerIds.clear()
+        var polygonOptions = PolygonOptions()
+        for (i in latLngslist.indices) if (i == 0) {
+            Log.e("PRAMOD","indiesc $i")
+            polygonOptions = PolygonOptions().add(latLngslist[0])
+        } else {
+            Log.e("PRAMOD","indiesc $i")
+            mMap.clear()
+            polygonOptions.add(latLngslist[i])
+            Log.d("polygon123", polygonOptions.toString())
+            polygonOptions.strokeColor(Color.BLACK)
+            polygonOptions.strokeWidth(5f)
+            polygonOptions.fillColor(0x33FF0000)
+            polygon = mMap.addPolygon(polygonOptions)
+        }
+
+        for (i in 0 until LAT.size){
+            mCurrLocationMarker =   mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(latLngslist[i]).draggable(true))
+            mCurrLocationMarker?.let { markerList.add(it) }
+            mCurrLocationMarker?.let { markerIds.add(it.id) }
+        }
+
+    polygonArea = calculatePolygonAreaInAcres(latLngslist)
+    txtArea.setText(polygonArea.toString())
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -161,8 +226,10 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         }
         var polygonOptions = PolygonOptions()
         for (i in latLngslist.indices) if (i == 0) {
+            Log.e("PRAMOD","indiesc $i")
             polygonOptions = PolygonOptions().add(latLngslist[0])
         } else {
+            Log.e("PRAMOD","indiesc $i")
             mMap.clear()
             polygonOptions.add(latLngslist[i])
             Log.d("polygon123", polygonOptions.toString())
@@ -173,32 +240,44 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         }
 
         for (i in 0 until LAT.size){
-          mCurrLocationMarker =   mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(LAT[i], LNG[i])))
+          mCurrLocationMarker =   mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(LAT[i], LNG[i])).draggable(true))
             mCurrLocationMarker?.let { markerList.add(it) }
+            mCurrLocationMarker?.let { markerIds.add(it.id) }
         }
 
+        polygonArea = calculatePolygonAreaInAcres(latLngslist)
+        txtArea.text = polygonArea.toString()
+
 //        Marker Drag
-        mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener{
-            override fun onMarkerDrag(marker: Marker) {
+mMap.setOnMarkerDragListener(object : OnMarkerDragListener{
+    override fun onMarkerDrag(p0: Marker) {
+    }
 
-            }
+    override fun onMarkerDragEnd(marker: Marker) {
+try {
+    Log.e("PRAMOD","MARKER DRAGING ${marker.id}")
+    Log.e("PRAMOD","MARKER DRAGING ${marker.position}")
+    var contain = markerIds.contains(marker.id)
+    var index = markerIds.indexOf(marker.id)
+    latLngslist[index] = marker.position
+    Log.e("PRAMOD","MARKER DRAGING ${markerIds}")
+    Log.e("PRAMOD","MARKER DRAGING ${contain} $index ${latLngslist.indices}")
+    updatePolygon()
+}catch (e:Exception){
+    Log.e("PRAMOD", "ERROR while updating $e")
+}
 
-            override fun onMarkerDragEnd(marker: Marker) {
-//                pointsOverlap(marker.title, marker)
-                Log.e("PRAMOD","DRAGEDDD $marker")
-                updatePolygonVertices()
-            }
+    }
 
-            override fun onMarkerDragStart(marker: Marker) {
+    override fun onMarkerDragStart(p0: Marker) {
+    }
 
-            }
-
-        })
+})
 //        Marker drag
 
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isCompassEnabled = true
-//        mMap.setMinZoomPreference(15f)
+        mMap.setMinZoomPreference(15f)
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
     }
 
@@ -218,4 +297,59 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         imageLat = df.format(location.latitude).toString()
         imageLng = df.format(location.longitude).toString()
     }
+
+    fun calculatePolygonArea(coordinates: List<LatLng>): Double {
+        if (coordinates.size < 3) {
+            // A polygon with less than 3 vertices isn't valid
+            return 0.0
+        }
+
+        var area = 0.0
+        var j = coordinates.size - 1
+
+        for (i in coordinates.indices) {
+            val xi = coordinates[i].latitude
+            val xj = coordinates[j].latitude
+            val yi = coordinates[i].longitude
+            val yj = coordinates[j].longitude
+
+            area += (xi + xj) * (yj - yi)
+            j = i
+        }
+
+        Log.e("PRAMOD", "AREAA ${Math.abs(area / 2.0)}")
+        return Math.abs(area / 2.0)
+    }
+
+//    Calculate Area in acres
+    fun calculatePolygonAreaInAcres(coordinates: List<LatLng>): Double {
+        if (coordinates.size < 3) {
+            // A polygon with less than 3 vertices isn't valid
+            return 0.0
+        }
+
+        val sqMetersArea = calculatePolygonArea(coordinates) // Calculate area in square meters
+
+        // Convert square meters to acres (1 acre = 4046.86 square meters)
+        val acresArea = (sqMetersArea / 4046.86).toString()
+    val formattedArea = "${acresArea[0]}${acresArea[1]}${acresArea[2]}${acresArea[3]}${acresArea[4]}${acresArea[5]}"
+    Log.e("PRAMOD", "AREAA Acres ${acresArea}")
+    Log.e("PRAMOD", "AREAA Acres ${formattedArea}")
+        return formattedArea.toDouble()
+    }
+
+//    convert latlong List to string list
+fun convertLatLngListToStringList(latlngList: java.util.ArrayList<LatLng>): java.util.ArrayList<String> {
+    val stringList = java.util.ArrayList<String>()
+
+    // Map each LatLng object to its string representation
+    for (latlng in latlngList) {
+        val lat = latlng.latitude
+        val lng = latlng.longitude
+        val latlngString = "$lat,$lng"
+        stringList.add(latlngString)
+    }
+
+    return stringList
+}
 }

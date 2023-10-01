@@ -3,6 +3,7 @@ package com.kosherclimate.userapp.network
 import WeatherResponseModel
 import com.kosherclimate.userapp.models.*
 import com.kosherclimate.userapp.models.WeatherForecastModel
+import com.kosherclimate.userapp.models.existingplots.UniqueIDModel
 import com.kosherclimate.userapp.models.polygonmodel.LatLongModel
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -546,5 +547,11 @@ interface ApiInterface {
     @Headers("Accept: application/json")
     @POST("V1/check/polyon/short_by")
     fun getListOfPolygon(@Header( "Authorization") token: String, @Body latLong: LatLongModel) : Call<ResponseBody>
+
+
+    /*** get existing plots */
+    @Headers("Accept: application/json")
+    @GET("V1/generate/unique/plot?")
+    fun getPlotId(@Header( "Authorization") token: String, @Query("farmer_uniqueId") data: String) : Call<ResponseBody>
 
 }
