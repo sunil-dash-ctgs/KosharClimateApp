@@ -422,10 +422,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         progress.show()
 
         one.clear()
-
+        val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
+        Log.e("PRAMOD",">>.... $farmer_plot_uniqueid");
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
 
-        apiInterface.polygonNearby("Bearer $token", farmer_plot_uniqueid, firstLat, firstLng)
+        apiInterface.polygonNearby("Bearer $token", modifiedUniqueId.trim(), firstLat, firstLng)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
@@ -469,9 +470,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                                         val longitude = nearbyPolygonList[j].longitude
 
                                         polygonOptions.add(LatLng(latitude, longitude))
-                                        polygonOptions.strokeColor(Color.CYAN)
-                                        polygonOptions.strokeWidth(4f)
-                                        polygonOptions.fillColor(Color.CYAN)
+                                        polygonOptions.strokeColor(Color.argb(10,79, 240, 228))
+                                        polygonOptions.strokeWidth(1f)
+                                        polygonOptions.fillColor(Color.argb(50,79, 240, 228))
                                         val polygon: Polygon = mMap.addPolygon(polygonOptions)
                                     }
                                     nearbyPolygonList.clear()
@@ -623,7 +624,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.setOnPolygonClickListener(OnPolygonClickListener {
             Log.e("PRAMOD","CLICKED ON POL${it}")
-            it.fillColor = Color.RED
+//            it.fillColor = Color.argb(51, 255, 0, 0)
             val vertices = it.points
 
             // Sort the vertices in clockwise order
@@ -723,8 +724,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         mMap.setOnMapClickListener { latLng ->
+            Log.e("PRAMOD", "Editable $editable")
             if (editable) {
-
                 progress.progressHelper.barColor = Color.parseColor("#06c238")
                 progress.titleText = resources.getString(R.string.loading)
                 progress.contentText = resources.getString(R.string.data_load)

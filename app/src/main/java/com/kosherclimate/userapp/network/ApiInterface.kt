@@ -215,7 +215,7 @@ interface ApiInterface {
     @POST("V1/farmer/images")
     fun lastScreen(@Header( "Authorization") token: String, @Part screen: MultipartBody.Part, @Part farmer_id: MultipartBody.Part, @Part date_survey: MultipartBody.Part,
                    @Part time_survey: MultipartBody.Part, @Part farmer_photo: MultipartBody.Part, @Part aadhaar_photo: MultipartBody.Part,
-                   @Part others_photo: MultipartBody.Part, @Part plotowner_sign: MultipartBody.Part, @Part farmer_uniqueId: MultipartBody.Part): Call<ResponseBody>
+                   @Part others_photo: MultipartBody.Part, @Part plotowner_sign: MultipartBody.Part, @Part farmer_uniqueId: MultipartBody.Part,@Part signature: MultipartBody.Part): Call<ResponseBody>
 
     @Multipart
     @Headers("Accept: application/json")

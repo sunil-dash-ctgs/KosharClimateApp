@@ -224,52 +224,52 @@
 
             </LinearLayout>
 
+<!--Sub Sub plots-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="5dp"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:orientation="vertical">-->
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/sub_plots"-->
+<!--                    android:fontFamily="@font/poppins_medium">-->
+<!--                </TextView>-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sub_plots"
-                    android:fontFamily="@font/poppins_medium">
-                </TextView>
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="42dp"-->
+<!--                    android:orientation="horizontal">-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:orientation="horizontal">
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/heading_bg">
+<!--                    <RelativeLayout-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@drawable/heading_bg">-->
 
 
-                        <TextView
-                            android:id="@+id/crop_sub_plots"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_centerInParent="true"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:padding="10dp"
-                            android:textSize="15sp"
-                            android:fontFamily="@font/poppins_medium"
-                            android:theme="@style/SpinnerTheme" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/crop_sub_plots"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_centerInParent="true"-->
+<!--                            android:clickable="false"-->
+<!--                            android:focusable="false"-->
+<!--                            android:fontFamily="@font/poppins_medium"-->
+<!--                            android:padding="10dp"-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:theme="@style/SpinnerTheme" />-->
 
-                    </RelativeLayout>
+<!--                    </RelativeLayout>-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
         </LinearLayout>
 
@@ -844,7 +844,7 @@
                     android:id="@+id/plot_area_of_crop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/plot_area"
+                    android:text="@string/total_area"
                     android:fontFamily="@font/poppins_medium">
                 </TextView>
 
@@ -947,7 +947,7 @@
                     android:id="@+id/plot_area_awd_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Plot Area (AWD)"
+                    android:text="Total Area (AWD)"
                     android:fontFamily="@font/poppins_medium">
                 </TextView>
 

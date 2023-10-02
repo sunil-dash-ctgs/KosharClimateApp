@@ -606,8 +606,18 @@ Log.e("PRAMOD","VAILD Data")
             ImageBody3 = MultipartBody.Part.createFormData("others_photo",  File(image3).name, requestFile)
         }
 
+        val CreditDummy: RequestBody = "".toRequestBody("text/plain".toMediaTypeOrNull())
+        var creditBody: MultipartBody.Part = MultipartBody.Part.createFormData("sign_carbon_credit", null, CreditDummy)
+
+        if (carbonCreditPath != "") {
+            val creditPathFile = File(carbonCreditPath)
+            val requestFile: RequestBody = creditPathFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            creditBody = MultipartBody.Part.createFormData("signature", creditPathFile.name, requestFile
+            )
+        }
+
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.lastScreen("Bearer $token", ScreenBody, FarmerIdBody, CurrentDateBody, CurrentTimeBody, ImageBody1, ImageBody2, ImageBody3, SignOwner, farmeUniqueIdBody).enqueue(
+        retIn.lastScreen("Bearer $token", ScreenBody, FarmerIdBody, CurrentDateBody, CurrentTimeBody, ImageBody1, ImageBody2, ImageBody3, SignOwner, farmeUniqueIdBody,creditBody).enqueue(
             object: Callback<ResponseBody>{
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.code() == 200) {

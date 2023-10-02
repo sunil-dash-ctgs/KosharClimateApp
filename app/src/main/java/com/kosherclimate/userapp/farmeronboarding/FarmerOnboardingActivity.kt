@@ -1,8 +1,11 @@
 package com.kosherclimate.userapp.farmeronboarding
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,6 +25,7 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.R
@@ -42,18 +46,42 @@ import java.util.Locale
 
 class FarmerOnboardingActivity : AppCompatActivity() {
     val access = arrayOf("--Select--", "Own Number", "Relatives Number")
-    val plots = arrayOf("--Select--", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20")
+    val plots = arrayOf(
+        "--Select--",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20"
+    )
     var plotNumberList = ArrayList<String>()
     var plotAreaList = ArrayList<String>()
     var plotList = ArrayList<String>()
 
     private lateinit var edtFarmerName: EditText
     private lateinit var edtMobile: EditText
-//    private lateinit var edtotp: EditText
+
+    //    private lateinit var edtotp: EditText
     private lateinit var edtGuardian: EditText
     private lateinit var edtAadhar: EditText
     private lateinit var txtUniqueID: TextView
-//    private lateinit var linearList: LinearLayout
+
+    //    private lateinit var linearList: LinearLayout
 //    private lateinit var otpLAYOUT: LinearLayout
 //    private lateinit var plot_spinner: Spinner
     private lateinit var owner_spinner: Spinner
@@ -65,24 +93,24 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     val common: Common = Common()
 
     var clear: Boolean = false
-    var close:  Int = 0
+    var close: Int = 0
     var bValue: Double = 0.0
     var p: Int = 0
     var i: Int = 1
 
-//    New onboarding Process changes
-    private  lateinit var tvCall : TextView
-    private  lateinit var tvTotalArea : TextView
-    private  lateinit var tvOwnArea : TextView
-    private  lateinit var tvLeaseArea : TextView
+    //    New onboarding Process changes
+    private lateinit var tvCall: TextView
+    private lateinit var tvTotalArea: TextView
+    private lateinit var tvOwnArea: TextView
+    private lateinit var tvLeaseArea: TextView
 
-    private  lateinit var edTotalArea : EditText
-    private  lateinit var edOwnArea : EditText
-    private  lateinit var edLeaseArea : EditText
+    private lateinit var edTotalArea: EditText
+    private lateinit var edOwnArea: EditText
+    private lateinit var edLeaseArea: EditText
 
-    private  lateinit var tvTotalAreaInAcres : TextView
-    private  lateinit var tvOwnAreaInAcres : TextView
-    private  lateinit var tvLeaseAreaInAcres : TextView
+    private lateinit var tvTotalAreaInAcres: TextView
+    private lateinit var tvOwnAreaInAcres: TextView
+    private lateinit var tvLeaseAreaInAcres: TextView
 //    New onboarding Process changes
 
     var realtionshipIDList = java.util.ArrayList<Int>()
@@ -112,12 +140,14 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
     private lateinit var progress: SweetAlertDialog
 
+    //    Call
+    var REQUEST_PHONE_CALL = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_farmer_onboarding)
 
-        val sharedPreference =  getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
         progress = SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.PROGRESS_TYPE)
 
 
@@ -175,21 +205,31 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         tvLeaseAreaInAcres = findViewById(R.id.tvLeaseAreaInAcres)
 //        New Onboarding Process changes
 
-        token = sharedPreference.getString("token","")!!
+        token = sharedPreference.getString("token", "")!!
 
 
 //        New Onboarding Process changes
-        if (state.lowercase(Locale.ROOT) == "assam"){
+        if (state.lowercase(Locale.ROOT) == "assam") {
             tvTotalArea.setText("${tvTotalArea.text} Bigha")
             tvOwnArea.setText("${tvOwnArea.text} Bigha")
             tvLeaseArea.setText("${tvLeaseArea.text} Bigha")
-        }else{
+        } else {
             tvTotalArea.setText("${tvTotalArea.text} Acres")
             tvOwnArea.setText("${tvOwnArea.text} Acres")
             tvLeaseArea.setText("${tvLeaseArea.text} Acres")
         }
 
-        edTotalArea.addTextChangedListener(object  :TextWatcher{
+
+        tvCall.setOnClickListener {
+        // cheacking permission
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this,arrayOf(android.Manifest.permission.CALL_PHONE),REQUEST_PHONE_CALL)
+            }else{
+                makeCall()
+            }
+        }
+
+        edTotalArea.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -200,7 +240,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
         })
 
-        edOwnArea.addTextChangedListener(object  :TextWatcher{
+        edOwnArea.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -211,7 +251,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
         })
 
-        edLeaseArea.addTextChangedListener(object  :TextWatcher{
+        edLeaseArea.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -228,7 +268,9 @@ class FarmerOnboardingActivity : AppCompatActivity() {
          */
         val versionCode: Int = BuildConfig.VERSION_CODE
         val versionName = BuildConfig.VERSION_NAME
-        val release = java.lang.Double.parseDouble(java.lang.String(Build.VERSION.RELEASE).replaceAll("(\\d+[.]\\d+)(.*)", "$1"))
+        val release = java.lang.Double.parseDouble(
+            java.lang.String(Build.VERSION.RELEASE).replaceAll("(\\d+[.]\\d+)(.*)", "$1")
+        )
         Log.e("version", versionName + versionCode + release.toString())
 
 
@@ -241,12 +283,17 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             access_spinner.adapter = adapter
 
             access_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
                     mobile_access = access[position]
                     Log.e("access", access[position])
                     owner_spinner.isEnabled = position == 2
 
-                    if(position != 2){
+                    if (position != 2) {
                         owner_spinner.setSelection(0)
                     }
                 }
@@ -256,23 +303,25 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         }
 
 
-
-
         /**
          * Added a watcher on the mobile number EditText.
          * Also added condition to not allow user enter 0, 1, 2, 3, 4, 5 digits.
          */
         edtMobile.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (s.toString().length == 1 && s.toString().startsWith("0") || s.toString().startsWith("1")
-                    || s.toString().startsWith("2")  || s.toString().startsWith("3") || s.toString().startsWith("4")
-                    || s.toString().startsWith("5"))
-                {
+                if (s.toString().length == 1 && s.toString().startsWith("0") || s.toString()
+                        .startsWith("1")
+                    || s.toString().startsWith("2") || s.toString().startsWith("3") || s.toString()
+                        .startsWith("4")
+                    || s.toString().startsWith("5")
+                ) {
                     s!!.clear()
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
@@ -293,24 +342,23 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         next_button.setOnClickListener {
 
 
-            var totalArea :Double? = if (edTotalArea.text.isNullOrEmpty()){
+            var totalArea: Double? = if (edTotalArea.text.isNullOrEmpty()) {
                 0.0
-            }else{
+            } else {
                 edTotalArea.text.toString().toDouble()
             }
 
-            var ownArea :Double? = if (edOwnArea.text.isNullOrEmpty()){
+            var ownArea: Double? = if (edOwnArea.text.isNullOrEmpty()) {
                 0.0
-            }else{
+            } else {
                 edOwnArea.text.toString().toDouble()
             }
 
-            var leasesArea :Double? = if (edLeaseArea.text.isNullOrEmpty()){
+            var leasesArea: Double? = if (edLeaseArea.text.isNullOrEmpty()) {
                 0.0
-            }else{
+            } else {
                 edLeaseArea.text.toString().toDouble()
             }
-
 
 
             val WarningDialog =
@@ -356,7 +404,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.mobile_length_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            }  else if (txtUniqueID.text.isEmpty()) {
+            } else if (txtUniqueID.text.isEmpty()) {
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.missing_farmer_id_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
@@ -366,19 +414,19 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.missing_farmer_id_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            }else if (totalArea == 0.0) {
-                Log.e("PRAMOD","$totalArea $ownArea $leasesArea")
+            } else if (totalArea == 0.0) {
+                Log.e("PRAMOD", "$totalArea $ownArea $leasesArea")
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.cannot_be_empty_total_area)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            }else if (totalArea!! < (ownArea!! + leasesArea!!)) {
-                Log.e("PRAMOD","$totalArea $ownArea $leasesArea")
+            } else if (totalArea!! < (ownArea!! + leasesArea!!)) {
+                Log.e("PRAMOD", "$totalArea $ownArea $leasesArea")
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.exeeding_total)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            }else  {
+            } else {
                 plotNumberList.clear()
                 plotAreaList.clear()
                 plotList.clear()
@@ -390,10 +438,28 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         getUniqueId(versionName)
     }
 
+    private fun makeCall() {
+        val numberText = edtMobile.text.trim()
+        if(numberText.isNullOrEmpty()){
+            Toast.makeText(this,"No Number Found",Toast.LENGTH_LONG).show()
+        }else{
+        val intent=Intent(Intent.ACTION_CALL)
+        intent.setData(Uri.parse("tel:$numberText"))
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this,"Permission denied",Toast.LENGTH_LONG).show()
+            ActivityCompat.requestPermissions(this,arrayOf(android.Manifest.permission.CALL_PHONE),REQUEST_PHONE_CALL)
+        }else{
+            startActivity(intent)
+        }}
+    }
 
-
-
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PHONE_CALL){
+            makeCall()
+        }
+    }
 
 //    /**
 //     * Checking if all the data is present in the area of lands fields.
@@ -519,15 +585,27 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             plot_details_arrayList.add(plot_details)
         }
 
-        if(relationship == "--Select--"){
+        if (relationship == "--Select--") {
             relationship = "NA"
         }
         Log.e("relationship", relationship)
 
 
-        val farmerInfo = FarmerInfoModel(farmer_name, mobile_access, relationship, mobile, txtUniqueID.text.toString(), plotList.size.toString(),
-             radioButton.text.toString(), guardian, org, aadhar,
-            tvTotalAreaInAcres.text.toString(),tvOwnAreaInAcres.text.toString(),tvLeaseAreaInAcres.text.toString())
+        val farmerInfo = FarmerInfoModel(
+            farmer_name,
+            mobile_access,
+            relationship,
+            mobile,
+            txtUniqueID.text.toString(),
+            plotList.size.toString(),
+            radioButton.text.toString(),
+            guardian,
+            org,
+            aadhar,
+            tvTotalAreaInAcres.text.toString(),
+            tvOwnAreaInAcres.text.toString(),
+            tvLeaseAreaInAcres.text.toString()
+        )
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         retIn.farmerInfo("Bearer $token", farmerInfo).enqueue(object : Callback<ResponseBody> {
@@ -554,7 +632,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
     /**
      * If sending data is successful the going to the next screen.
-    */
+     */
     private fun nextScreen() {
         progress.dismiss()
 
@@ -578,30 +656,24 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     }
 
 
-
-
-
     /**
      * Area in acres calculation is don her.
      */
     private fun acresCalculation(acres: String): String {
-        return if(acres.isNotEmpty()){
+        return if (acres.isNotEmpty()) {
             val value = acres.toDouble()
             val calculated = (value * areaValue!!).toString()
             Log.e("Area Bigha", calculated)
             calculated
-        } else{
+        } else {
             "0.0"
         }
     }
 
 
-
-
-
     /**
      * Getting Farmer Unique ID after API call.
-    */
+     */
     private fun getUniqueId(versionCode: String) {
         progress.progressHelper.barColor = Color.parseColor("#06c238")
         progress.titleText = resources.getString(R.string.loading)
@@ -632,7 +704,11 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerOnboardingActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@FarmerOnboardingActivity,
+                    "Internet Connection Issue",
+                    Toast.LENGTH_SHORT
+                ).show()
                 progress.dismiss()
             }
         })
@@ -640,7 +716,8 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
 
     private fun errorDialog() {
-        val WarningDialog = SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
+        val WarningDialog =
+            SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
 
         WarningDialog.titleText = " Warning "
         WarningDialog.contentText = " Please download new app. "
@@ -658,7 +735,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
     /**
      * Getting the relationship data from API.
-    */
+     */
     private fun relationshipAPI() {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.relationship("Bearer $token").enqueue(object : Callback<ResponseBody> {
@@ -685,7 +762,11 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progress.dismiss()
-                Toast.makeText(this@FarmerOnboardingActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@FarmerOnboardingActivity,
+                    "Internet Connection Issue",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -693,14 +774,21 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
     private fun relationshipSpinner() {
         if (owner_spinner != null) {
-            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, relationshipNameList)
+            val adapter =
+                ArrayAdapter(this, android.R.layout.simple_list_item_1, relationshipNameList)
             owner_spinner.adapter = adapter
 
             owner_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
                     relationship = relationshipNameList[position]
                     Log.e("owner_spinner", relationshipNameList[position])
                 }
+
                 override fun onNothingSelected(parent: AdapterView<*>) {}
             }
         }

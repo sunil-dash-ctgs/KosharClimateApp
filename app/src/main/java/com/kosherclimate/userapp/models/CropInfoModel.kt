@@ -3,7 +3,7 @@ package com.kosherclimate.userapp.models
 data class CropInfoModel(
     val farmer_id: String,
     val farmer_uniqueId: String,
-    val plot_no: String,
+//    val plot_no: String,
     val nursery: String,
     val dt_ploughing: String,
     val dt_transplanting: String,

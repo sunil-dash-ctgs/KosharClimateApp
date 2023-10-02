@@ -102,7 +102,7 @@ class CropActivity : AppCompatActivity() {
     lateinit var nursery_date: TextView
     lateinit var preparation_date: TextView
     lateinit var transplanting_date: TextView
-    lateinit var edtSub_plot: TextView
+//    lateinit var edtSub_plot: TextView
     lateinit var edtPlotArea: EditText
     lateinit var edtFarmer_name: TextView
     lateinit var txtunique_id: TextView
@@ -163,6 +163,10 @@ class CropActivity : AppCompatActivity() {
     lateinit var next: Button
     lateinit var back: Button
 
+// New Process
+    var unit: String =  "Bigha"
+    var totalAreaInAcers:String = ""
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,7 +180,7 @@ class CropActivity : AppCompatActivity() {
         nursery_date = findViewById(R.id.date_irrigation)
         preparation_date = findViewById(R.id.preparation_date)
         transplanting_date = findViewById(R.id.transplanting_date)
-        edtSub_plot = findViewById(R.id.crop_sub_plots)
+//        edtSub_plot = findViewById(R.id.crop_sub_plots)
         edtPlotArea = findViewById(R.id.crop_plot_area)
         edtFarmer_name = findViewById(R.id.crop_farmer_name)
         txtunique_id = findViewById(R.id.txt_unique_id)
@@ -252,7 +256,7 @@ class CropActivity : AppCompatActivity() {
             transplant_year = bundle.getInt("transplantation_year")
             totalSubPlots = bundle.getInt("total_sub_plots")
             total_number = bundle.getInt("total_number")
-            edtSub_plot.text = (total_number + 1).toString()
+//            edtSub_plot.text = (total_number + 1).toString()
 
             edtFarmer_name.text = bundle.getString("farmer_name")
             edtMobile_nmuber.setText(bundle.getString("mobile_number"))
@@ -268,7 +272,7 @@ class CropActivity : AppCompatActivity() {
             PlotAreaList = bundle.getStringArrayList("plot_area")!!
             if (PlotAreaList.size != 0) {
                 Log.e("PlotAreaList", PlotAreaList[total_number])
-                edtPlotArea.setText(PlotAreaList[total_number])
+//                edtPlotArea.setText(PlotAreaList[total_number])
 
                 first_unique_view.visibility = View.GONE
                 second_unique_view.visibility = View.VISIBLE
@@ -287,8 +291,8 @@ class CropActivity : AppCompatActivity() {
                 PlotIdList = bundle.getStringArrayList("plot_id")!!
                 UNIQURID = txtunique_id.text.toString()
 
-                edtSub_plot.text = PlotNoList[total_number]
-                txtArea.text = AcresAreaList[total_number]
+//                edtSub_plot.text = PlotNoList[total_number]
+//                txtArea.text = AcresAreaList[total_number]
                 awd_plot_area.setText(AWDPlot[total_number])
                 awd_area_acers.text = AWDAcres[total_number]
 
@@ -353,7 +357,7 @@ class CropActivity : AppCompatActivity() {
                         awd_area_acers.text = acresCalculation(awd_plot_area.text.toString())
                     }
                     else{
-                        showWarning()
+//                        showWarning()
                     }
                 }
                 else{
@@ -374,7 +378,7 @@ class CropActivity : AppCompatActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                txtArea.text = acresCalculation(edtPlotArea.text.toString())
+//                txtArea.text = acresCalculation(edtPlotArea.text.toString())
             }
         })
 
@@ -649,8 +653,8 @@ class CropActivity : AppCompatActivity() {
         val fertilizer = getString(R.string.fertilizer_management)
         val y = getString(R.string.yield)
 
-        txtFertilizer.text = "$fertilizer (Kg/ $value)"
-        txtYield.text = "$y (Kg/ $value)"
+        txtFertilizer.text = "$fertilizer (Kg/ $unit)"
+        txtYield.text = "$y (Kg/ $unit)"
     }
 
 
@@ -660,7 +664,7 @@ class CropActivity : AppCompatActivity() {
      */
     private fun submitData() {
         val farmer_uniqueId = UNIQURID
-        val plot_no = edtSub_plot.text.toString()
+//        val plot_no = edtSub_plot.text.toString()
         val nursery = nursery_date.text.toString()
         val dt_transplanting= transplanting_date.text.toString()
         val dt_ploughing = preparation_date.text.toString()
@@ -692,7 +696,7 @@ class CropActivity : AppCompatActivity() {
         radioButton = findViewById(intSelectButton)
         val gender = radioButton.text.toString()
 
-        val cropInfoModel = CropInfoModel(farmer_id, farmer_uniqueId, plot_no, nursery, dt_ploughing, dt_transplanting, area_in_acers, farmer_plot_uniqueid,
+        val cropInfoModel = CropInfoModel(farmer_id, farmer_uniqueId,  nursery, dt_ploughing, dt_transplanting, area_in_acers, farmer_plot_uniqueid,
             season_last, season_Current, variety_last, variety_current, yield_last, "Nitrogen", nitrogen_last, nitrogen_current,
             "Phosphorous", phosphorous_last, phosphorous_current, "potassium", potassium_last, potassium_current,
             area_acre_awd, area_other_awd, patta_number, daag_number, khatha_number, pattadhar_number, khatian_number, organization_id, gender, area_in_other)
@@ -705,12 +709,12 @@ class CropActivity : AppCompatActivity() {
                 if (response.code() == 200) {
                     progress.dismiss()
 
-                    if (lastData){
+//                    if (lastData){
                         homeScreen()
-                    }
-                    else{
-                        repeatScreen()
-                    }
+//                    }
+//                    else{
+//                        repeatScreen()
+//                    }
                 }
                 else if (response.code() == 422) {
                     progress.dismiss()
@@ -961,7 +965,7 @@ class CropActivity : AppCompatActivity() {
                         }
 
                             progress.dismiss()
-                            edtSub_plot.text = PlotNoList[total_number]
+//                            edtSub_plot.text = PlotNoList[total_number]
                             getPlotDetails()
                         }
                     }
@@ -993,10 +997,13 @@ class CropActivity : AppCompatActivity() {
 
 
     private fun getPlotDetails() {
+        Log.e("PRAMOD","getplotdetail >> $AcresAreaList")
         totalSubPlots = PlotNoList.size
-        txtArea.text = AcresAreaList[total_number]
-        edtSub_plot.text = PlotNoList[subPlotPosition]
-        edtPlotArea.setText(PlotAreaList[subPlotPosition])
+        txtArea.text = AcresAreaList[0]
+        Log.e("PRAMOD","getplotdetail >> ${AcresAreaList[0]}")
+        Log.e("PRAMOD","getplotdetail >> ${txtArea.text}")
+//        edtSub_plot.text = PlotNoList[subPlotPosition]
+//        edtPlotArea.setText(PlotAreaList[subPlotPosition])
         awd_plot_area.setText(AWDPlot[subPlotPosition])
         awd_area_acers.text = AWDAcres[subPlotPosition]
 
@@ -1022,6 +1029,12 @@ class CropActivity : AppCompatActivity() {
                         state_id = jsonObject2.optString("state_id")
                         state = jsonObject2.optString("state")
                         edtFarmer_name.text = farmer_name
+                        baseValue()
+                       unit = if(state_id.trim() == "29"){
+                             "Bigha"
+                        }else{
+                            "Acre"
+                        }
 
                         val jsonObject1 = stringResponse.getJSONObject("cropdetail")
                         val dt_ploughing = jsonObject1.optString("dt_ploughing")
@@ -1068,13 +1081,13 @@ class CropActivity : AppCompatActivity() {
 
 
                         if(area_other_awd == "null"){
-                            val AreaChoosenString = getString(R.string.plot_area)
-                            txtAreaChooseText.text = "$AreaChoosenString (Ha)"
+                            val AreaChoosenString = getString(R.string.total_area)
+                            txtAreaChooseText.text = "$AreaChoosenString Ha"
 //                            assignText("Ha")
                         }
                         else{
-                            val AreaChoosenString = getString(R.string.plot_area)
-                            txtAreaChooseText.text = "$AreaChoosenString ($area_in_other_unit)"
+                            val AreaChoosenString = getString(R.string.total_area)
+                            txtAreaChooseText.text = "$AreaChoosenString $unit"
                             assignText(area_in_other_unit)
                         }
 
@@ -1105,6 +1118,7 @@ class CropActivity : AppCompatActivity() {
                         val jsonObject = stringResponse.getJSONObject("farmer")
                         state_id = jsonObject.optString("state_id")
                         state = jsonObject.optString("state")
+                        baseValue()
                         onboardingDate = jsonObject.optString("date_survey")
                         val mobile = jsonObject.optString("mobile")
                         val aadhar = jsonObject.optString("aadhaar")
@@ -1125,13 +1139,13 @@ class CropActivity : AppCompatActivity() {
 
 
                         if(area_other_awd == "null"){
-                            val AreaChoosenString = getString(R.string.plot_area)
-                            txtAreaChooseText.text = "$AreaChoosenString (Ha)"
+                            val AreaChoosenString = getString(R.string.total_area)
+                            txtAreaChooseText.text = "$AreaChoosenString Ha"
 //                            assignText("Ha")
                         }
                         else{
-                            val AreaChoosenString = getString(R.string.plot_area)
-                            txtAreaChooseText.text = "$AreaChoosenString ($area_in_other_unit)"
+                            val AreaChoosenString = getString(R.string.total_area)
+                            txtAreaChooseText.text = "$AreaChoosenString $unit"
                             assignText(area_in_other_unit)
                         }
 
@@ -1152,6 +1166,8 @@ class CropActivity : AppCompatActivity() {
                         getSeason()
                     }
                 }
+                val data = convertAcreToBigha(AcresAreaList[0].toString(),areaValue.toString())
+                edtPlotArea.setText(String.format("%.2f", data))
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -1378,5 +1394,41 @@ class CropActivity : AppCompatActivity() {
         WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
     }
 
+// Get base values
+private fun baseValue() {
+    Log.d("PRAMOD", "Start geting base value")
+    val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+    apiInterface.baseValue("Bearer $token", state_id).enqueue(object : Callback<ResponseBody> {
+        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+            Log.d("PRAMOD", "gt ${response.code()}")
+            if(response.code() == 200){
+                if (response.body() != null) {
+                    val stringResponse = JSONObject(response.body()!!.string())
+                    val value = stringResponse.getJSONObject("value")
 
+                    val stateResponse = stringResponse.getJSONObject("state")
+
+//                    bValue = value.optDouble("value")
+                    state = stateResponse.getString("name")
+                    unit = stateResponse.optString("units")
+                    areaValue = stateResponse.getString("base_value").toDouble()
+//                    minBValue = stateResponse.getString("min_base_value")
+//                    maxBValue = stateResponse.getString("max_base_value")
+
+                }
+            }
+        }
+
+        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            Toast.makeText(this@CropActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+
+    fun convertAcreToBigha(acres: String, conversionFactor: String): Double {
+        var a = acres.trim().toDouble()
+        var c = conversionFactor.trim().toDouble()
+        Log.i("PRAMOD","convertedd to bigha $a $c > ${a / c}")
+        return a / c
+    }
 }
