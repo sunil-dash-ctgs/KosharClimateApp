@@ -280,7 +280,7 @@
     <string name="area_cannot_warning">एकड़ में क्षेत्र गायब है</string>
     <string name="veriying_otp">ओटीपी सत्यापित किया जा रहा है.....</string>
     <string name="valid_otp">वैध ओटीपी</string>
-
+    <string name="verify">Verified</string>
 
     <string name="location_warning">नीला बटन चुनें \n अपना वर्तमान स्थान प्राप्त करने के लिए</string>
     <string name="address_warning">पता डालें</string>
@@ -397,5 +397,7 @@
 
     <string name="exeeding_total">Own Area and Lease Area Combine cannot be More than Total Area</string>
     <string name="cannot_be_empty_total_area">Total Area Cannot be Empty</string>
+    <string name="fill_previous_plot">Cannot Create new Plot unless you fill previous plot</string>
+    <string name="polygon_selected">This Polygon is not available</string>
 
 </resources>

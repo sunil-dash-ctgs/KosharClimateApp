@@ -90,6 +90,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var latLngArrayListPolygon = ArrayList<LatLng>()
     var nearbyPolygonList = ArrayList<LatLng>()
+
+    //    new
+    var overlapsList = ArrayList<LatLng>()
+
+    //    new
     var one = ArrayList<LatLng>()
     var two = ArrayList<LatLng>()
     val timer = Timer()
@@ -423,7 +428,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         one.clear()
         val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
-        Log.e("PRAMOD",">>.... $farmer_plot_uniqueid");
+        Log.e("PRAMOD", ">>.... $farmer_plot_uniqueid");
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
 
         apiInterface.polygonNearby("Bearer $token", modifiedUniqueId.trim(), firstLat, firstLng)
@@ -468,11 +473,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                                     for (j in 0 until nearbyPolygonList.size) {
                                         val latitude = nearbyPolygonList[j].latitude
                                         val longitude = nearbyPolygonList[j].longitude
-
+                                        overlapsList.add(nearbyPolygonList[j])
                                         polygonOptions.add(LatLng(latitude, longitude))
-                                        polygonOptions.strokeColor(Color.argb(10,79, 240, 228))
+                                        polygonOptions.strokeColor(Color.argb(10, 79, 240, 228))
                                         polygonOptions.strokeWidth(1f)
-                                        polygonOptions.fillColor(Color.argb(50,79, 240, 228))
+                                        polygonOptions.fillColor(Color.argb(50, 79, 240, 228))
                                         val polygon: Polygon = mMap.addPolygon(polygonOptions)
                                     }
                                     nearbyPolygonList.clear()
@@ -596,9 +601,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Function to calculate the angle between two LatLng points
     private fun angleToVertex(center: LatLng, vertex: LatLng): Double {
-        val angle = Math.toDegrees(Math.atan2(vertex.longitude - center.longitude, vertex.latitude - center.latitude))
+        val angle = Math.toDegrees(
+            Math.atan2(
+                vertex.longitude - center.longitude,
+                vertex.latitude - center.latitude
+            )
+        )
         return if (angle < 0) angle + 360 else angle
     }
+
     @SuppressLint("PotentialBehaviorOverride", "SetTextI18n")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -623,35 +634,60 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         mMap.setOnPolygonClickListener(OnPolygonClickListener {
-            Log.e("PRAMOD","CLICKED ON POL${it}")
+            Log.e("PRAMOD", "CLICKED ON POL${it}")
+            Log.e("PRAMOD", "CLICKED ON POL${overlapsList}")
 //            it.fillColor = Color.argb(51, 255, 0, 0)
             val vertices = it.points
 
             // Sort the vertices in clockwise order
             val sortedVertices = sortVerticesClockwise(vertices)
-             var latLngList = ArrayList<String>()
+            var latLngList = ArrayList<String>()
+            var plotAlreadyPlotted = mutableListOf<Boolean>()
+
             // Now, sortedVertices contains the LatLng vertices in clockwise order
             for (vertex in sortedVertices) {
                 Log.d("PRAMOD", "Latitude: ${vertex.latitude}, Longitude: ${vertex.longitude}")
-                latLngList.add(LatLng(vertex.latitude,vertex.longitude).toString())
+                latLngList.add(LatLng(vertex.latitude, vertex.longitude).toString())
+                Log.e(
+                    "PRAMOD",
+                    "CLICKED ON Exist ${
+                        overlapsList.contains(
+                            LatLng(
+                                vertex.latitude,
+                                vertex.longitude
+                            )
+                        )
+                    }"
+                )
+                plotAlreadyPlotted.add(overlapsList.contains(LatLng(vertex.latitude, vertex.longitude)))
             }
             Log.d("PRAMOD", "Latitude: $firstLat, Longitude: $firstLng")
-            val intent = Intent(this, EditPolygonActivity::class.java).apply {
-                putExtra("latitude", firstLat.toString())
-                putExtra("longitude", firstLng.toString())
-                putStringArrayListExtra("polygon_lat_lng", latLngList)
-                putExtra("area", area)
-                putExtra("unique_id", unique_id)
-                putExtra("sub_plot_no", sub_plot_no)
-                putExtra("farmer_id", farmer_id)
-                putExtra("polygon_area", polygon_area)
-                putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
-                putExtra("polygon_date_time", polygon_date_time)
-                putExtra("farmer_name", farmer_name)
-                putExtra("threshold", threshold)
+            val allTrue = plotAlreadyPlotted.all { it }
+            if (allTrue) {
+                val WarningDialog =
+                    SweetAlertDialog(this@MapActivity, SweetAlertDialog.WARNING_TYPE)
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = resources.getString(R.string.polygon_selected)
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            } else {
+                val intent = Intent(this, EditPolygonActivity::class.java).apply {
+                    putExtra("latitude", firstLat.toString())
+                    putExtra("longitude", firstLng.toString())
+                    putStringArrayListExtra("polygon_lat_lng", latLngList)
+                    putExtra("area", area)
+                    putExtra("unique_id", unique_id)
+                    putExtra("sub_plot_no", sub_plot_no)
+                    putExtra("farmer_id", farmer_id)
+                    putExtra("polygon_area", polygon_area)
+                    putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
+                    putExtra("polygon_date_time", polygon_date_time)
+                    putExtra("farmer_name", farmer_name)
+                    putExtra("threshold", threshold)
 
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         })
 
         undo.setOnClickListener {
@@ -780,10 +816,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun pointsOverlap(title: String?, marker: Marker) {
         val latLng = LatLng(marker.position.latitude, marker.position.longitude)
         Log.e("latitude_longitude", latLng.toString())
-
+        val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
+        Log.e("PRAMOD", "Modified Id = $modifiedUniqueId")
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         val checkPolygonModel =
-            CheckPolygonModel(farmer_plot_uniqueid, latLng.latitude, latLng.longitude)
+            CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
 
         apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
             .enqueue(object : Callback<ResponseBody> {
@@ -905,9 +942,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun checkCoordinates(latLng: LatLng) {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-
+        val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
+        Log.e("PRAMOD", "Modified Id = $modifiedUniqueId")
         val checkPolygonModel =
-            CheckPolygonModel(farmer_plot_uniqueid, latLng.latitude, latLng.longitude)
+            CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
         apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(

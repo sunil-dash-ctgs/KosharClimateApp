@@ -1,0 +1,408 @@
+<resources>
+    <string name="app_name">KosheRise</string>
+    <string name="version_number">2.1.3   - Live</string>
+    <string name="powered">ক্রপইন্টেলিক্স প্রাইভেট লিমিটেড দ্বারা বিকাশিত</string>
+
+    <string name="welcome_text">কোশেরাইসে আপনাকে স্বাগতম !!</string>
+    <string name="sign_up">সাইন আপ </string>
+    <string name="new_here">এখানে নতুন..??</string>
+    <string name="dont_worry">চিন্তা করবেন না, শুধুমাত্র এই আশ্চর্যজনক অ্যাপটি অ্যাক্সেস করতে সাইন আপ করুন</string>
+    <string name="sign_in">সাইন ইন </string>
+    <string name="returning">ফিরে আসছেন ..??</string>
+    <string name="just_login">আপনার আশ্চর্যজনক কাজ পুনরায় শুরু করতে লগ ইন করুন</string>
+
+
+    //Language
+    <string name="hindi" translatable="false">हिन्दी</string>
+    <string name="अ" translatable="false">अ</string>
+    <string name="english" translatable="false">English</string>
+    <string name="a" translatable="false">A</string>
+    <string name="telugu" translatable="false">తెలుగు</string>
+    <string name="అ" translatable="false">అ</string>
+    <string name="marathi" translatable="false">मराठी</string>
+    <string name="म" translatable="false">म</string>
+    <string name="gujarat" translatable="false">ગુજરાત</string>
+    <string name="ગુ" translatable="false">ગુ</string>
+    <string name="odia" translatable="false">ଓଡିଆ</string>
+    <string name="ଓ" translatable="false">ଓ</string>
+
+
+    //Dashboard
+    <string name="farmer_onboarding">কৃষকের রেজিস্ট্রেশন</string>
+    <string name="crop_data">ফসল সম্পর্কিত তথ্য </string>
+    <string name="pipe_installation">জমিতে পাইপ বসানো</string>
+    <string name="capture_aeration_event">জমি শুকানোর ঘটনা </string>
+    <string name="farmer_benefits_dashboard">কৃষকের লাভ </string>
+    <string name="farmer_benefits_report">কৃষকের লাভ </string>
+    <string name="pipe_install_report">জমিতে পাইপ বসানো</string>
+    <string name="aeration_report">জমি শুকনোর রিপোর্ট ক্যাপচার</string>
+    <string name="polygon">পলিগণ </string>
+    <string name="reports">রিপোর্ট </string>
+    <string name="add_more">প্লট যোগ করুন </string>
+    <string name="module_select">কার্যকলাপ নির্বাচন করুন</string>
+
+
+    // Sign Up
+    <string name="account_details">অ্যাকাউন্টের বিবরণ</string>
+    <string name="name">নাম </string>
+    <string name="mobile_no">মোবাইল নাম্বার </string>
+    <string name="email">ই-মেল </string>
+    <string name="username">ইউজারনেম</string>
+    <string name="password">পাসওয়ার্ড</string>
+    <string name="confirm_password">পাসওয়ার্ড নিশ্চিত করুন</string>
+    <string name="otp">OTP</string>
+    <string name="company_code">সংস্থার কোড </string>
+    <string name="already_account">ইতিমধ্যে একটি একাউন্ট আছে..?? সাইন ইন করুন</string>
+
+    // Login
+    <string name="login">লগ ইন </string>
+    <string name="forget_password">পাসওয়ার্ড ভুলে গেছেন..??</string>
+    <string name="dont_account">আপনার কোনো একাউন্ট নেই..?? সাইন আপ </string>
+
+
+    // State Screen
+    <string name="state_screen">রাজ্যের বিবরণ </string>
+
+    // Add More Plots Fetch Farmer Details Screen
+    <string name="fetch_detail">বিশদ বিবরণ নিয়ে আসুন </string>
+
+    // Farmer Screen
+    <string name="farmer_info">ব্যক্তিগত বিবরণ</string>
+    <string name="farmer_details">কৃষকের বিবরণ</string>
+    <string name="farmer_name">কৃষকের সম্পূর্ণ  নাম </string>
+    <string name="mobile_access">মোবাইল অ্যাক্সেস</string>
+    <string name="gender">লিঙ্গ </string>
+    <string name="male">পুরুষ </string>
+    <string name="female">স্ত্রী </string>
+    <string name="other">অন্যান্য</string>
+    <string name="guardian_name">অভিভাবকের নাম</string>
+    <string name="own_mobile">নিজের নাম্বার</string>
+    <string name="aadhar">আধার নাম্বার </string>
+    <string name="mobile">মোবাইল নাম্বার </string>
+    <string name="search">মোবাইল নম্বর/আধার নম্বর/কৃষক সমীক্ষা আইডি/কৃষক অনন্য আইডি অনুসন্ধান করুন</string>
+    <string name="relative_mobile">আত্মীয়ের মোবাইল নম্বর</string>
+    <string name="relationship">মালিকের সাথে সম্পর্ক</string>
+    <string name="preview_files">পূর্বরূপ ফাইল</string>
+
+
+    <string name="farmer_name_hint">কৃষকের পুরো নাম লিখুন</string>
+    <string name="mobile_hint">মোবাইল নম্বর লিখুন</string>
+    <string name="enter_number">এখানে নম্বর লিখুন</string>
+    <string name="search_here">এখানে সার্চ করুন </string>
+    <string name="aadhar_hint">আধার নাম্বার লিখুন </string>
+    <string name="guadian_name_hint">অভিভাবকের নাম লিখুন </string>
+
+
+    //Location Screen
+    <string name="location_screen">কৃষকের ঠিকানা </string>
+    <string name="plot_size">প্লটের আকার </string>
+    <string name="plot_size_txt">প্লটের আকার একরে </string>
+    <string name="organization">সংস্থা </string>
+    <string name="state">রাজ্য </string>
+    <string name="district">জেলা </string>
+    <string name="taluka">ব্লক/মণ্ডল </string>
+    <string name="panchayat">পঞ্চায়েত </string>
+    <string name="village">গ্রাম </string>
+    <string name="address">ঠিকানা </string>
+    <string name="latitude">অক্ষাংশ</string>
+    <string name="longitude">দ্রাঘিমাংশ</string>
+
+
+    <string name="plot_id">কৃষকের অনন্য আইডি</string>
+    <string name="total_plot">প্লটের সংখ্যা</string>
+    <string name="plot_number">দাগ নাম্বার </string>
+    <string name="area_land">জমির পরিমাণ </string>
+    <string name="submitted_successfully">তথ্য সফলভাবে জমা হয়েছে </string>
+    <string name="area_hector">জমির পরিমাপ (একরে )</string>
+
+
+    <string name="plot_number_hint">প্লট নম্বর লিখুন</string>
+    <string name="bigha_number_hint">বিঘা এলাকায় প্রবেশ করুন</string>
+    <string name="area_hector_hint">একর প্রবেশ করুন</string>
+
+
+    // Plot screen
+    <string name="plot_info">প্লটের বিবরণ </string>
+    <string name="ownership">জমির মালিকানা</string>
+    <string name="area_choosen">AWD জন্য নির্বাচিত এলাকা </string>
+    <string name="area_choosen_acres">awd জমির পরিমাণ (একর)</string>
+    <string name="plot_area_Ha">প্লটের এলাকা একরে </string>
+    <string name="affidavit">হলফনামায় স্বাক্ষর করুন</string>
+    <string name="survey_number">সার্ভে নম্বর</string>
+    <string name="owner_name">মালিকের নাম </string>
+    <string name="patta_number">পাট্টা নং </string>
+    <string name="daag_number">দাগ নং </string>
+    <string name="khatha_number">কাঠা নং </string>
+    <string name="pattadhar_number">পাট্টাধর পাসবুক নম্বর</string>
+    <string name="khatian_number">খতিয়ান/দাগ নাম্বার </string>
+    <string name="record_photo">জমির পর্চার ছবি </string>
+    <string name="click_here">ছবি তুলতে এখানে ক্লিক করুন </string>
+
+
+    <string name="carbon_sign">কার্বন ক্রেডিট জন্য সম্মতি ফর্ম স্বাক্ষর করুন</string>
+    <string name="farmer_photo">চাষীর ছবি </string>
+    <string name="aadhar_photo">আধার ছবি </string>
+    <string name="other_photo">অন্যান্য ছবি </string>
+
+
+    <string name="survey_number_hint">সার্ভে নং লিখুন </string>
+    <string name="patta_number_hint">পাট্টা নং লিখুন </string>
+    <string name="daag_number_hint">দাগ নং লিখুন </string>
+    <string name="khatha_number_hint">কাঠা নং লিখুন </string>
+    <string name="pattadhar_number_hint">পাট্টাধর পাসবুক নম্বর লিখুন </string>
+    <string name="khatian_number_hint">খতিয়ান নং / দাগ নং লিখুন </string>
+
+    // Submit Screen
+    <string name="signature_screen">স্বাক্ষর</string>
+    <string name="surveyor_info">সার্ভের তথ্য </string>
+    <string name="survey_date">সার্ভের তারিখ </string>
+    <string name="survey_time">সার্ভের সময় </string>
+    <string name="surveyor_name">সার্ভেয়ারের নাম</string>
+    <string name="remark">গ্রামের মন্তব্য</string>
+    <string name="get_location">লোকেশনের জন্য ক্লিক করুন </string>
+
+    <string name="remark_hint">গ্রামের মন্তব্য লিখুন</string>
+
+    // Sign Screen
+    <string name="save">সেভ করুন</string>
+    <string name="clear">মুছে ফেলুন </string>
+
+
+    // Crop info
+    <string name="crop_screen">ফসলের বিবরণ </string>
+    <string name="plot_unique_id">প্লট অনন্য আইডি</string>
+    <string name="sub_plots">সাব প্লট</string>
+    <string name="plot_area">প্লটেরএলাকা </string>
+    <string name="date_irrigation">বীজতলা ফেলার তারিখ </string>
+    <string name="select_date">তারিখ নির্বাচন করুন</string>
+    <string name="transplanting_date">চারা রোপনের তারিখ </string>
+    <string name="preparation_date">মূল জমি তৈরির তারিখ </string>
+    <string name="crop_season">ফসলের সময়কাল </string>
+    <string name="crop_variety">ফসলের জাত </string>
+    <string name="last_year">গত বছর</string>
+    <string name="current_year">এই বছর</string>
+
+
+    <string name="fertilizer_management">সার প্রয়োগ </string>
+    <string name="nitrogen">নাইট্রোজেন (ইউরিয়া সার )</string>
+    <string name="phosphorous">ফসফরাস (ডি এ পি সার )</string>
+    <string name="potassium">পটাশ (এম ও পি সার )</string>
+
+    <string name="water_management">জল ব্যবস্থাপনা </string>
+    <string name="yield">ফলন </string>
+
+
+    // Farmer Benefit Screen
+    <string name="farmer_benefits">কৃষকের লাভ </string>
+    <string name="total_plots">মোট জমির পরিমাণ </string>
+    <string name="season">ঋতু </string>
+    <string name="benefit">সুবিধা </string>
+    <string name="capture_event">কৃষকের লাভের  প্রমাণ ক্যাপচার</string>
+    <string name="image_preview">ছবির পূর্বরূপ</string>
+
+
+    // Pipe Installation Screen
+    <string name="capture_data">ডাটা ক্যাপচার করুন </string>
+    <string name="block">ব্লক </string>
+    <string name="khasara_no">খসড়া নং </string>
+
+
+    // Aeration
+    <string name="aeration_event_number">শুকানোর সংখ্যা</string>
+    <string name="geofencing_check">জিওফেন্সিং চেক</string>
+    <string name="aeration_event">জমি শুকানোর ঘটনা</string>
+    <string name="pipe_number">পাইপ নং </string>
+    <string name="map_screen">ম্যাপ স্ক্রিন </string>
+    <string name="image_screen">ছবির স্ক্রিন </string>
+
+
+    //Polygon
+    <string name="polygon_mapping">পলিগণ ম্যাপিং </string>
+    <string name="plot_area_acres">প্লটেরএলাকা (একর)</string>
+
+
+    // Reports
+    <string name="farmer_onboarding_report">কৃষকের রেজিস্ট্রেশন রিপোর্ট </string>
+    <string name="crop_data_report">ফসলের তথ্যের রিপোর্ট </string>
+    <string name="farmer_benefit_report">কৃষকের লাভের রিপোর্ট </string>
+    <string name="pipe_report">পাইপ বসানোর রিপোর্ট </string>
+    <string name="polygon_report">পলিগণের রিপোর্ট </string>
+    <string name="report_detail_reason">বাতিল করার কারণ </string>
+    <string name="reason">কারণ </string>
+
+    <string name="image_rejected">ছবি বাতিল করা হয়েছে </string>
+    <string name="rejection_reason">কারণ :  </string>
+    <string name="image_mismatch">ছবি অমিল</string>
+    <string name="image1">প্রথম ছবি *</string>
+    <string name="image2">দ্বিতীয় ছবি </string>
+
+    // TNC
+    <string name="tnc">শর্তাবলী</string>
+
+    // Privacy Policy
+    <string name="privacy">গোপনীয়তা নীতি</string>
+
+    // Warning
+    <string name="warning">সাবধান </string>
+    <string name="developer_warning">বিকাশকারী বিকল্প সনাক্ত করা হয়েছে</string>
+    <string name="access_denied_warning">অ্যাকাউন্ট সক্রিয় করা হয়নি... অনুগ্রহ করে আপনার অ্যাডমিনের সাথে যোগাযোগ করুন!!</string>
+
+
+    <string name="name_empty_warning">নাম খালি!!</string>
+    <string name="email_empty_warning">ই-মেল খালি !!</string>
+    <string name="email_valid_warning">বৈধ ই-মেল লিখুন !!</string>
+    <string name="mobile_valid_warning">বৈধ মোবাইল নাম্বার লিখুন !!</string>
+    <string name="mobile_empty_warning">মোবাইল নাম্বার খালি রাখা যাবেন !!</string>
+    <string name="username_empty_warning">ইউজারনেম খালি রাখা যাবেনা !!</string>
+    <string name="password_empty_warning">পাসওয়ার্ড খালি রাখা যাবেনা !!</string>
+    <string name="password_length_warning">পাসওয়ার্ড ৬  অক্ষরের কম হতে পারে না!!</string>
+    <string name="confirm_empty_warning">নিশ্চিত পাসওয়ার্ড খালি রাখা যাবেনা !!</string>
+    <string name="confirm_length_warning">নিশ্চিত পাসওয়ার্ড ৬ অক্ষরের কম হতে পারে না!!</string>
+    <string name="password_mismatch_warning">পাসওয়ার্ড এবং নিশ্চিত পাসওয়ার্ড এক হতে হবে !!</string>
+    <string name="company_code_warning">সংস্থার কোড লিখুন </string>
+
+
+    <string name="farmer_name_warning">কৃষকের নাম লিখুন </string>
+    <string name="gender_warning">লিঙ্গ নির্বাচন করুন </string>
+    <string name="guardian_name_warning">অভিভাবকের নাম লিখুন </string>
+    <string name="mobile_access_warning">মোবাইল অ্যাক্সেস নির্বাচন করুন </string>
+    <string name="relationship_warning">মালিকের সাথে সম্পর্ক নির্বাচন করুন </string>
+    <string name="aadhar_number_warning">আধার নাম্বার লিখুন </string>
+    <string name="mobile_number_warning">মোবাইল নাম্বার লিখুন </string>
+    <string name="enter_otp_warning">OTP লিখুন </string>
+    <string name="missing_farmer_id_warning">কৃষকের অনন্য আইডি দেওয়া নেই</string>
+    <string name="invalid_otp_warning">OTP ভুল আছে </string>
+    <string name="mobile_length_warning">বৈধ মোবাইল নাম্বার লিখুন !!</string>
+    <string name="number_plot_warning">প্লটের সংখ্যা নির্বাচন করুন </string>
+    <string name="preview_file_warning">প্রিভিউ ফাইল নির্বাচন করুন</string>
+    <string name="area_less_warning">জমির এলাকা কম হতে পারে না</string>
+    <string name="area_cannot_warning">একরে এলাকা অনুপস্থিত</string>
+    <string name="veriying_otp">OTP যাচাই করা হচ্ছে.....</string>
+    <string name="valid_otp">বৈধ OTP </string>
+    <string name="verify">Verified</string>
+
+    <string name="location_warning">আপনার বর্তমান লোকেশন পেতে নীল বোতাম টিপুন </string>
+    <string name="address_warning">ঠিকানা লিখুন </string>
+    <string name="state_warning">রাজ্য নির্বাচন করুন </string>
+    <string name="organization_warning">সংস্থা নির্বাচন করুন </string>
+    <string name="district_warning">জেলা নির্বাচন করুন </string>
+    <string name="taluka_warning">তালুকা নির্বাচন করুন </string>
+    <string name="panchayat_warning">পঞ্চায়েত নির্বাচন করুন </string>
+    <string name="village_warning">গ্রাম নির্বাচন করুন </string>
+    <string name="farmer_onboarded">কৃষকের রেজিস্ট্রেশন সফল হয়েছে </string>
+
+
+    <string name="land_ownership_warning">জমির মালিকানা নির্বাচন করুন</string>
+    <string name="calculate_warning">AWD-এর জন্য নির্বাচিত এলাকা জমির এলাকা বা শূন্যের চেয়ে বেশি হতে পারে না</string>
+    <string name="area_awd_warning">AWD এর জন্য নির্বাচিত এলাকা লিখুন</string>
+    <string name="survey_number_warning">সার্ভে নাম্বার লিখুন </string>
+    <string name="preview_image_warning">জমির রেকর্ড এর ফটো যোগ করুন </string>
+    <string name="preview_land1_warning">জমির রেকর্ড এর প্রথম ফটো যোগ করুন </string>
+    <string name="preview_land2_warning">জমির রেকর্ড এর দ্বিতীয় ফটো যোগ করুন </string>
+    <string name="owner_name_warning">মালিকের নাম লিখুন </string>
+    <string name="affidavit_tnc_warning">হলফনামার জন্য শর্তাবলী স্বীকার করুন</string>
+    <string name="carbon_tnc_warning">অনুগ্রহ করে কার্বন ক্রেডিটের জন্য শর্তাবলী স্বীকার করুন</string>
+    <string name="carbon_sign_warning">অনুগ্রহ করে কার্বন ক্রেডিটে স্বাক্ষর যোগ করুন</string>
+    <string name="owner_sign_warning">অনুগ্রহ করে প্লটের মালিকের স্বাক্ষর যোগ করুন</string>
+    <string name="farmer_photo_warning">দয়া করে কৃষকের ছবি তুলুন </string>
+    <string name="aadhar_photo_warning">দয়া করে আধার ছবি তুলুন</string>
+    <string name="other_photo_warning">অন্য ছবি যোগ করুন</string>
+    <string name="affinity_sign_warning">অনুগ্রহ করে সখ্যতার জন্য স্বাক্ষর যোগ করুন</string>
+
+
+    <string name="area_in_acres_warning">একরে এলাকা অনুপস্থিত</string>
+    <string name="area_in_acres_awd_warning">একরে এলাকায় AWD অনুপস্থিত</string>
+    <string name="nursery_date_warning">বীজতলা ফেলার তারিখ যোগ করুন </string>
+    <string name="ploughing_date_warning">মূল জমি তৈরির  তারিখ যোগ করুন </string>
+    <string name="transplanting_date_warning">চারা লাগানোর তারিখ যোগ করুন </string>
+
+    <string name="nitrogen_last_warning">নাইট্রোজেন (কেজি/হেক্টর) গত বছরের জন্য  লিখুন </string>
+    <string name="nitrogen_current_warning">নাইট্রোজেন (কেজি/হেক্টর) এই বছরের জন্য  লিখুন </string>
+    <string name="phosphorous_last_warning">ফসফরাস (কেজি/হেক্টর) গত বছরের জন্য  লিখুন </string>
+    <string name="phosphorous_current_warning">ফসফরাস (কেজি/হেক্টর) এই বছরের জন্য  লিখুন </string>
+    <string name="potassium_last_warning">পটাশ (কেজি/হেক্টর) গত বছরের জন্য  লিখুন </string>
+    <string name="potassium_current_warning">পটাশ (কেজি/হেক্টর) এই বছরের জন্য  লিখুন </string>
+    <string name="water_last_warning">জলের পরিমাণ লিখুন গত বছরের জন্য </string>
+    <string name="water_current_warning">জলের পরিমাণ লিখুন এই বছরের জন্য </string>
+    <string name="yield_last_warning"> ফলন লিখুন গত বছরের জন্য</string>
+    <string name="yield_current_warning">জলের পরিমাণ লিখুন এই বছরের জন্য </string>
+
+
+    <string name="farmer_unique_warning">কৃষক অনন্য আইডি নির্বাচন করুন</string>
+    <string name="plot_unique_warning">প্লট অনন্য আইডি নির্বাচন করুন</string>
+    <string name="sub_plot_unique_warning">উপ-প্লট নির্বাচন করুন </string>
+    <string name="season_warning">কারণ নির্বাচন করুন </string>
+    <string name="crop_variety_warning">ফসলের জাত নির্বাচন করুন </string>
+    <string name="benefits_warning">সুবিধা নির্বাচন করুন </string>
+    <string name="image1_warning">প্রথম ছবি ক্যাপচার করুন </string>
+    <string name="image2_warning">দ্বিতীয়  ছবি ক্যাপচার করুন </string>
+    <string name="image3_warning">তৃতীয় ছবি ক্যাপচার করুন </string>
+
+
+    <string name="logout_enabled">আপনি কি লগ আউট করতে চান ?</string>
+
+
+    <string name="point_overlapping_warning">পয়েন্ট ওভারল্যাপিং করছে </string>
+
+    <string name="aeration_number_warning">জমি শুকনোর ঘটনা নাম্বার নির্বাচন করুন </string>
+    <string name="aeration_pipe_warning">পাইপ নাম্বার নির্বাচন করুন </string>
+    <string name="already_submitted">ডেটা ইতিমধ্যে জমা দেওয়া হয়েছে</string>
+    <string name="fill_pipe">প্রথমে জমিতে পাইপ বসান </string>
+
+
+    <string name="valid_details">বৈধ বিবরণ দিন </string>
+
+
+    <string name="loading">লোড হচ্ছে </string>
+    <string name="sending">পাঠানো হচ্ছে </string>
+    <string name="otp_sending">OTP পাঠানো হচ্ছে </string>
+    <string name="data_send">কিছুক্ষণ অপেক্ষা করুন যখন আমরা ডেটা পাঠাচ্ছি</string>
+    <string name="data_load">কিছুক্ষণ অপেক্ষা করুন যখন আমরা ডেটা লোড করছি </string>
+    <string name="checking_data">চেক করা হচ্ছে</string>
+    <string name="location">আপনার বর্তমান লোকেশন পেতে কিছুক্ষণ অপেক্ষা করুন</string>
+    <string name="checking_credentials">অপেক্ষা করুন যতক্ষণ না আমরা আপনার শংসাপত্রগুলি পরীক্ষা করি</string>
+    <string name="gps_network_not_enabled">ডিভাইস লোকেশন চালু করুন।</string>
+    <string name="open_location_settings">লোকেশন সেটিং খুলুন</string>
+    <string name="yes">হ্যাঁ</string>
+    <string name="no">না </string>
+    <string name="wait">অপেখহা করুন </string>
+
+    <string name="selected_item">নির্বাচিত বস্তু : </string>
+    <string name="acceptTNC">শর্তাবলী গ্রহণ করুন </string>
+    <string name="logout">লগ আউট </string>
+    <string name="ok">ওকে </string>
+    <string name="next">পরবর্তী </string>
+    <string name="back">পেছনে </string>
+    <string name="previous">পূর্ববর্তী</string>
+    <string name="resend">পুনরায় পাঠানো </string>
+    <string name="send">কল </string>
+    <string name="home">বাড়ি </string>
+    <string name="submit">জমা করা </string>
+    <string name="success">সাফল্য </string>
+    <string name="disable">বন্ধ করুন </string>
+    <string name="clcik_disable">বন্ধ করার জন্য এখানে ক্লিক করুন </string>
+    <string name="close_app">অ্যাপ বন্ধ করুন</string>
+
+
+    <string name="approved">অনুমোদিত </string>
+    <string name="rejected">বাতিল </string>
+    <string name="pending">পেন্ডিং </string>
+
+
+    <!--    Existing plots Screen-->
+
+
+    <!--    New Onboarding Process-->
+    <string name="total_area">মোট জমির পরিমাণ </string>
+    <string name="own_area">নিজস্ব জমির পরিমাণ </string>
+    <string name="lease_area">লিজ জমির পরিমাণ  </string>
+    <string name="total_area_in_acres">মোট জমি একরে </string>
+    <string name="own_area_in_acres">নিজস্ব জমি একরে </string>
+    <string name="lease_area_in_acres">লিজ জমি একরে </string>
+
+    <string name="exeeding_total">নিজস্ব এলাকা এবং লিজ এলাকা একত্রিত মোট এলাকার বেশি হতে পারে না</string>
+    <string name="cannot_be_empty_total_area">Total Area Cannot be Empty</string>
+    <string name="fill_previous_plot">Cannot Create new Plot unless you fill previous plot</string>
+    <string name="polygon_selected">This Polygon is not available</string>
+
+</resources>

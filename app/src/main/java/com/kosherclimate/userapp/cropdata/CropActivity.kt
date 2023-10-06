@@ -719,12 +719,12 @@ class CropActivity : AppCompatActivity() {
                 else if (response.code() == 422) {
                     progress.dismiss()
 
-                    if (lastData){
+//                    if (lastData){
                         homeScreen()
-                    }
-                    else{
-                        repeatScreen()
-                    }
+//                    }
+//                    else{
+//                        repeatScreen()
+//                    }
                 }
                 else if (response.code() == 500) {
                     progress.dismiss()

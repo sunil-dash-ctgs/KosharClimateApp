@@ -35,6 +35,8 @@ class LanguageSelectActivity : AppCompatActivity() {
         val marathi = findViewById<View>(R.id.marathi_layout) as LinearLayout
         val gujrati = findViewById<View>(R.id.gujrati_layout) as LinearLayout
         val odia = findViewById<View>(R.id.odia_layout) as LinearLayout
+        val llAssam = findViewById<View>(R.id.assami) as LinearLayout
+        val llBengali = findViewById<View>(R.id.bengali) as LinearLayout
 
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         checkForUpdate()
@@ -67,6 +69,18 @@ class LanguageSelectActivity : AppCompatActivity() {
 
 
         odia.setOnClickListener { }
+
+        llAssam.setOnClickListener {
+            val intent = Intent(this@LanguageSelectActivity, DashboardActivity::class.java)
+            intent.putExtra("language", "as")
+            startActivity(intent)
+        }
+
+        llBengali.setOnClickListener {
+            val intent = Intent(this@LanguageSelectActivity, DashboardActivity::class.java)
+            intent.putExtra("language", "bn-rIN")
+            startActivity(intent)
+        }
 
     }
 

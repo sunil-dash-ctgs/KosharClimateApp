@@ -187,6 +187,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
 
             getPipeQty(unique_id, plot_no)
+            Log.e("PRAMOD","UNIQUE $unique_id $plot_no")
         } else {
             Log.e("total_plot", "Nope")
         }
@@ -730,7 +731,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 //        val latLng = LatLng(location.latitude, location.longitude)
 //        LATLNG.add(latLng)
 //
-        Log.e("onLocationChanged_LATLNG ", LATLNG.size.toString())
+        Log.e("PRAMOD ", LATLNG.size.toString())
 //        Log.e("onLocationChanged ", "onLocationChanged")
 //        Log.e("statusCode", "response.code().toString()")
 //
@@ -746,7 +747,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
         var mlocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 0)
             .setWaitForAccurateLocation(false)
-            .setMinUpdateIntervalMillis(0)
+            .setMinUpdateIntervalMillis(10)
             .setMaxUpdateDelayMillis(5000)
             .build()
 
@@ -761,6 +762,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
             val mLastLocation = locationResult.lastLocation
             Log.e("mLastLocation.latitude", mLastLocation?.latitude.toString())
             Log.e("mLastLocation.longitude", mLastLocation?.longitude.toString())
+            Log.e("PRAMOD",  " >> Location new"+ mLastLocation?.longitude.toString())
 
             imageLat = mLastLocation?.latitude.toString()
             imageLng = mLastLocation?.longitude.toString()

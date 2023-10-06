@@ -270,7 +270,7 @@
     <string name="area_cannot_warning">ఎకరాల్లో విస్తీర్ణం లేదు</string>
     <string name="veriying_otp">OTPని ధృవీకరిస్తోంది.....</string>
     <string name="valid_otp">చెల్లుబాటు అయ్యే OTP</string>
-
+    <string name="verify">Verified</string>
 
     <string name="location_warning">నీలం బటన్‌ను ఎంచుకోండి \n మీ ప్రస్తుత స్థానాన్ని పొందడానికి</string>
     <string name="address_warning">చిరునామాను నమోదు చేయండి</string>
@@ -393,6 +393,8 @@
 
     <string name="exeeding_total">Own Area and Lease Area Combine cannot be More than Total Area</string>
     <string name="cannot_be_empty_total_area">Total Area Cannot be Empty</string>
+    <string name="fill_previous_plot">Cannot Create new Plot unless you fill previous plot</string>
+    <string name="polygon_selected">This Polygon is not available</string>
 
 
 

@@ -424,8 +424,11 @@ class PipeActivity : AppCompatActivity() {
                 SUBPLOT = FarmerPlotUniqueID[subPlotUniquePosition]
 
                 if(position !=0){
-                    println("????????????????????????? ${"%.4f".format(PlotArea[subPlotUniquePosition - 1].trim().toDouble())}")
-                    txtArea.text =  "%.4f".format(PlotArea[subPlotUniquePosition - 1].trim().toDouble())
+                    Log.e("PRAMOD",",,,,, ${PlotArea}")
+                    Log.e("PRAMOD",",,,,, ${subPlotUniquePosition }")
+                    Log.e("PRAMOD",",,,,, ${PlotArea[0]}")
+                    println("????????????????????????? ${"%.4f".format(PlotArea[0].trim().toDouble())}")
+                    txtArea.text =  "%.4f".format(PlotArea[0].trim().toDouble())
                     getFarmerName()
                 }
             }

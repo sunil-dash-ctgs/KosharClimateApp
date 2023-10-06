@@ -27,6 +27,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.bumptech.glide.load.engine.Resource
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.cropintellix.DashboardActivity
@@ -226,6 +227,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this,arrayOf(android.Manifest.permission.CALL_PHONE),REQUEST_PHONE_CALL)
             }else{
                 makeCall()
+                tvCall.text = resources.getString(R.string.verify)
             }
         }
 

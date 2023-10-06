@@ -74,6 +74,7 @@ class EditPolygonActivity : AppCompatActivity() , OnMapReadyCallback, LocationLi
     lateinit var save: ImageView
     lateinit var back: ImageView
     lateinit var txtArea: TextView
+    lateinit var tvTotalArea: TextView
 
     var threshold: String = ""
     private var polygon_date_time: String = ""
@@ -113,7 +114,9 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         save = findViewById(R.id.editPolySaveLocation)
         back = findViewById(R.id.editPolyBack)
         txtArea = findViewById(R.id.edit_polygon_area)
+        tvTotalArea = findViewById(R.id.editPoly_area_acres)
 
+        tvTotalArea.text = area
         val c: Calendar = Calendar.getInstance()
         val dfi = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val formattedDate: String = dfi.format(c.time)
