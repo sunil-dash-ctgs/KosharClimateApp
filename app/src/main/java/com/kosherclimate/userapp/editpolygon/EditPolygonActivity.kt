@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationServices
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.maps.android.SphericalUtil
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.polygon.LandInfoActivity
 import java.text.DecimalFormat
@@ -106,7 +108,7 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
             Polygon_lat_lng = bundle.getStringArrayList("polygon_lat_lng")!!
 //            status = bundle.getInt("status")
 //            polygon_status = bundle.getInt("polygon_status")
-            Log.e("PRAMOD", Polygon_lat_lng.toString())
+            Log.e("NEW_TEST", Polygon_lat_lng.toString())
         } else {
             Log.e("area", "Nope")
         }
@@ -125,20 +127,31 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
 
 //        onsaved clicked Licker
         save.setOnClickListener {
-            val stringList = convertLatLngListToStringList(latLngslist)
-            val intent = Intent(this, LandInfoActivity::class.java).apply {
-                putExtra("locationList", stringList)
-                putExtra("area", area)
-                putExtra("unique_id", unique_id)
-                putExtra("sub_plot_no", sub_plot_no)
-                putExtra("farmer_id", farmer_id)
-                putExtra("polygon_area", polygonArea)
-                putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
-                putExtra("polygon_date_time", polygon_date_time)
-                putExtra("farmer_name", farmer_name)
+            var maxValue = area.trim().toDouble();
+
+            if(polygonArea > maxValue){
+                val WarningDialog =
+                    SweetAlertDialog(this@EditPolygonActivity, SweetAlertDialog.WARNING_TYPE)
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = "Area drawn is more than plot \n area"
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            }else {
+                val stringList = convertLatLngListToStringList(latLngslist)
+                val intent = Intent(this, LandInfoActivity::class.java).apply {
+                    putExtra("locationList", stringList)
+                    putExtra("area", area)
+                    putExtra("unique_id", unique_id)
+                    putExtra("sub_plot_no", sub_plot_no)
+                    putExtra("farmer_id", farmer_id)
+                    putExtra("polygon_area", polygonArea)
+                    putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
+                    putExtra("polygon_date_time", polygon_date_time)
+                    putExtra("farmer_name", farmer_name)
+                }
+                startActivity(intent)
+                finish()
             }
-            startActivity(intent)
-            finish()
         }
 
         back.setOnClickListener {
@@ -186,10 +199,10 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         markerIds.clear()
         var polygonOptions = PolygonOptions()
         for (i in latLngslist.indices) if (i == 0) {
-            Log.e("PRAMOD","indiesc $i")
+            Log.e("NEW_TEST","indiesc $i")
             polygonOptions = PolygonOptions().add(latLngslist[0])
         } else {
-            Log.e("PRAMOD","indiesc $i")
+            Log.e("NEW_TEST","indiesc $i")
             mMap.clear()
             polygonOptions.add(latLngslist[i])
             Log.d("polygon123", polygonOptions.toString())
@@ -206,7 +219,7 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         }
 
     polygonArea = calculatePolygonAreaInAcres(latLngslist)
-    txtArea.setText(polygonArea.toString())
+    txtArea.setText("$polygonArea acers")
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -229,10 +242,10 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         }
         var polygonOptions = PolygonOptions()
         for (i in latLngslist.indices) if (i == 0) {
-            Log.e("PRAMOD","indiesc $i")
+            Log.e("NEW_TEST","indiesc $i")
             polygonOptions = PolygonOptions().add(latLngslist[0])
         } else {
-            Log.e("PRAMOD","indiesc $i")
+            Log.e("NEW_TEST","indiesc $i")
             mMap.clear()
             polygonOptions.add(latLngslist[i])
             Log.d("polygon123", polygonOptions.toString())
@@ -249,7 +262,7 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
         }
 
         polygonArea = calculatePolygonAreaInAcres(latLngslist)
-        txtArea.text = polygonArea.toString()
+        txtArea.text = "$polygonArea acers"
 
 //        Marker Drag
 mMap.setOnMarkerDragListener(object : OnMarkerDragListener{
@@ -258,16 +271,16 @@ mMap.setOnMarkerDragListener(object : OnMarkerDragListener{
 
     override fun onMarkerDragEnd(marker: Marker) {
 try {
-    Log.e("PRAMOD","MARKER DRAGING ${marker.id}")
-    Log.e("PRAMOD","MARKER DRAGING ${marker.position}")
+    Log.e("NEW_TEST","MARKER DRAGING ${marker.id}")
+    Log.e("NEW_TEST","MARKER DRAGING ${marker.position}")
     var contain = markerIds.contains(marker.id)
     var index = markerIds.indexOf(marker.id)
     latLngslist[index] = marker.position
-    Log.e("PRAMOD","MARKER DRAGING ${markerIds}")
-    Log.e("PRAMOD","MARKER DRAGING ${contain} $index ${latLngslist.indices}")
+    Log.e("NEW_TEST","MARKER DRAGING ${markerIds}")
+    Log.e("NEW_TEST","MARKER DRAGING ${contain} $index ${latLngslist.indices}")
     updatePolygon()
 }catch (e:Exception){
-    Log.e("PRAMOD", "ERROR while updating $e")
+    Log.e("NEW_TEST", "ERROR while updating $e")
 }
 
     }
@@ -320,25 +333,34 @@ try {
             j = i
         }
 
-        Log.e("PRAMOD", "AREAA ${Math.abs(area / 2.0)}")
+        Log.e("NEW_TEST", "AREAA ${Math.abs(area / 2.0)}")
         return Math.abs(area / 2.0)
     }
 
 //    Calculate Area in acres
     fun calculatePolygonAreaInAcres(coordinates: List<LatLng>): Double {
-        if (coordinates.size < 3) {
-            // A polygon with less than 3 vertices isn't valid
-            return 0.0
-        }
+    // Calculating meters from polygon list
+    val m = SphericalUtil.computeArea(coordinates)
+    Log.e("NEW_TEST", "computeArea $m")
+    Log.e("NEW_TEST", "computeArea $coordinates")
 
-        val sqMetersArea = calculatePolygonArea(coordinates) // Calculate area in square meters
-
-        // Convert square meters to acres (1 acre = 4046.86 square meters)
-        val acresArea = (sqMetersArea / 4046.86).toString()
-    val formattedArea = "${acresArea[0]}${acresArea[1]}${acresArea[2]}${acresArea[3]}${acresArea[4]}${acresArea[5]}"
-    Log.e("PRAMOD", "AREAA Acres ${acresArea}")
-    Log.e("PRAMOD", "AREAA Acres ${formattedArea}")
-        return formattedArea.toDouble()
+// converting meters to acers
+    val df = DecimalFormat("#.#####")
+    var polygon_area = df.format(m * 0.000247105).toDouble()
+    Log.e("a", "computeArea $polygon_area")
+//        if (coordinates.size < 3) {
+//            // A polygon with less than 3 vertices isn't valid
+//            return 0.0
+//        }
+//
+//        val sqMetersArea = calculatePolygonArea(coordinates) // Calculate area in square meters
+//
+//        // Convert square meters to acres (1 acre = 4046.86 square meters)
+//        val acresArea = (sqMetersArea / 4046.86).toString()
+//    val formattedArea = "${acresArea[0]}${acresArea[1]}${acresArea[2]}${acresArea[3]}${acresArea[4]}${acresArea[5]}"
+//    Log.e("NEW_TEST", "AREAA Acres ${acresArea}")
+//    Log.e("NEW_TEST", "AREAA Acres ${formattedArea}")
+        return polygon_area.toDouble()
     }
 
 //    convert latlong List to string list

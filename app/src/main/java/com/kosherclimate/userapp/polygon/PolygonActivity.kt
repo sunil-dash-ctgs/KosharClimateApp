@@ -63,6 +63,9 @@ class PolygonActivity : AppCompatActivity() {
     private lateinit var btnBack: Button
     private lateinit var btnCaptureData: Button
 
+//    New
+    var availableArea :Double = 0.0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +74,7 @@ class PolygonActivity : AppCompatActivity() {
         progress = SweetAlertDialog(this@PolygonActivity, SweetAlertDialog.PROGRESS_TYPE)
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", MODE_PRIVATE)
         token = sharedPreference.getString("token", "")!!
-        Log.e("PRAMOD", "TOKEN = $token")
+        Log.e("NEW_TEST", "TOKEN = $token")
         edtMobile_number = findViewById(R.id.pipe_mobile_number)
         edtFarmer_name = findViewById(R.id.pipe_farmer_name)
         txtArea = findViewById(R.id.pipe_plot_area)
@@ -116,12 +119,12 @@ class PolygonActivity : AppCompatActivity() {
                     WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
 
                 }else{
-                    Log.e("PRAMOD"," Success")
+                    Log.e("NEW_TEST"," Success")
                  checkData()
                 }
 
             }else{
-                Log.e("PRAMOD"," Success 2")
+                Log.e("NEW_TEST"," Success 2")
                 checkData()
             }
         }
@@ -302,6 +305,8 @@ class PolygonActivity : AppCompatActivity() {
     }
 
     private fun nextScreen() {
+        Log.e("NEW_TEST","Plot area is $PlotArea")
+        Log.e("NEW_TEST","Plot area is ${PlotArea[subPlotUniquePosition - 1]}")
         if (txtArea.text == "0.0") {
             val WarningDialog =
                 SweetAlertDialog(this@PolygonActivity, SweetAlertDialog.WARNING_TYPE)
@@ -311,7 +316,8 @@ class PolygonActivity : AppCompatActivity() {
             WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
         } else {
             val intent = Intent(this, MapActivity::class.java).apply {
-                putExtra("area", PlotArea[subPlotUniquePosition - 1])
+//                putExtra("area", PlotArea[subPlotUniquePosition - 1])
+                putExtra("area", availableArea.toString())
                 putExtra("unique_id", FarmerUniqueList[farmerUniquePosition])
                 putExtra("sub_plot_no", SubPlotList[subPlotUniquePosition - 1])
                 putExtra("farmer_id", IDList[farmerUniquePosition].toString())
@@ -345,12 +351,11 @@ class PolygonActivity : AppCompatActivity() {
 
                         val stringResponse = JSONObject(response.body()!!.string())
                         val jsonArray = stringResponse.optJSONArray("list")
-                        Log.e("PRAMOD", jsonArray.length().toString())
+                        Log.e("NEW_TEST", jsonArray.length().toString())
 
                         if (jsonArray.length() == 0) {
-                            Log.e("PRAMOD", "got Farmer Lists")
-                            Log.e("PRAMOD", jsonArray.toString())
-
+                            Log.e("NEW_TEST", "got Farmer Lists")
+                            Log.e("NEW_TEST", jsonArray.toString())
                             IDList.clear()
                             FarmerUniqueList.clear()
 
@@ -377,7 +382,6 @@ class PolygonActivity : AppCompatActivity() {
                                 IDList.add(id)
                                 FarmerUniqueList.add(farmer_uniqueId)
                             }
-
                             farmerUniqueIdSpinner()
                             progress.dismiss()
                         }
@@ -419,24 +423,24 @@ class PolygonActivity : AppCompatActivity() {
                     if (response.body() != null) {
                         val stringResponse = JSONObject(response.body()!!.string())
                         val jsonArray = stringResponse.optJSONArray("plotlist")
-                        Log.e("PRAMOD", "got sub plots Lists")
-                        Log.e("PRAMOD", jsonArray.toString())
+                        availableArea = stringResponse.optString("available_area").toDouble()
+                        Log.e("NEW_TEST", "got sub plots Lists")
+                        Log.e("NEW_TEST", jsonArray.toString())
                         getLastPlotId(jsonArray)
                         FarmerPlotUniqueID.add("--Select--")
 
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
-
                             val plot_no = jsonObject.optString("plot_no")
                             val farmer_plot_uniqueid = jsonObject.optString("farmer_plot_uniqueid")
 
                             val jsonApproved = jsonObject.getJSONObject("apprv_farmer_plot")
                             val area_in_acers = jsonObject.optString("area_in_acers")
-
                             SubPlotList.add(plot_no.toString())
                             PlotArea.add(area_in_acers.toString())
                             FarmerPlotUniqueID.add(farmer_plot_uniqueid.toString())
                         }
+                        Log.e("NEW_TEST", "Available plot Area $availableArea")
                         if (SubPlotList.isNotEmpty()) {
                             SubPlotList.add(SubPlotList.last().toString())
                             PlotArea.add(PlotArea.last().toString())
@@ -444,10 +448,10 @@ class PolygonActivity : AppCompatActivity() {
 
                         FarmerPlotUniqueID.add("Create Plot")
                         progress.dismiss()
-                        Log.e("PRAMOD", ">>>>>>>>>>>>>>")
-                        Log.e("PRAMOD", FarmerPlotUniqueID.toString())
-                        Log.e("PRAMOD", SubPlotList.toString())
-                        Log.e("PRAMOD", PlotArea.toString())
+                        Log.e("NEW_TEST", ">>>>>>>>>>>>>>")
+                        Log.e("NEW_TEST", FarmerPlotUniqueID.toString())
+                        Log.e("NEW_TEST", SubPlotList.toString())
+                        Log.e("NEW_TEST", PlotArea.toString())
                         plotSpinner()
                     }
                 } else {
@@ -498,7 +502,7 @@ class PolygonActivity : AppCompatActivity() {
                 if(SUBPLOT == "Create Plot"){
                     lastPlotId = FarmerPlotUniqueID[subPlotUniquePosition -1]
                 }
-                Log.e("PRAMOD", "SUb $SUBPLOT $lastPlotId")
+                Log.e("NEW_TEST", "SUb $SUBPLOT $lastPlotId")
 
                 if (position != 0) {
                     println(
@@ -539,7 +543,7 @@ class PolygonActivity : AppCompatActivity() {
                         val farmer_name = jsonObject2.optString("farmer_name")
 
                         edtFarmer_name.text = farmer_name
-                        Log.e("PRAMOD", "SUB Plot is $SUBPLOT")
+                        Log.e("NEW_TEST", "SUB Plot is $SUBPLOT")
                             getSubPlot()
 
                     }
@@ -598,7 +602,7 @@ class PolygonActivity : AppCompatActivity() {
     }
 
     private fun getSubPlot() {
-        Log.e("PRAMOD", "$UNIQURID")
+        Log.e("NEW_TEST", "$UNIQURID")
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         val requestBody = JSONObject()
         var uniqueIdModel = UniqueIDModel(UNIQURID)
@@ -609,13 +613,13 @@ class PolygonActivity : AppCompatActivity() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    Log.e("PRAMOD", ">>> ${response.code()}")
+                    Log.e("NEW_TEST", ">>> ${response.code()}")
                     if (response.code() == 200) {
                         if (response.body() != null) {
                             val stringResponse = JSONObject(response.body()!!.string())
                             val plotIDD = stringResponse.getString("plot_id")
-                    Log.e("PRAMOD", " >.. $plotIDD")
-                            Log.e("PRAMOD", " >.. $stringResponse")
+                    Log.e("NEW_TEST", " >.. $plotIDD")
+                            Log.e("NEW_TEST", " >.. $stringResponse")
                             nextPlotId = plotIDD.toString()
                         }
                     }
@@ -623,7 +627,7 @@ class PolygonActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    t.message?.let { Log.e("PRAMOD", it) }
+                    t.message?.let { Log.e("NEW_TEST", it) }
                 }
 
             })
@@ -639,8 +643,8 @@ class PolygonActivity : AppCompatActivity() {
 
         }
         val sortedList = mutableList.sorted() // Sorts the list in ascending order
-        Log.e("PRAMOD","Pramod  $mutableList $sortedList")
-        Log.e("PRAMOD","Pramod  $mutableList ${sortedList.last()}")
+        Log.e("NEW_TEST","NEW_TEST  $mutableList $sortedList")
+        Log.e("NEW_TEST","NEW_TEST  $mutableList ${sortedList.last()}")
         nextPlot = sortedList.last() + 1
     }
 

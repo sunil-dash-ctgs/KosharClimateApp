@@ -89,12 +89,12 @@ class PlotActivity : AppCompatActivity() {
     private lateinit var txtPercent: TextView
     private lateinit var txtUniqueID: TextView
 //    private lateinit var txtPlot_Number: TextView
-    private lateinit var txtAreaChooseText: TextView
+//    private lateinit var txtAreaChooseText: TextView
     private lateinit var txtLandArea: TextView
     private lateinit var txtLandAreaUnit: TextView
     private lateinit var txtAutoAcres: TextView
-    private lateinit var editAreaChoose: EditText
-    private lateinit var txtAutoAreaChoose: TextView
+//    private lateinit var editAreaChoose: EditText
+//    private lateinit var txtAutoAreaChoose: TextView
     private lateinit var edtSurvey_Number: EditText
     private lateinit var edtOwner_Name: EditText
     private lateinit var edtPattaName: EditText
@@ -164,7 +164,7 @@ class PlotActivity : AppCompatActivity() {
 //        txtPlot_Number = findViewById(R.id.plot_number)
 //        txtPlot_Number.text = plot_number.toString()
 
-        txtAreaChooseText = findViewById(R.id.area_choosen_text)
+//        txtAreaChooseText = findViewById(R.id.area_choosen_text)
 
         txtPercent = findViewById(R.id.percentage)
         txtUniqueID = findViewById(R.id.plot_id)
@@ -173,8 +173,8 @@ class PlotActivity : AppCompatActivity() {
         txtclick = findViewById(R.id.clickHere)
         txtLandAreaUnit = findViewById(R.id.land_area_unit_name)
         txtAutoAcres = findViewById(R.id.auto_area)
-        editAreaChoose = findViewById(R.id.area_choosen)
-        txtAutoAreaChoose = findViewById(R.id.area_choosen_acres)
+//        editAreaChoose = findViewById(R.id.area_choosen)
+//        txtAutoAreaChoose = findViewById(R.id.area_choosen_acres)
 
         edtSurvey_Number = findViewById(R.id.survey_number)
         edtOwner_Name = findViewById(R.id.owner_name)
@@ -207,7 +207,7 @@ class PlotActivity : AppCompatActivity() {
          * Showing the unit based on the state selected.
          */
         val AreaChoosenString = getString(R.string.area_choosen)
-        txtAreaChooseText.text = AreaChoosenString + " ($unit)"
+//        txtAreaChooseText.text = AreaChoosenString + " ($unit)"
 
 
         /**
@@ -278,23 +278,23 @@ class PlotActivity : AppCompatActivity() {
          * Area in AWD checking if the area is greater than the area present in the area in acres.
          * Added a listener on it.-
          */
-        editAreaChoose.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {
-                if(editAreaChoose.text.toString().isNotEmpty()){
-                    var status = checkValue()
-                    if(status){
-                        txtAutoAreaChoose.text = acresCalculation(editAreaChoose.text.toString())
-                    }
-                    else{
-                        showWarning()
-                    }
-                }
-            }
-        })
+//        editAreaChoose.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            override fun afterTextChanged(p0: Editable?) {
+//                if(editAreaChoose.text.toString().isNotEmpty()){
+//                    var status = checkValue()
+//                    if(status){
+////                        txtAutoAreaChoose.text = acresCalculation(editAreaChoose.text.toString())
+//                    }
+//                    else{
+//                        showWarning()
+//                    }
+//                }
+//            }
+//        })
 
 
         back.setOnClickListener(View.OnClickListener {
@@ -318,14 +318,16 @@ class PlotActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.owner_name_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (editAreaChoose.text.isEmpty()) {
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = resources.getString(R.string.area_awd_warning)
-                WarningDialog.confirmText = resources.getString(R.string.ok)
-                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            } else if (!checkValue()) {
-                showWarning()
-            } else if (arrayList.isEmpty()) {
+            }
+//               else if (editAreaChoose.text.isEmpty()) {
+//                WarningDialog.titleText = resources.getString(R.string.warning)
+//                WarningDialog.contentText = resources.getString(R.string.area_awd_warning)
+//                WarningDialog.confirmText = resources.getString(R.string.ok)
+//                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+//            } else if (!checkValue()) {
+//                showWarning()
+//            }
+                else if (arrayList.isEmpty()) {
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.preview_image_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
@@ -365,18 +367,18 @@ class PlotActivity : AppCompatActivity() {
     /**
      * Checking value 1 is greater than value 2.
      */
-    private fun checkValue(): Boolean {
-        var AreaLand = txtLandArea.text
-        var AreasChoose = editAreaChoose.text
-
-        Log.e("AreaLand", AreaLand.toString())
-        Log.e("AreasChoose", AreasChoose.toString())
-
-        var value1 = AreaLand.toString()
-        var value2 = AreasChoose.toString()
-
-        return value1.toDouble() >= value2.toDouble()
-    }
+//    private fun checkValue(): Boolean {
+//        var AreaLand = txtLandArea.text
+////        var AreasChoose = editAreaChoose.text
+//
+//        Log.e("AreaLand", AreaLand.toString())
+////        Log.e("AreasChoose", AreasChoose.toString())
+//
+//        var value1 = AreaLand.toString()
+////        var value2 = AreasChoose.toString()
+//
+//        return value1.toDouble() >= value2.toDouble()
+//    }
 
     /**
      * Checking which state it is current entry for.
@@ -435,8 +437,8 @@ class PlotActivity : AppCompatActivity() {
                 putExtra("FarmerId", farmerId)
                 putExtra("latitude", latitude)
                 putExtra("longitude", longitude)
-                putExtra("area_other_awd", editAreaChoose.text.toString())
-                putExtra("area_acre_awd", txtAutoAreaChoose.text.toString())
+//                putExtra("area_other_awd", editAreaChoose.text.toString())
+//                putExtra("area_acre_awd", txtAutoAreaChoose.text.toString())
                 putExtra("patta_number", edtPattaName.text.toString())
                 putExtra("daag_number", edtDaagNumber.text.toString())
                 putExtra("khatha_number", edtKhathaNumber.text.toString())
@@ -474,8 +476,8 @@ class PlotActivity : AppCompatActivity() {
 
         val FarmerId: RequestBody = farmerId.toRequestBody("text/plain".toMediaTypeOrNull())
         val UniqueID: RequestBody = txtUniqueID.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val AreaOther: RequestBody = editAreaChoose.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val AreaAcres: RequestBody = txtAutoAreaChoose.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+//        val AreaOther: RequestBody = editAreaChoose.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+//        val AreaAcres: RequestBody = txtAutoAreaChoose.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 //        val PlotNumber: RequestBody = txtPlot_Number.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val Ownership: RequestBody = ownership.toRequestBody("text/plain".toMediaTypeOrNull())
         val SurveyNumber: RequestBody = edtSurvey_Number.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
@@ -483,8 +485,8 @@ class PlotActivity : AppCompatActivity() {
 
         val farmerID: MultipartBody.Part = createFormData("farmer_id", null, FarmerId)
         val farmerUniqueID: MultipartBody.Part = createFormData("farmer_unique_id", null, UniqueID)
-        val areaOther: MultipartBody.Part = createFormData("area_other_awd", null, AreaOther)
-        val areaAcres: MultipartBody.Part = createFormData("area_acre_awd", null, AreaAcres)
+//        val areaOther: MultipartBody.Part = createFormData("area_other_awd", null, AreaOther)
+//        val areaAcres: MultipartBody.Part = createFormData("area_acre_awd", null, AreaAcres)
 //        val plotNumber: MultipartBody.Part = createFormData("plot_no", null, PlotNumber)
         val landOwnership: MultipartBody.Part = createFormData("land_ownership", null, Ownership)
         val surveyNumber: MultipartBody.Part = createFormData("survey_no", null, SurveyNumber)
@@ -555,7 +557,7 @@ class PlotActivity : AppCompatActivity() {
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         retIn.plotInfo("Bearer $token", farmerID, farmerUniqueID, landOwnership, ownerNameBody, pattaNumber, daagNumber,
-            khathaNumber, pattadharNumber, khatianNumber, affinityBody, surveyNumber, tncCarbonCredit, areaOther, areaAcres, creditBody)
+            khathaNumber, pattadharNumber, khatianNumber, affinityBody, surveyNumber, tncCarbonCredit, creditBody)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,

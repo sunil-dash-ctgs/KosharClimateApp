@@ -195,8 +195,8 @@ interface ApiInterface {
                   @Part land_ownership: MultipartBody.Part,  @Part actual_owner_name: MultipartBody.Part,
                  @Part patta_number: MultipartBody.Part, @Part daag_number: MultipartBody.Part,  @Part khatha_number: MultipartBody.Part,
                  @Part pattadhar_number: MultipartBody.Part, @Part khatian_number: MultipartBody.Part, @Part sign_affidavit: MultipartBody.Part,
-                 @Part survey_no: MultipartBody.Part, @Part check_carbon_credit: MultipartBody.Part, @Part area_other_awd: MultipartBody.Part,
-                 @Part area_acre_awd: MultipartBody.Part, @Part signature: MultipartBody.Part): Call<ResponseBody>
+                 @Part survey_no: MultipartBody.Part, @Part check_carbon_credit: MultipartBody.Part,
+                 @Part signature: MultipartBody.Part): Call<ResponseBody>
 
 //    Existing
     @Multipart

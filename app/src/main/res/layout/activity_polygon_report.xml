@@ -158,7 +158,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Plot No."
+            android:text="View"
             android:textAlignment="center"
             android:textSize="20sp"
             android:fontFamily="@font/poppins_medium"
@@ -188,9 +188,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout9"></androidx.recyclerview.widget.RecyclerView>
-
-
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout9"/>
         <ProgressBar
             android:id="@+id/polygon_progressBar"
             android:layout_width="wrap_content"

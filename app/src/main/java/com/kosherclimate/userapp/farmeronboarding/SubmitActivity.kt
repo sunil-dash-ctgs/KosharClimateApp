@@ -132,8 +132,8 @@ class SubmitActivity : AppCompatActivity() {
 //            latitude = bundle.getString("latitude")!!
 //            longitude = bundle.getString("longitude")!!
 
-            areaOther = bundle.getString("area_other_awd")!!
-            areaAcres = bundle.getString("area_acre_awd")!!
+//            areaOther = bundle.getString("area_other_awd")!!
+//            areaAcres = bundle.getString("area_acre_awd")!!
             patta_number = bundle.getString("patta_number")!!
             daag_number = bundle.getString("daag_number")!!
             khatha_number = bundle.getString("khatha_number")!!
@@ -324,7 +324,7 @@ class SubmitActivity : AppCompatActivity() {
                     progressBarColor = Color.GREEN
                 }
                 txtPercent.text = "0 %"
-Log.e("PRAMOD","VAILD Data")
+Log.e("NEW_TEST","VAILD Data")
 //                sendData(imageList)
                 lastScreenData()
             }
@@ -426,7 +426,7 @@ Log.e("PRAMOD","VAILD Data")
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         retIn.plotInfo("Bearer $token", farmerID, farmerUniqueID, landOwnership, ownerNameBody, pattaNumber, daagNumber, khathaNumber,
-            pattadharNumber, khatianNumber, affinityBody, surveyNumber, tncCarbonCredit, areaOther, areaAcres, creditBody).enqueue(object : Callback<ResponseBody> {
+            pattadharNumber, khatianNumber, affinityBody, surveyNumber, tncCarbonCredit, areaOther, ).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
@@ -565,7 +565,7 @@ Log.e("PRAMOD","VAILD Data")
 
 
     private fun lastScreenData() {
-        Log.e("PRAMOD","Last screen fun")
+        Log.e("NEW_TEST","Last screen fun")
         Log.e("Here", "iuervniowetuewmqvoi")
 
         val file1 = File(image1)

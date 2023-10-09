@@ -139,8 +139,8 @@ class CropActivity : AppCompatActivity() {
     private lateinit var phosphorous_current_year: EditText
     private lateinit var potassium_last_year: EditText
     private lateinit var potassium_current_year: EditText
-    private lateinit var awd_plot_area: EditText
-    private lateinit var awd_area_acers: TextView
+//    private lateinit var awd_plot_area: EditText
+//    private lateinit var awd_area_acers: TextView
 
     private lateinit var yield_last_year: EditText
 
@@ -216,8 +216,8 @@ class CropActivity : AppCompatActivity() {
         search = findViewById(R.id.crop_search)
 
 
-        awd_plot_area = findViewById(R.id.crop_plot_area_awd)
-        awd_area_acers = findViewById(R.id.auto_area_awd)
+//        awd_plot_area = findViewById(R.id.crop_plot_area_awd)
+//        awd_area_acers = findViewById(R.id.auto_area_awd)
         txtAreaChooseText = findViewById(R.id.plot_area_of_crop)
         txtFertilizer = findViewById(R.id.fetilizer_txt)
         txtNitrogen = findViewById(R.id.nitrogen_txt)
@@ -293,8 +293,8 @@ class CropActivity : AppCompatActivity() {
 
 //                edtSub_plot.text = PlotNoList[total_number]
 //                txtArea.text = AcresAreaList[total_number]
-                awd_plot_area.setText(AWDPlot[total_number])
-                awd_area_acers.text = AWDAcres[total_number]
+//                awd_plot_area.setText(AWDPlot[total_number])
+//                awd_area_acers.text = AWDAcres[total_number]
 
                 getFarmerDetails(PlotIdList[total_number], FarmerPlotUniqueID[total_number], PlotNoList[total_number])
             }
@@ -342,33 +342,33 @@ class CropActivity : AppCompatActivity() {
         }
 
 
-        awd_plot_area.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-                if(awd_plot_area.text.toString() != ""){
-                    var status = checkValue()
-                    if(status){
-                        awd_area_acers.text = acresCalculation(awd_plot_area.text.toString())
-                    }
-                    else{
-//                        showWarning()
-                    }
-                }
-                else{
-                    val WarningDialog = SweetAlertDialog(this@CropActivity, SweetAlertDialog.WARNING_TYPE)
-                    WarningDialog.titleText = resources.getString(R.string.warning)
-                    WarningDialog.contentText = resources.getString(R.string.calculate_warning)
-                    WarningDialog.confirmText = resources.getString(R.string.ok)
-                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-                }
-            }
-        })
+//        awd_plot_area.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//            }
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//            }
+//
+//            override fun afterTextChanged(p0: Editable?) {
+//
+//                if(awd_plot_area.text.toString() != ""){
+//                    var status = checkValue()
+//                    if(status){
+//                        awd_area_acers.text = acresCalculation(awd_plot_area.text.toString())
+//                    }
+//                    else{
+////                        showWarning()
+//                    }
+//                }
+//                else{
+//                    val WarningDialog = SweetAlertDialog(this@CropActivity, SweetAlertDialog.WARNING_TYPE)
+//                    WarningDialog.titleText = resources.getString(R.string.warning)
+//                    WarningDialog.contentText = resources.getString(R.string.calculate_warning)
+//                    WarningDialog.confirmText = resources.getString(R.string.ok)
+//                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+//                }
+//            }
+//        })
 
 
 
@@ -575,12 +575,14 @@ class CropActivity : AppCompatActivity() {
                     WarningDialog.contentText = resources.getString(R.string.area_in_acres_warning)
                     WarningDialog.confirmText = resources.getString(R.string.ok)
                     WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-                } else if (awd_area_acers.text == "0.0") {
-                    WarningDialog.titleText = resources.getString(R.string.warning)
-                    WarningDialog.contentText = resources.getString(R.string.area_in_acres_awd_warning)
-                    WarningDialog.confirmText = resources.getString(R.string.ok)
-                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-                } else if (nursery_date.text.isEmpty()) {
+                }
+//                else if (awd_area_acers.text == "0.0") {
+//                    WarningDialog.titleText = resources.getString(R.string.warning)
+//                    WarningDialog.contentText = resources.getString(R.string.area_in_acres_awd_warning)
+//                    WarningDialog.confirmText = resources.getString(R.string.ok)
+//                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+//                }
+                else if (nursery_date.text.isEmpty()) {
                     WarningDialog.titleText = resources.getString(R.string.warning)
                     WarningDialog.contentText = resources.getString(R.string.nursery_date_warning)
                     WarningDialog.confirmText = resources.getString(R.string.ok)
@@ -683,8 +685,8 @@ class CropActivity : AppCompatActivity() {
 
         val area_in_acers = txtArea.text.toString()
         val area_in_other = edtPlotArea.text.toString()
-        val area_acre_awd = awd_area_acers.text.toString()
-        val area_other_awd = awd_plot_area.text.toString()
+//        val area_acre_awd = awd_area_acers.text.toString()
+//        val area_other_awd = awd_plot_area.text.toString()
         val patta_number = pattaNumber.text.toString()
         val daag_number = daagNumber.text.toString()
         val khatha_number = khathaNumber.text.toString()
@@ -699,7 +701,7 @@ class CropActivity : AppCompatActivity() {
         val cropInfoModel = CropInfoModel(farmer_id, farmer_uniqueId,  nursery, dt_ploughing, dt_transplanting, area_in_acers, farmer_plot_uniqueid,
             season_last, season_Current, variety_last, variety_current, yield_last, "Nitrogen", nitrogen_last, nitrogen_current,
             "Phosphorous", phosphorous_last, phosphorous_current, "potassium", potassium_last, potassium_current,
-            area_acre_awd, area_other_awd, patta_number, daag_number, khatha_number, pattadhar_number, khatian_number, organization_id, gender, area_in_other)
+             patta_number, daag_number, khatha_number, pattadhar_number, khatian_number, organization_id, gender, area_in_other)
 
         Log.e("drop-data", cropInfoModel.toString())
 
@@ -997,15 +999,15 @@ class CropActivity : AppCompatActivity() {
 
 
     private fun getPlotDetails() {
-        Log.e("PRAMOD","getplotdetail >> $AcresAreaList")
+        Log.e("NEW_TEST","getplotdetail >> $AcresAreaList")
         totalSubPlots = PlotNoList.size
         txtArea.text = AcresAreaList[0]
-        Log.e("PRAMOD","getplotdetail >> ${AcresAreaList[0]}")
-        Log.e("PRAMOD","getplotdetail >> ${txtArea.text}")
+        Log.e("NEW_TEST","getplotdetail >> ${AcresAreaList[0]}")
+        Log.e("NEW_TEST","getplotdetail >> ${txtArea.text}")
 //        edtSub_plot.text = PlotNoList[subPlotPosition]
 //        edtPlotArea.setText(PlotAreaList[subPlotPosition])
-        awd_plot_area.setText(AWDPlot[subPlotPosition])
-        awd_area_acers.text = AWDAcres[subPlotPosition]
+//        awd_plot_area.setText(AWDPlot[subPlotPosition])
+//        awd_area_acers.text = AWDAcres[subPlotPosition]
 
 
         val plotID: String = PlotIdList[total_number]
@@ -1098,7 +1100,7 @@ class CropActivity : AppCompatActivity() {
                             next.text = "Home"
                         }
 
-                        viewChangeAWDArea()
+//                        viewChangeAWDArea()
 
                         val WarningDialog = SweetAlertDialog(this@CropActivity, SweetAlertDialog.WARNING_TYPE)
                         WarningDialog.titleText = " Warning "
@@ -1161,13 +1163,14 @@ class CropActivity : AppCompatActivity() {
 
                         viewsVisible(true)
                         viewIncomplete(aadhar, gender, mobile, patta, daag, khatha, pattadhar, khatian)
-                        viewChangeAWDArea()
+//                        viewChangeAWDArea()
                         convertOnboardingDate(onboardingDate)
                         getSeason()
                     }
                 }
                 val data = convertAcreToBigha(AcresAreaList[0].toString(),areaValue.toString())
                 edtPlotArea.setText(String.format("%.2f", data))
+                edtPlotArea.isEnabled = false
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -1340,10 +1343,10 @@ class CropActivity : AppCompatActivity() {
         }
     }
 
-    private fun viewChangeAWDArea() {
-        awd_plot_area.isEnabled = awd_plot_area.text.toString() == "0.0"
-        edtPlotArea.isEnabled = edtPlotArea.text.toString() == "0.0"
-    }
+//    private fun viewChangeAWDArea() {
+//        awd_plot_area.isEnabled = awd_plot_area.text.toString() == "0.0"
+//        edtPlotArea.isEnabled = edtPlotArea.text.toString() == "0.0"
+//    }
 
 
 
@@ -1365,25 +1368,25 @@ class CropActivity : AppCompatActivity() {
     /**
      * Checking value 1 is greater than value 2.
      */
-    private fun checkValue(): Boolean {
-        if(edtPlotArea.text.isEmpty() || edtPlotArea.text.isNullOrBlank()){
-            return false
-        }
-        else {
-
-            var AreaLand = edtPlotArea.text
-            var AreasChoose = awd_plot_area.text
-
-            Log.e("AreaLand", AreaLand.toString())
-            Log.e("AreasChoose", AreasChoose.toString())
-
-            var value1 = AreaLand.toString()
-            var value2 = AreasChoose.toString()
-
-            return value1.toDouble() >= value2.toDouble()
-        }
-        return false
-    }
+//    private fun checkValue(): Boolean {
+//        if(edtPlotArea.text.isEmpty() || edtPlotArea.text.isNullOrBlank()){
+//            return false
+//        }
+//        else {
+//
+//            var AreaLand = edtPlotArea.text
+////            var AreasChoose = awd_plot_area.text
+//
+//            Log.e("AreaLand", AreaLand.toString())
+////            Log.e("AreasChoose", AreasChoose.toString())
+//
+//            var value1 = AreaLand.toString()
+////            var value2 = AreasChoose.toString()
+//
+//            return value1.toDouble() >= value2.toDouble()
+//        }
+//        return false
+//    }
 
 
     private fun showWarning() {
@@ -1396,11 +1399,11 @@ class CropActivity : AppCompatActivity() {
 
 // Get base values
 private fun baseValue() {
-    Log.d("PRAMOD", "Start geting base value")
+    Log.d("NEW_TEST", "Start geting base value")
     val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
     apiInterface.baseValue("Bearer $token", state_id).enqueue(object : Callback<ResponseBody> {
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-            Log.d("PRAMOD", "gt ${response.code()}")
+            Log.d("NEW_TEST", "gt ${response.code()}")
             if(response.code() == 200){
                 if (response.body() != null) {
                     val stringResponse = JSONObject(response.body()!!.string())
@@ -1428,7 +1431,7 @@ private fun baseValue() {
     fun convertAcreToBigha(acres: String, conversionFactor: String): Double {
         var a = acres.trim().toDouble()
         var c = conversionFactor.trim().toDouble()
-        Log.i("PRAMOD","convertedd to bigha $a $c > ${a / c}")
+        Log.i("NEW_TEST","convertedd to bigha $a $c > ${a / c}")
         return a / c
     }
 }

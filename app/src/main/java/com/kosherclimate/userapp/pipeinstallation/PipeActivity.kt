@@ -153,6 +153,7 @@ class PipeActivity : AppCompatActivity() {
                         val farmer_id = data.optString("farmer_id")
                         val farmer_uniqueId = data.optString("farmer_uniqueId")
                         val plot_no = data.optString("plot_no")
+                        Log.i("NEW_TEST",">>> Plot No $plot_no $plotNumber")
 
                         val locationArray = data.optJSONArray("ranges")
                         for (i in 0 until locationArray.length()) {
@@ -373,7 +374,7 @@ class PipeActivity : AppCompatActivity() {
 
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
-
+                            val plotArea = jsonObject.optString("plot_area")
                             val plot_no = jsonObject.optString("plot_no")
                             val farmer_plot_uniqueid = jsonObject.optString("farmer_plot_uniqueid")
 
@@ -381,7 +382,7 @@ class PipeActivity : AppCompatActivity() {
                             val area_in_acers = jsonApproved.optString("area_acre_awd")
 
                             SubPlotList.add(plot_no.toString())
-                            PlotArea.add(area_in_acers.toString())
+                            PlotArea.add(plotArea.toString())
                             FarmerPlotUniqueID.add(farmer_plot_uniqueid.toString())
                         }
                         progress.dismiss()
@@ -424,11 +425,12 @@ class PipeActivity : AppCompatActivity() {
                 SUBPLOT = FarmerPlotUniqueID[subPlotUniquePosition]
 
                 if(position !=0){
-                    Log.e("PRAMOD",",,,,, ${PlotArea}")
-                    Log.e("PRAMOD",",,,,, ${subPlotUniquePosition }")
-                    Log.e("PRAMOD",",,,,, ${PlotArea[0]}")
-                    println("????????????????????????? ${"%.4f".format(PlotArea[0].trim().toDouble())}")
-                    txtArea.text =  "%.4f".format(PlotArea[0].trim().toDouble())
+                    Log.e("NEW_TEST",",,,,, ${PlotArea}")
+                    Log.e("NEW_TEST",",,,,, ${subPlotUniquePosition }")
+                    Log.e("NEW_TEST",",,,,, ${PlotArea[0]}");
+                    Log.e("NEW_TEST",",,,,, ${"%.4f".format(PlotArea[0].trim().toDouble())} $subPlotUniquePosition");
+                    Log.e("NEW_TEST",",,,,, ${PlotArea[subPlotUniquePosition-1]}");
+                    txtArea.text =  "%.4f".format(PlotArea[subPlotUniquePosition-1].trim().toDouble())
                     getFarmerName()
                 }
             }

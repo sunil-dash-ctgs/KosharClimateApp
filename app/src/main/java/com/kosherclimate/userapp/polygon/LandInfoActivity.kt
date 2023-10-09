@@ -124,7 +124,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
             txtLatitude.text = LocationList[0].latitude.toString()
             txtLongitude.text = LocationList[0].longitude.toString()
             val formattedValue = String.format("%.4f", polygon_area)
-            Log.e("PRAMOD",">>>>>>$formattedValue  $polygon_area")
+            Log.e("NEW_TEST",">>>>>>$formattedValue  $polygon_area")
             txtArea.text = formattedValue
             getAddress(txtLatitude.text.toString(), txtLongitude.text.toString())
         } else {
@@ -185,7 +185,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun getPlotNumber(): String {
         var split =  farmer_plot_uniqueid.split("P")
-        Log.e("PRAMOD",">>>>>>>> $split")
+        Log.e("NEW_TEST",">>>>>>>> $split")
         return split[1].toString()
     }
 
@@ -231,10 +231,16 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
                         progress.dismiss()
                         nextScreen()
                     } else if (response.code() == 422) {
+
+                    }else{
+                        Log.e("NEW_TEST","PIPE ${response.code()}")
+                        Log.e("NEW_TEST","PIPE ${response.body()}")
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e("NEW_TEST","PIPE Error  $t")
+                    Log.e("NEW_TEST","PIPE Error  $call")
                 }
             })
     }

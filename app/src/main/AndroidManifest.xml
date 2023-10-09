@@ -15,8 +15,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-feature android:name="android.hardware.telephony" android:required="true" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="true" />
 
     <queries>
         <intent>
@@ -35,6 +38,9 @@
         android:theme="@style/Theme.CQuestApp"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
+        <activity
+            android:name=".directions.AskDirectionActivity"
+            android:exported="false" />
         <activity
             android:name=".editpolygon.EditPolygonActivity"
             android:exported="false" />

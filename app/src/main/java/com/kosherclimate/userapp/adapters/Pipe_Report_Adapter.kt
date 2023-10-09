@@ -34,7 +34,7 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
         holder.srNo.text = reportModel.getId()
         holder.farmerName.text = reportModel.getFarmerFirstName()
         holder.farmerUniqueId.text = reportModel.getFarmerPlotUniqueId()
-        holder.pipeNo.text = reportModel.getPlotNo()
+        holder.pipeNo.text = ">>"
 
         holder.itemView.setOnClickListener {
             Log.e("uniqueId", reportModel.getFarmerId())
@@ -42,7 +42,7 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
             val intent = Intent(it.context, PipeReportDetailActivity::class.java).apply {
                 putExtra("pipe_img_id", reportModel.getId())
                 putExtra("farmer_uniqueId", holder.farmerUniqueId.text.toString())
-                putExtra("pipe_no", holder.pipeNo.text.toString())
+                putExtra("pipe_no", reportModel.getPlotNo())
                 putExtra("uniqueId", reportModel.getFarmerId())
                 putExtra("plot_no", reportModel.getPlotNo())
                 putExtra("lat", reportModel.getLat())

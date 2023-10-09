@@ -71,8 +71,8 @@ class TNCActivity : AppCompatActivity() {
 //            latitude = bundle.getString("latitude")!!
 //            longitude = bundle.getString("longitude")!!
 
-            areaOther = bundle.getString("area_other_awd")!!
-            areaAcres = bundle.getString("area_acre_awd")!!
+//            areaOther = bundle.getString("area_other_awd")!!
+//            areaAcres = bundle.getString("area_acre_awd")!!
             patta_number = bundle.getString("patta_number")!!
             daag_number = bundle.getString("daag_number")!!
             khatha_number = bundle.getString("khatha_number")!!
@@ -116,8 +116,8 @@ class TNCActivity : AppCompatActivity() {
                 putExtra("FarmerId", farmerId)
 //                putExtra("latitude", latitude)
 //                putExtra("longitude", longitude)
-                putExtra("area_other_awd", areaOther)
-                putExtra("area_acre_awd", areaAcres)
+//                putExtra("area_other_awd", areaOther)
+//                putExtra("area_acre_awd", areaAcres)
                 putExtra("patta_number", patta_number)
                 putExtra("daag_number", daag_number)
                 putExtra("khatha_number", khatha_number)

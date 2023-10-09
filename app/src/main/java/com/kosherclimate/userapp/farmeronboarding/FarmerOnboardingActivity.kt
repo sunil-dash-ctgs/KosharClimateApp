@@ -417,13 +417,13 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
             } else if (totalArea == 0.0) {
-                Log.e("PRAMOD", "$totalArea $ownArea $leasesArea")
+                Log.e("NEW_TEST", "$totalArea $ownArea $leasesArea")
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.cannot_be_empty_total_area)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
             } else if (totalArea!! < (ownArea!! + leasesArea!!)) {
-                Log.e("PRAMOD", "$totalArea $ownArea $leasesArea")
+                Log.e("NEW_TEST", "$totalArea $ownArea $leasesArea")
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.exeeding_total)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
@@ -561,7 +561,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         val intSelectButton: Int = radioGroup.checkedRadioButtonId
         radioButton = findViewById(intSelectButton)
 
-        Log.e("PRAMOD", "Entered sendData")
+        Log.e("NEW_TEST", "Entered sendData")
         progress.progressHelper.barColor = Color.parseColor("#06c238")
         progress.titleText = resources.getString(R.string.loading)
         progress.contentText = resources.getString(R.string.data_send)
@@ -625,7 +625,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                t.message?.let { Log.e("PRAMOD", it) }
+                t.message?.let { Log.e("NEW_TEST", it) }
                 progress.dismiss()
             }
         })

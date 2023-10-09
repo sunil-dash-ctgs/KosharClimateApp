@@ -205,6 +205,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 // Calculating meters from polygon list
                 val m = SphericalUtil.computeArea(latLngArrayListPolygon)
                 Log.e("m", "computeArea $m")
+                Log.e("NEW_TEST", "in Else")
 
 // converting meters to acers
                 val df = DecimalFormat("#.#####")
@@ -221,7 +222,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 val add = area.toDouble() + dif
                 Log.e("add", add.toString())
 
-                if (polygon_area > minus && polygon_area < add) {
+                if (polygon_area < add) {
                     runnable?.let { handler.removeCallbacks(it) } //stop handler when activity not visible
 
                     val stringList = convertLatLngListToStringList(latLngArrayListPolygon)
@@ -238,15 +239,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                     startActivity(intent)
                     finish()
-                } else if (polygon_area < minus) {
-                    val WarningDialog =
-                        SweetAlertDialog(this@MapActivity, SweetAlertDialog.WARNING_TYPE)
-                    WarningDialog.titleText = resources.getString(R.string.warning)
-                    WarningDialog.contentText = "Area drawn is less than plot \n area"
-                    WarningDialog.confirmText = resources.getString(R.string.ok)
-                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-
-                } else if (polygon_area > add) {
+                } 
+//                else if (polygon_area < minus) {
+//                    val WarningDialog =
+//                        SweetAlertDialog(this@MapActivity, SweetAlertDialog.WARNING_TYPE)
+//                    WarningDialog.titleText = resources.getString(R.string.warning)
+//                    WarningDialog.contentText = "Area drawn is less than plot \n area"
+//                    WarningDialog.confirmText = resources.getString(R.string.ok)
+//                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+//
+//                }
+                else if (polygon_area > add) {
                     val WarningDialog =
                         SweetAlertDialog(this@MapActivity, SweetAlertDialog.WARNING_TYPE)
                     WarningDialog.titleText = resources.getString(R.string.warning)
@@ -364,7 +367,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun polygonsListApi(latLongModel: LatLongModel) {
-        Log.d("PRAMOD", "Stateed Function")
+        Log.d("NEW_TEST", "Stateed Function")
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
 
         apiInterface.getListOfPolygon("Bearer $token", latLongModel)
@@ -373,8 +376,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    Log.d("PRAMOD", "Api Hit")
-                    Log.d("PRAMOD", "${response.code()}")
+                    Log.d("NEW_TEST", "Api Hit")
+                    Log.d("NEW_TEST", "${response.code()}")
                     if (response.code() == 200) {
                         if (response.body() != null) {
                             val responseBody = response.body()
@@ -387,29 +390,29 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                             // Now you can work with the list of data models
                             for (data in polygonLists) {
-                                Log.d("PRAMOD", "gid: ${data.gid}, fid: ${data.fid}")
+                                Log.d("NEW_TEST", "gid: ${data.gid}, fid: ${data.fid}")
 
                                 // Handle the "ranges" data as needed
                                 for (range in data.ranges) {
-                                    Log.d("PRAMOD", "lat: ${range.lat}, lng: ${range.lng}")
+                                    Log.d("NEW_TEST", "lat: ${range.lat}, lng: ${range.lng}")
                                     count++
                                 }
                             }
 //                        val jsonResponse = try {
 //                            response.body()?.string()?.let { JSONObject(it) }
 //                        } catch (e: JSONException) {
-//                            Log.e("PRAMOD", "Error parsing JSON: ${e.message}")
+//                            Log.e("NEW_TEST", "Error parsing JSON: ${e.message}")
 //                            null // Handle the case when JSON parsing fails
 //                        }
-//                        Log.d("PRAMOD","fff ${jsonResponse?.get("0")}")
-//                        Log.d("PRAMOD","fff ${jsonResponse?.length()}")
+//                        Log.d("NEW_TEST","fff ${jsonResponse?.get("0")}")
+//                        Log.d("NEW_TEST","fff ${jsonResponse?.length()}")
                             pLotPolyGon()
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.e("PRAMOD", "API Request Failed", t)
+                    Log.e("NEW_TEST", "API Request Failed", t)
                     Toast.makeText(
                         this@MapActivity,
                         "Internet Connection Issue",
@@ -428,15 +431,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         one.clear()
         val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
-        Log.e("PRAMOD", ">>.... $farmer_plot_uniqueid");
+        Log.e("NEW_TEST", ">>.... ${modifiedUniqueId.trim()}$firstLat $firstLng");
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-
-        apiInterface.polygonNearby("Bearer $token", modifiedUniqueId.trim(), firstLat, firstLng)
+        apiInterface.polygonNearby("Bearer $token",modifiedUniqueId,firstLat,firstLng)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
+//                    Log.d("NEW_TEST", "near by Polygons >>>> ${response.code()}")
+//                    val test = JSONArray(response.body()?.string())
+//                    Log.d("NEW_TEST", "near by Polygons >>>> ${test}")
                     if (response.code() == 200) {
                         if (response.body() != null) {
                             progress.dismiss()
@@ -475,8 +480,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                                         val longitude = nearbyPolygonList[j].longitude
                                         overlapsList.add(nearbyPolygonList[j])
                                         polygonOptions.add(LatLng(latitude, longitude))
-                                        polygonOptions.strokeColor(Color.argb(10, 79, 240, 228))
-                                        polygonOptions.strokeWidth(1f)
+                                        polygonOptions.strokeColor(Color.argb(80, 79, 240, 228))
+                                        polygonOptions.strokeWidth(5f)
                                         polygonOptions.fillColor(Color.argb(50, 79, 240, 228))
                                         val polygon: Polygon = mMap.addPolygon(polygonOptions)
                                     }
@@ -488,6 +493,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                             progress.dismiss()
                         }
                     } else {
+                        if (response.body() != null) {
+                            val jsonArray = JSONArray(response.body()!!.string())
+                            Log.e("NEW_TEST","JSOn >>> $jsonArray")
+                        }
                         progress.dismiss()
                     }
                 }
@@ -528,7 +537,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         polygonOptions.addAll(latLng)
         polygonOptions.strokeColor(Color.RED)
         polygonOptions.strokeWidth(4f)
-        polygonOptions.fillColor(0x33FF0000)
+        //polygonOptions.fillColor(0x33FF0000)
         polygon = mMap.addPolygon(polygonOptions)
 
         insideNearbyPolygonList.removeAt(0)
@@ -634,8 +643,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         mMap.setOnPolygonClickListener(OnPolygonClickListener {
-            Log.e("PRAMOD", "CLICKED ON POL${it}")
-            Log.e("PRAMOD", "CLICKED ON POL${overlapsList}")
+            Log.e("NEW_TEST", "CLICKED ON POL${it}")
+            Log.e("NEW_TEST", "CLICKED ON POL${overlapsList}")
 //            it.fillColor = Color.argb(51, 255, 0, 0)
             val vertices = it.points
 
@@ -646,10 +655,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             // Now, sortedVertices contains the LatLng vertices in clockwise order
             for (vertex in sortedVertices) {
-                Log.d("PRAMOD", "Latitude: ${vertex.latitude}, Longitude: ${vertex.longitude}")
+                Log.d("NEW_TEST", "Latitude: ${vertex.latitude}, Longitude: ${vertex.longitude}")
                 latLngList.add(LatLng(vertex.latitude, vertex.longitude).toString())
                 Log.e(
-                    "PRAMOD",
+                    "NEW_TEST",
                     "CLICKED ON Exist ${
                         overlapsList.contains(
                             LatLng(
@@ -661,7 +670,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
                 plotAlreadyPlotted.add(overlapsList.contains(LatLng(vertex.latitude, vertex.longitude)))
             }
-            Log.d("PRAMOD", "Latitude: $firstLat, Longitude: $firstLng")
+            Log.d("NEW_TEST", "Latitude: $firstLat, Longitude: $firstLng")
             val allTrue = plotAlreadyPlotted.all { it }
             if (allTrue) {
                 val WarningDialog =
@@ -732,7 +741,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     polygonOptions!!.strokeColor(Color.RED)
                     polygonOptions!!.strokeWidth(4f)
-                    polygonOptions!!.fillColor(Color.RED)
+                    polygonOptions!!.fillColor(Color.argb(70, 255, 0, 0))
                     polygon = mMap.addPolygon(polygonOptions!!)
 
                     txtPolygon.text = ""
@@ -760,7 +769,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         mMap.setOnMapClickListener { latLng ->
-            Log.e("PRAMOD", "Editable $editable")
+            Log.e("NEW_TEST", "Editable $editable")
             if (editable) {
                 progress.progressHelper.barColor = Color.parseColor("#06c238")
                 progress.titleText = resources.getString(R.string.loading)
@@ -789,11 +798,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun pLotPolyGon() {
-        //        Pramod Code
+        //        NEW_TEST Code
         try {
 
             for (data in polygonLists) {
-                Log.d("PRAMOD", "gid: ${data.gid}, fid: ${data.fid}")
+                Log.d("NEW_TEST", "gid: ${data.gid}, fid: ${data.fid}")
 
                 // Handle the "ranges" data as needed
                 val options = PolygonOptions()
@@ -809,7 +818,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             }
         } catch (e: Exception) {
-            Log.e("PRAMOD", ">>>> $e")
+            Log.e("NEW_TEST", ">>>> $e")
         }
     }
 
@@ -817,7 +826,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val latLng = LatLng(marker.position.latitude, marker.position.longitude)
         Log.e("latitude_longitude", latLng.toString())
         val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
-        Log.e("PRAMOD", "Modified Id = $modifiedUniqueId")
+        Log.e("NEW_TEST", "Modified Id = $modifiedUniqueId")
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         val checkPolygonModel =
             CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
@@ -901,7 +910,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         polygonOptions.addAll(latLngArrayListPolygon)
         polygonOptions.strokeColor(Color.RED)
         polygonOptions.strokeWidth(4f)
-        polygonOptions.fillColor(Color.RED)
+        //polygonOptions.fillColor(Color.argb(70, 255, 0, 0))
         polygon = mMap.addPolygon(polygonOptions)
 
         calculateDistance(latLngArrayListPolygon)
@@ -934,7 +943,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val polygonOptions = PolygonOptions()
         polygonOptions.addAll(latLng)
         polygonOptions.strokeColor(Color.RED)
-        polygonOptions.fillColor(Color.RED)
+        //polygonOptions.fillColor(Color.argb(70, 255, 0, 0))
         polygon = mMap.addPolygon(polygonOptions)
 
         calculateDistance(latLngArrayListPolygon)
@@ -943,7 +952,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun checkCoordinates(latLng: LatLng) {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
-        Log.e("PRAMOD", "Modified Id = $modifiedUniqueId")
+        Log.e("NEW_TEST", "Modified Id = $modifiedUniqueId")
         val checkPolygonModel =
             CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
         apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
@@ -1083,7 +1092,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     polygonOptions!!.add(latLngArrayListPolygon[i])
                     polygonOptions!!.strokeColor(Color.RED)
 //                    polygonOptions!!.strokeWidth(5f)
-                    polygonOptions!!.fillColor(Color.RED)
+                    polygonOptions!!.fillColor(Color.argb(70, 255, 0, 0))
                     polygon = mMap.addPolygon(polygonOptions!!)
 
                     mCurrLocationMarker?.let { markerList.add(it) }

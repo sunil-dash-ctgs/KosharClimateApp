@@ -190,6 +190,7 @@ class PolygonReportActivity : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
+                    Log.e("NEW_TEST", "Get Polygon Rejected Lists In 200")
                     if (response.body() != null) {
                         val jsonObject = JSONObject(response.body()!!.string())
 
@@ -256,7 +257,8 @@ class PolygonReportActivity : AppCompatActivity() {
 
 // Checking status code
                 else{
-                    Log.e("status_code", response.code().toString())
+                    Log.e("NEW_TEST", "Get Polygon Rejected Lists")
+                    Log.e("NEW_TEST", response.code().toString())
                     progress.dismiss()
                 }
             }
