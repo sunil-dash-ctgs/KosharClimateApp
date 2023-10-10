@@ -22,10 +22,11 @@ class AskDirectionActivity : AppCompatActivity() {
         btnYes.setOnClickListener {
             try {
                 // Start Google Maps navigation
-                val destinationLat = 19.2030581 // Replace with your destination latitude
+                    val destinationLat = 19.2030581 // Replace with your destination latitude
                 val destinationLng = 72.8617238 // Replace with your destination longitude
 
                 val uri = "google.navigation:q=$destinationLat,$destinationLng"
+//                val uri = "geo:0,0?q=$destinationLat,$destinationLng"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                 intent.setPackage("com.google.android.apps.maps") // Use the Google Maps app
                 if (intent.resolveActivity(packageManager) != null) {
@@ -43,6 +44,10 @@ class AskDirectionActivity : AppCompatActivity() {
                 Log.e("NEW_TEST","Error >>>>>>$e")
             }
 
+        }
+
+        btnNo.setOnClickListener {
+            finish()
         }
     }
 }

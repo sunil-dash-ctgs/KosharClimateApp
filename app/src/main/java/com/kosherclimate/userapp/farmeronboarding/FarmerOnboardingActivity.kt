@@ -192,7 +192,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         radioGroup = findViewById(R.id.assam_radioGroup)
 
 //        New Onboarding Process changes
-        tvCall = findViewById(R.id.tvCall)
+        tvCall = findViewById(R.id.tvVerify)
         tvTotalArea = findViewById(R.id.tvTotalArea)
         tvOwnArea = findViewById(R.id.tvOwnArea)
         tvLeaseArea = findViewById(R.id.tvLeaseArea)
@@ -223,12 +223,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
         tvCall.setOnClickListener {
         // cheacking permission
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this,arrayOf(android.Manifest.permission.CALL_PHONE),REQUEST_PHONE_CALL)
-            }else{
-                makeCall()
-                tvCall.text = resources.getString(R.string.verify)
-            }
+                verifyNumber()
         }
 
         edTotalArea.addTextChangedListener(object : TextWatcher {
@@ -319,12 +314,26 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 ) {
                     s!!.clear()
                 }
+//                else{
+//                    verifyNumber()
+//                }
+
+//                if(s.isNullOrEmpty()){
+//                    if (s!!.length < 10){
+//                        tvCall.text = resources.getString(R.string.verify)
+//                    }
+//                }
+
+
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                tvCall.text = resources.getString(R.string.verify)
+                tvCall.setTextColor(resources.getColor(R.color.main_green_color));
             }
         })
 
@@ -406,6 +415,11 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 WarningDialog.contentText = resources.getString(R.string.mobile_length_warning)
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            } else if (tvCall.text.toString().toLowerCase() != "verified" ) {
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = resources.getString(R.string.number_not_verified)
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
             } else if (txtUniqueID.text.isEmpty()) {
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = resources.getString(R.string.missing_farmer_id_warning)
@@ -438,6 +452,34 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         }
 
         getUniqueId(versionName)
+    }
+
+    private fun verifyNumber() {
+        val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+        retIn.verifyMobile("Bearer $token", edtMobile.text.toString()).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.e("NEW_TEST","Rsponse ${response.code()}");
+                if (response.code() == 200) {
+                    val jsonObject = JSONObject(response.body()!!.string())
+                    tvCall.text = resources.getString(R.string.verified)
+                    tvCall.setTextColor(resources.getColor(R.color.main_green_color));
+                    edtMobile.isEnabled = false
+                } else {
+                    tvCall.text = "Not Verified"
+                    tvCall.setTextColor(resources.getColor(R.color.red));
+                    val WarningDialog = SweetAlertDialog(this@FarmerOnboardingActivity, SweetAlertDialog.WARNING_TYPE)
+                    WarningDialog.titleText = resources.getString(R.string.warning)
+                    WarningDialog.contentText = resources.getString(R.string.number_not_verified)
+                    WarningDialog.confirmText = resources.getString(R.string.ok)
+                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                t.message?.let { Log.e("NEW_TEST", it) }
+
+            }
+        })
     }
 
     private fun makeCall() {

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">KosheRise</string>
-    <string name="version_number">2.1.0 - Live</string>
+    <string name="version_number">3.0.0 - Test</string>
     <string name="powered">Developed by CROPINTELLIX PRIVATE LIMITED</string>
 
     <string name="welcome_text">Welcome to KosheRise..!!</string>
@@ -270,7 +270,9 @@
     <string name="area_cannot_warning">ఎకరాల్లో విస్తీర్ణం లేదు</string>
     <string name="veriying_otp">OTPని ధృవీకరిస్తోంది.....</string>
     <string name="valid_otp">చెల్లుబాటు అయ్యే OTP</string>
-    <string name="verify">Verified</string>
+    <string name="verified">Verified</string>
+    <string name="verify">Verify</string>
+    <string name="number_not_verified">Given Number is not verified</string>
 
     <string name="location_warning">నీలం బటన్‌ను ఎంచుకోండి \n మీ ప్రస్తుత స్థానాన్ని పొందడానికి</string>
     <string name="address_warning">చిరునామాను నమోదు చేయండి</string>

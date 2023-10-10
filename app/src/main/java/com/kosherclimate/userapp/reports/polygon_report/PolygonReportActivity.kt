@@ -204,8 +204,9 @@ class PolygonReportActivity : AppCompatActivity() {
                             val farmer_plot_uniqueid = jsonObject.optString("farmer_plot_uniqueid").toString()
                             val plot_no = jsonObject.optString("plot_no").toString()
                             val pipe_no = jsonObject.optString("pipe_no").toString()
-                            val lat = jsonObject.optString("lat").toString()
-                            val lng = jsonObject.optString("lng").toString()
+                            val location = jsonObject.getJSONObject("firstLatLongPair")
+                            val lat = location.optString("lat").toString()
+                            val lng = location.optString("lng").toString()
                             val distance = jsonObject.optString("distance").toString()
                             val area_in_acers = jsonObject.optString("area_in_acers").toString()
                             val state = jsonObject.optString("state").toString()
@@ -231,6 +232,7 @@ class PolygonReportActivity : AppCompatActivity() {
                             }
 
                             Log.e("uniqueId", uniqueId)
+                            Log.e("NEW_TEST", "LAT LONG $lat $lng $location")
 
                             pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district,taluka,villageName,aadharNum,mobileNum)
                             reportModel.add(pipeReportModel)

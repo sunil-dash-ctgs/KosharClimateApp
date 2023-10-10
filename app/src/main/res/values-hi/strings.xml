@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">KosheRise</string>
-    <string name="version_number">2.1.0 - Live</string>
+    <string name="version_number">3.0.0 - Test</string>
     <string name="powered">Developed by CROPINTELLIX PRIVATE LIMITED</string>
 
     <string name="welcome_text">Welcome to KosheRise..!!</string>
@@ -280,7 +280,9 @@
     <string name="area_cannot_warning">एकड़ में क्षेत्र गायब है</string>
     <string name="veriying_otp">ओटीपी सत्यापित किया जा रहा है.....</string>
     <string name="valid_otp">वैध ओटीपी</string>
-    <string name="verify">Verified</string>
+    <string name="verified">Verified</string>
+    <string name="verify">Verify</string>
+    <string name="number_not_verified">Given Number is not verified</string>
 
     <string name="location_warning">नीला बटन चुनें \n अपना वर्तमान स्थान प्राप्त करने के लिए</string>
     <string name="address_warning">पता डालें</string>

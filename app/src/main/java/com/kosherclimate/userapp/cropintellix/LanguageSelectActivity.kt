@@ -78,7 +78,7 @@ class LanguageSelectActivity : AppCompatActivity() {
 
         llBengali.setOnClickListener {
             val intent = Intent(this@LanguageSelectActivity, DashboardActivity::class.java)
-            intent.putExtra("language", "bn-rIN")
+            intent.putExtra("language", "bn")
             startActivity(intent)
         }
 

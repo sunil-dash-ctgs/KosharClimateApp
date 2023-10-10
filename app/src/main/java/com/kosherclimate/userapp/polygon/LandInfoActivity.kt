@@ -1,6 +1,7 @@
 package com.kosherclimate.userapp.polygon
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -60,6 +61,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
     private var lat: Double = 0.0
     private var lng: Double = 0.0
     private var polygon_area: Double = 0.0
+    private var sumPlotArea: Double = 0.0
 
     private lateinit var btnNext: Button
     private lateinit var btnBack: Button
@@ -72,6 +74,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var txtVillage: TextView
     private lateinit var txtUnit: TextView
     private lateinit var txtArea: TextView
+    private lateinit var txtAwdArea: TextView
 
     private lateinit var tvFarmerUid: TextView
     private lateinit var tvPlotNo: TextView
@@ -81,6 +84,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var progress: SweetAlertDialog
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_land_info)
@@ -99,6 +103,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         txtUnit = findViewById(R.id.pipe_area_unit)
         txtArea = findViewById(R.id.pipe_area)
+        txtAwdArea = findViewById(R.id.awd_area)
 
 //        new
         tvFarmerUid =findViewById(R.id.farmer_uid)
@@ -114,6 +119,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.e("stringList", LocationList.toString())
 
             area = bundle.getString("area").toString()
+            sumPlotArea = bundle.getString("awd_area")!!.toDouble()
             unique_id = bundle.getString("unique_id")!!
             sub_plot_no = bundle.getString("sub_plot_no")!!
             polygon_area = bundle.getDouble("polygon_area")
@@ -124,7 +130,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
             txtLatitude.text = LocationList[0].latitude.toString()
             txtLongitude.text = LocationList[0].longitude.toString()
             val formattedValue = String.format("%.4f", polygon_area)
-            Log.e("NEW_TEST",">>>>>>$formattedValue  $polygon_area")
+            Log.e("NEW_TEST",">>>>>>$formattedValue  $polygon_area , $area")
             txtArea.text = formattedValue
             getAddress(txtLatitude.text.toString(), txtLongitude.text.toString())
         } else {
@@ -132,6 +138,9 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         txtUnit.text = "Acers"
+
+        var awd:String = "${sumPlotArea + polygon_area}"
+        txtAwdArea.text = String.format("%.4f", awd)
 
         tvFarmerUid.text = farmer_id.toString()
         tvPlotNo.text = getPlotNumber()

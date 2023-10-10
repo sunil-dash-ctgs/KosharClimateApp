@@ -1,7 +1,7 @@
 
 <resources>
 <string name="app_name">KosheRise</string>
-<string name="version_number">2.1.3   - Live</string>
+<string name="version_number">3.0.0 - Test</string>
 <string name="powered">Developed by CROPINTELLIX PRIVATE LIMITED</string>
 
 <string name="welcome_text">Welcome to KosheRise..!!</string>
@@ -280,7 +280,9 @@
 <string name="area_cannot_warning">Area in Acres is missing</string>
 <string name="veriying_otp">Verifying OTP.....</string>
 <string name="valid_otp">Valid OTP</string>
-    <string name="verify">Verified</string>
+    <string name="verified">Verified</string>
+    <string name="verify">Verify</string>
+    <string name="number_not_verified">Given Number is not verified</string>
 
 <string name="location_warning">Select the blue button \n to get your current location</string>
 <string name="address_warning">Enter Address</string>

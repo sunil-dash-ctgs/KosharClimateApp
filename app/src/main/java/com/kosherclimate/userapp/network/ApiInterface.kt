@@ -554,4 +554,9 @@ interface ApiInterface {
     @GET("V1/generate/unique/plot?")
     fun getPlotId(@Header( "Authorization") token: String, @Query("farmer_uniqueId") data: String) : Call<ResponseBody>
 
+    /*** Verify Number */
+    @Headers("Accept: application/json")
+    @GET("verify_number")
+    fun verifyMobile(@Header( "Authorization") token: String, @Query("phone_number") data: String) : Call<ResponseBody>
+
 }

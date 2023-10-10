@@ -1,14 +1,17 @@
 package com.kosherclimate.userapp.adapters
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.models.PipeReportModel
 import com.kosherclimate.userapp.reports.pipe_report.PipeReportDetailActivity
@@ -21,11 +24,12 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
 //        var uniqueId: TextView = view.findViewById(R.id.secondColumn)
         var farmerName: TextView = view.findViewById(R.id.secondColumn)
         var farmerUniqueId: TextView = view.findViewById(R.id.thirdColumn)
-        var pipeNo: TextView = view.findViewById(R.id.fourthColumn)
+//        var pipeNo: TextView = view.findViewById(R.id.fourthColumn)
+        var direction: ImageView = view.findViewById(R.id.fourthColumn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.aeriation_report_row, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.direction_report, parent, false)
         return MyViewHolder(itemView)
     }
 
@@ -34,7 +38,26 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
         holder.srNo.text = reportModel.getId()
         holder.farmerName.text = reportModel.getFarmerFirstName()
         holder.farmerUniqueId.text = reportModel.getFarmerPlotUniqueId()
-        holder.pipeNo.text = ">>"
+
+
+        holder.direction.setOnClickListener {
+            Log.e("NEW_TEST","CLick on directions")
+            try {
+                // Start Google Maps navigation
+                val destinationLat = reportModel.getLat() // Replace with your destination latitude
+                val destinationLng = reportModel.getLng() // Replace with your destination longitude
+                Log.e("NEW_TEST","CLick on directions $destinationLat,$destinationLng")
+                val uri = "google.navigation:q=$destinationLat,$destinationLng"
+//                val uri = "geo:0,0?q=$destinationLat,$destinationLng"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+                intent.setPackage("com.google.android.apps.maps") // Use the Google Maps app
+                if (intent.resolveActivity(it.context.packageManager) != null) {
+                    it.context.startActivity(intent)
+                }
+            }catch (e:Exception){
+                Log.e("NEW_TEST","Error >>>>>>$e")
+            }
+        }
 
         holder.itemView.setOnClickListener {
             Log.e("uniqueId", reportModel.getFarmerId())

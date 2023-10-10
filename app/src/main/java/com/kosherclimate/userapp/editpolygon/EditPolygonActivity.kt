@@ -48,6 +48,7 @@ class EditPolygonActivity : AppCompatActivity() , OnMapReadyCallback, LocationLi
     private var LAT = ArrayList<Double>()
     private var LNG = ArrayList<Double>()
     private var area: String = ""
+    private var sumPlotArea: String = ""
     private var farmer_name: String = ""
     private var area_in_acers: String = ""
     private var unique_id: String = ""
@@ -98,6 +99,7 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
             latitude = bundle.getString("latitude")!!
             longitude = bundle.getString("longitude")!!
             area = bundle.getString("area")!!
+            sumPlotArea = bundle.getString("awd_area")!!
             unique_id = bundle.getString("unique_id")!!
             sub_plot_no = bundle.getString("sub_plot_no")!!
             farmer_id = bundle.getString("farmer_id")!!
@@ -141,6 +143,7 @@ private val markerList: java.util.ArrayList<Marker> = java.util.ArrayList()
                 val intent = Intent(this, LandInfoActivity::class.java).apply {
                     putExtra("locationList", stringList)
                     putExtra("area", area)
+                    putExtra("awd_area", sumPlotArea)
                     putExtra("unique_id", unique_id)
                     putExtra("sub_plot_no", sub_plot_no)
                     putExtra("farmer_id", farmer_id)

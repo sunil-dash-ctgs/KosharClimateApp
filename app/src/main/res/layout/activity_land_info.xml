@@ -473,7 +473,31 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total AWD Area"
+                android:fontFamily="@font/poppins_medium"/>
+
+            <TextView
+                android:id="@+id/awd_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/grey_bg"
+                android:fontFamily="@font/poppins_regular"
+                android:inputType="none"
+                android:enabled="false"
+                android:padding="10dp"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

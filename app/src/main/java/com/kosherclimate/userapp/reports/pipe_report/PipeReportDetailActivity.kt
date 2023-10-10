@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.directions.AskDirectionActivity
 import com.kosherclimate.userapp.reports.polygon_report.PolygonReportMapActivity
 
 class PipeReportDetailActivity : AppCompatActivity() {
@@ -88,6 +89,11 @@ class PipeReportDetailActivity : AppCompatActivity() {
             finish()
         })
 
+        val fab: View = findViewById(R.id.fab)
+        fab.setOnClickListener {
+            val intent = Intent(it.context, AskDirectionActivity::class.java)
+            startActivity(intent)
+        }
 
         imgEdt.setOnClickListener(View.OnClickListener{
             if (reason_id == "8"){

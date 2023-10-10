@@ -65,6 +65,7 @@ class PolygonActivity : AppCompatActivity() {
 
 //    New
     var availableArea :Double = 0.0
+    var sumPlotArea :Double = 0.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -209,12 +210,7 @@ class PolygonActivity : AppCompatActivity() {
 //                        val polygon_status = 1
                             Log.e("status", status.toString())
 
-                            submittedScreen(
-                                id,
-                                farmer_id,
-                                farmer_uniqueId,
-                                plot_no,
-                                latitude,
+                            submittedScreen(id, farmer_id, farmer_uniqueId, plot_no, latitude,
                                 longitude,
                                 state,
                                 district,
@@ -318,6 +314,7 @@ class PolygonActivity : AppCompatActivity() {
             val intent = Intent(this, MapActivity::class.java).apply {
 //                putExtra("area", PlotArea[subPlotUniquePosition - 1])
                 putExtra("area", availableArea.toString())
+                putExtra("awd_area", sumPlotArea.toString())
                 putExtra("unique_id", FarmerUniqueList[farmerUniquePosition])
                 putExtra("sub_plot_no", SubPlotList[subPlotUniquePosition - 1])
                 putExtra("farmer_id", IDList[farmerUniquePosition].toString())
@@ -436,11 +433,13 @@ class PolygonActivity : AppCompatActivity() {
 
                             val jsonApproved = jsonObject.getJSONObject("apprv_farmer_plot")
                             val area_in_acers = jsonObject.optString("area_in_acers")
+                            val tmpPlotArea = jsonObject.optString("plot_area").toDouble()
+                            sumPlotArea += tmpPlotArea
                             SubPlotList.add(plot_no.toString())
                             PlotArea.add(area_in_acers.toString())
                             FarmerPlotUniqueID.add(farmer_plot_uniqueid.toString())
                         }
-                        Log.e("NEW_TEST", "Available plot Area $availableArea")
+                        Log.e("NEW_TEST", "Available plot Area $availableArea $sumPlotArea")
                         if (SubPlotList.isNotEmpty()) {
                             SubPlotList.add(SubPlotList.last().toString())
                             PlotArea.add(PlotArea.last().toString())

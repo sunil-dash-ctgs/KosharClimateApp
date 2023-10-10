@@ -78,6 +78,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     var firstLng: Double = 0.0
     private var KO: String = ""
     private var area: String = ""
+    private var sumPlotArea: String = ""
     private var unique_id: String = ""
     private var farmer_id: String = ""
     private var sub_plot_no: String = ""
@@ -128,6 +129,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val bundle = intent.extras
         if (bundle != null) {
             area = bundle.getString("area")!!
+            sumPlotArea = bundle.getString("awd_area")!!
             unique_id = bundle.getString("unique_id")!!
             sub_plot_no = bundle.getString("sub_plot_no")!!
             farmer_id = bundle.getString("farmer_id")!!
@@ -229,6 +231,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     val intent = Intent(this, LandInfoActivity::class.java).apply {
                         putExtra("locationList", stringList)
                         putExtra("area", area)
+                        putExtra("awd_area", sumPlotArea)
                         putExtra("unique_id", unique_id)
                         putExtra("sub_plot_no", sub_plot_no)
                         putExtra("farmer_id", farmer_id)
@@ -685,6 +688,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     putExtra("longitude", firstLng.toString())
                     putStringArrayListExtra("polygon_lat_lng", latLngList)
                     putExtra("area", area)
+                    putExtra("awd_area", sumPlotArea)
                     putExtra("unique_id", unique_id)
                     putExtra("sub_plot_no", sub_plot_no)
                     putExtra("farmer_id", farmer_id)
