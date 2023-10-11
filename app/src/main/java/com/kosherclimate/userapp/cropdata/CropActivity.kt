@@ -1032,7 +1032,7 @@ class CropActivity : AppCompatActivity() {
                         state = jsonObject2.optString("state")
                         edtFarmer_name.text = farmer_name
                         baseValue()
-                       unit = if(state_id.trim() == "29"){
+                       unit = if(state.trim().toString().toLowerCase() == "assam"){
                              "Bigha"
                         }else{
                             "Acre"

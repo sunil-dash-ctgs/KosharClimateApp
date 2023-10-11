@@ -30,7 +30,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
+import com.kosherclimate.userapp.models.FarmerIDModel
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
 import java.io.IOException
@@ -51,6 +53,8 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
     private var village: String = ""
     private var state: String = ""
     private var district: String = ""
+    private var taluka: String = ""
+    private var panchayat: String = ""
     private var country: String = ""
     private var area: String = ""
     private var unique_id: String = ""
@@ -139,7 +143,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         txtUnit.text = "Acers"
 
-        var awd:String = "${sumPlotArea + polygon_area}"
+        var awd = sumPlotArea + polygon_area
         txtAwdArea.text = String.format("%.4f", awd)
 
         tvFarmerUid.text = farmer_id.toString()
@@ -208,6 +212,7 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
             latList.add(locationModel)
         }
 
+        Log.e("NEW_TEST","send pipe data $panchayat")
         val pipeLocationModel = PipeLocationModel(
             farmer_id,
             unique_id,
@@ -222,7 +227,8 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
             polygon_area.toString(),
             latList,
             farmer_plot_uniqueid,
-            polygon_date_time
+            polygon_date_time,
+            panchayat
         )
 
 
@@ -290,32 +296,69 @@ class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
         val geocoder: Geocoder = Geocoder(this@LandInfoActivity)
 
         try {
-// Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            addresses = geocoder.getFromLocation(latitude.toDouble(), longitude.toDouble(), 1)
+//// Here 1 represent max location result to returned, by documents it recommended 1 to 5
+//            addresses = geocoder.getFromLocation(latitude.toDouble(), longitude.toDouble(), 1)
+            var id = FarmerIDModel(unique_id)
+            val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+            apiInterface.getFarmerLocation("Bearer $token", id)
+                .enqueue(object : retrofit2.Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        Log.e("NEW_TEST","Get Address ${response.code()} $unique_id")
+                        Log.e("NEW_TEST","Get Address ${response.body()}")
+                        if (response.code() == 200) {
+                            val stringResponse = JSONObject(response.body()!!.string())
+                            val location = stringResponse.optJSONObject("farmer_details")
+                            village = location.optString("village")
+                            state = location.optString("state")
+                            district = location.optString("district")
+                             taluka = location.optString("taluka")
+                            panchayat = location.optString("panchayat")
+                            Log.e("NEW_TEST","Get Address ${stringResponse}")
+
+                            txtVillage.text = village
+                            txtState.text = state
+                            txtDistrict.text = district
+                            txtTaluka.text = taluka
+                        } else if (response.code() == 422) {
+
+                        }else{
+                            Log.e("NEW_TEST","Get Address ${response.code()}")
+                            Log.e("NEW_TEST","Get Address ${response.body()}")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Log.e("NEW_TEST","Get Address Error  $t")
+                        Log.e("NEW_TEST","Get Address Error  $call")
+                    }
+                })
         } catch (e: IOException) {
-            e.printStackTrace()
+            Log.e("NEW_TEST","Get Address Error  $e")
         }
 
 // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        try {
-            village = if (addresses!![0].locality != null) addresses[0].locality else " "
-            state = if (addresses[0].adminArea != null) addresses[0].adminArea else " "
-            district = if (addresses[0].subAdminArea != null) addresses[0].subAdminArea else " "
-            country = if (addresses[0].countryName != null) addresses[0].countryName else " "
-
-            Log.e("village", village)
-            Log.e("state", state)
-            Log.e("district", district)
-            Log.e("country", country)
-
-            txtVillage.text = village
-            txtState.text = state
-            txtDistrict.text = district
-            txtTaluka.text = district
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//        try {
+//            village = if (addresses!![0].locality != null) addresses[0].locality else " "
+//            state = if (addresses[0].adminArea != null) addresses[0].adminArea else " "
+//            district = if (addresses[0].subAdminArea != null) addresses[0].subAdminArea else " "
+//            country = if (addresses[0].countryName != null) addresses[0].countryName else " "
+//
+//            Log.e("village", village)
+//            Log.e("state", state)
+//            Log.e("district", district)
+//            Log.e("country", country)
+//
+//            txtVillage.text = village
+//            txtState.text = state
+//            txtDistrict.text = district
+//            txtTaluka.text = district
+//
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

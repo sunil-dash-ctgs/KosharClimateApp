@@ -39,6 +39,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
         <activity
+            android:name=".reports.polygon_report.PolygonPendingActivity"
+            android:exported="false" />
+        <activity
             android:name=".directions.AskDirectionActivity"
             android:exported="false" />
         <activity

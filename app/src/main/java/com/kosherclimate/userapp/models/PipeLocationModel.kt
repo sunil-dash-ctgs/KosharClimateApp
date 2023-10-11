@@ -14,5 +14,6 @@ data class PipeLocationModel(
     val plot_area: String,
     val ranges: ArrayList<LocationModel>,
     val farmer_plot_uniqueid: String,
-    val polygon_date_time: String
+    val polygon_date_time: String,
+    val panchayat: String,
 )

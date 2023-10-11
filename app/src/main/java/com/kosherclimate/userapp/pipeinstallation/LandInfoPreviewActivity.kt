@@ -351,7 +351,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
         val polygon_date_time = formattedDate
 
         val pipeLocationModel = PipeLocationModel(farmer_id ,unique_id, plot_no, previewLat, previewLng, state, district, taluka, village, unit,
-            area, latList, farmer_plot_uniqueid, polygon_date_time)
+            area, latList, farmer_plot_uniqueid, polygon_date_time,"null")
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.sendPipeData("Bearer $token", pipeLocationModel).enqueue(object : Callback<ResponseBody> {

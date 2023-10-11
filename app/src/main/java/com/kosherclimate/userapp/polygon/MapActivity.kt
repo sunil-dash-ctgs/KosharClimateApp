@@ -1016,10 +1016,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val LATLNG = LatLng(firstLat, firstLng)
         val distance = SphericalUtil.computeDistanceBetween(latLng, LATLNG)
 
-        if (latLngArrayListPolygon.size == 0 && distance > 20) {
+        if (latLngArrayListPolygon.size == 0 && distance > 50) {
             Toast.makeText(
                 this@MapActivity,
-                "Distance is greater than 10 meters",
+                "Distance is greater than 50 meters",
                 Toast.LENGTH_SHORT
             ).show()
         } else {

@@ -559,4 +559,9 @@ interface ApiInterface {
     @GET("verify_number")
     fun verifyMobile(@Header( "Authorization") token: String, @Query("phone_number") data: String) : Call<ResponseBody>
 
+    /*** Get List Of Plots near Me*/
+    @Headers("Accept: application/json")
+    @POST("V1/farmer_details")
+    fun getFarmerLocation(@Header( "Authorization") token: String, @Body farmer_uniqueId: FarmerIDModel) : Call<ResponseBody>
+
 }

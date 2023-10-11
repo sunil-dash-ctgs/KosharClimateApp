@@ -246,12 +246,12 @@ class ReportActivity : AppCompatActivity() {
         }
 
 
-//        polygon_pending.setOnClickListener {
-//            val intent = Intent(this, PolygonReportActivity::class.java).apply {
-//                putExtra("status", "Pending")
-//            }
-//            startActivity(intent)
-//        }
+        polygon_pending.setOnClickListener {
+            val intent = Intent(this, PolygonReportActivity::class.java).apply {
+                putExtra("status", "Pending")
+            }
+            startActivity(intent)
+        }
 
 
         pipe_rejected.setOnClickListener {
