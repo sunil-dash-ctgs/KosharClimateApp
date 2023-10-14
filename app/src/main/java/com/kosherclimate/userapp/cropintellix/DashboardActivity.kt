@@ -181,7 +181,7 @@ class DashboardActivity : AppCompatActivity() {
                     SweetAlertDialog(this@DashboardActivity, SweetAlertDialog.WARNING_TYPE)
 
                 WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = "Farmern registration \n Access Not Allowed"
+                WarningDialog.contentText = "Farmer registration \n Access Not Allowed"
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
             }

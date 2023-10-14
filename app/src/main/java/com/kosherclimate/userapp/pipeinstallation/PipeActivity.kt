@@ -148,7 +148,7 @@ class PipeActivity : AppCompatActivity() {
                     if(response.body() != null){
                         val stringResponse = JSONObject(response.body()!!.string())
                         val data = stringResponse.getJSONObject("data")
-
+                        Log.i("NEW_TEST",">>> response dara $data")
                         val id = data.optString("id")
                         val farmer_id = data.optString("farmer_id")
                         val farmer_uniqueId = data.optString("farmer_uniqueId")

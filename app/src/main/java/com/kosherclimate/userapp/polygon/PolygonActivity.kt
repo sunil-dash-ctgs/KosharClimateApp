@@ -479,7 +479,9 @@ class PolygonActivity : AppCompatActivity() {
             ) {
                 farmerUniquePosition = position
                 UNIQURID = FarmerUniqueList[farmerUniquePosition]
-                getPlots()
+                if(position >0){
+                    getPlots()
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
