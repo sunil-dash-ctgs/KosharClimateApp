@@ -645,6 +645,7 @@
                                 android:maxLength="50"
                                 android:padding="10dp"
                                 android:singleLine="true"
+                                android:visibility="visible"
                                 android:textSize="15sp" />
 
                         </RelativeLayout>

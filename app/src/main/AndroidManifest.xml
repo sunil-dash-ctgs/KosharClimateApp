@@ -39,6 +39,21 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
         <activity
+            android:name=".updatefarmer.UpdateFarmerImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".updatefarmer.UpdateTNCActivity"
+            android:exported="false" />
+        <activity
+            android:name=".updatefarmer.UpdatePlotDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".updatefarmer.UpdateFarmerLocationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".updatefarmer.UpdatePersonalDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".reports.polygon_report.PolygonPendingActivity"
             android:exported="false" />
         <activity

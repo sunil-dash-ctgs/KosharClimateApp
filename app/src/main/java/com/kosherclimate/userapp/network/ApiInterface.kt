@@ -5,6 +5,9 @@ import com.kosherclimate.userapp.models.*
 import com.kosherclimate.userapp.models.WeatherForecastModel
 import com.kosherclimate.userapp.models.existingplots.UniqueIDModel
 import com.kosherclimate.userapp.models.polygonmodel.LatLongModel
+import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatePlotInfo
+import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatedFarmerLocation
+import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatedPersonalDetails
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -563,5 +566,43 @@ interface ApiInterface {
     @Headers("Accept: application/json")
     @POST("V1/farmer_details")
     fun getFarmerLocation(@Header( "Authorization") token: String, @Body farmer_uniqueId: FarmerIDModel) : Call<ResponseBody>
+
+
+    /*** Get Farmer details*/
+    @Headers("Accept: application/json")
+    @GET("V1/get_farmer_data")
+    fun getFarmerDetails(@Header( "Authorization") token: String, @Query("farmer_uniqueId") farmerUniqueId: String,@Query("screen") screen: String) : Call<ResponseBody>
+
+
+    /*** Update Farmer Personal details*/
+    @Headers("Accept: application/json")
+    @POST("V1/farmer-info-update")
+    fun updateFarmerPersonalDetails(@Header( "Authorization") token: String, @Body personalDetails: UpdatedPersonalDetails,) : Call<ResponseBody>
+
+
+    @Headers("Accept: application/json")
+    @POST("V1/update-farmer-location")
+    fun updateFarmerLocation(@Header( "Authorization") token: String, @Body farmerLocationModel: UpdatedFarmerLocation): Call<ResponseBody>
+
+
+    @Headers("Accept: application/json")
+    @POST("V1/update-farmer-plot")
+    fun updatePlotInfo(@Header( "Authorization") token: String, @Body plotInfo: UpdatePlotInfo): Call<ResponseBody>
+
+
+    @Multipart
+    @Headers("Accept: application/json")
+    @POST("V1/farmer/plot/images-update")
+    fun updatePlotImage(@Header( "Authorization") token: String, @Part farmer_id: MultipartBody.Part, @Part farmer_unique_id: MultipartBody.Part,
+                        @Part sr: MultipartBody.Part, @Part image: MultipartBody.Part): Call<ResponseBody>
+
+
+    @Multipart
+    @Headers("Accept: application/json")
+    @POST("V1/update-farmer-doc")
+    fun updateFarmerImage(@Header( "Authorization") token: String, @Part screen: MultipartBody.Part, @Part date_survey: MultipartBody.Part,
+                   @Part time_survey: MultipartBody.Part, @Part farmer_photo: MultipartBody.Part, @Part aadhaar_photo: MultipartBody.Part,
+                   @Part others_photo: MultipartBody.Part, @Part plotowner_sign: MultipartBody.Part, @Part farmer_uniqueId: MultipartBody.Part,@Part signature: MultipartBody.Part): Call<ResponseBody>
+
 
 }

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.models.WatermarkOptions
 import com.google.android.gms.maps.model.LatLng
+import org.json.JSONObject
 import java.text.DecimalFormat
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -125,5 +126,20 @@ class Common {
         )
 
         return Radius * c
+    }
+
+
+    // Function to safely handle "null" values in JSON
+    fun getStringFromJSON(jsonObject: JSONObject?, key: String): String {
+        return jsonObject?.optString(key, "")?.takeIf { it != "null" } ?: ""
+    }
+
+    /** Convert Acer to bigha *****/
+    fun acresToBigha(acres: String, areaValue :Double): Double {
+        val value = acres.toDouble() / areaValue
+        val result = String.format("%.2f", value).toDouble()
+        Log.d("NEW_TEST","Convert to bigha >> $acres & $areaValue")
+        Log.d("NEW_TEST","Convert to bigha >> $acres & $areaValue = $result")
+        return result
     }
 }

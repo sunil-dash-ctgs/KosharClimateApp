@@ -576,7 +576,7 @@
 
 
                     <RelativeLayout
-                        android:id="@+id/addPlots"
+                        android:id="@+id/ivUpdateFarmer"
                         android:layout_width="0dp"
                         android:layout_height="140dp"
                         android:layout_margin="10dp"
@@ -592,7 +592,7 @@
                             android:layout_alignParentEnd="true"
                             android:gravity="center_horizontal"
                             android:padding="10dp"
-                            android:text="@string/add_more"
+                            android:text="Update farmer"
                             android:textColor="@color/black">
                         </TextView>
 
@@ -604,7 +604,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
                             android:padding="5dp"
-                            android:src="@drawable/add_icon">
+                            android:src="@drawable/update_icon">
                         </ImageView>
 
 

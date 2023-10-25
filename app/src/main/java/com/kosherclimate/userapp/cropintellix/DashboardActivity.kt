@@ -44,6 +44,7 @@ import com.kosherclimate.userapp.network.WeatherApiClient
 import com.kosherclimate.userapp.pipeinstallation.PipeActivity
 import com.kosherclimate.userapp.polygon.PolygonActivity
 import com.kosherclimate.userapp.reports.ReportActivity
+import com.kosherclimate.userapp.updatefarmer.UpdatePersonalDetailsActivity
 import com.kosherclimate.userapp.weather.WeatherForecastActivity
 import com.squareup.picasso.Picasso
 import okhttp3.ResponseBody
@@ -77,7 +78,8 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var crop_info : RelativeLayout
     private lateinit var benefit : RelativeLayout
     private lateinit var reports: RelativeLayout
-    private lateinit var addMorePlots: RelativeLayout
+//    private lateinit var addMorePlots: RelativeLayout
+    private lateinit var updateFarmer: RelativeLayout
     private lateinit var ivPipeOne: RelativeLayout
     private lateinit var ivPipeTwo: RelativeLayout
     private lateinit var aeration: RelativeLayout
@@ -148,7 +150,8 @@ class DashboardActivity : AppCompatActivity() {
         crop_info = findViewById(R.id.crop)
         profile = findViewById(R.id.profile)
         reports = findViewById(R.id.reports)
-        addMorePlots = findViewById(R.id.addPlots)
+//        addMorePlots = findViewById(R.id.addPlots)
+        updateFarmer = findViewById(R.id.ivUpdateFarmer)
         ivPipeOne = findViewById(R.id.ivPipe1)
         ivPipeTwo = findViewById(R.id.ivPipe2)
         aeration = findViewById(R.id.aeration)
@@ -249,8 +252,12 @@ class DashboardActivity : AppCompatActivity() {
         })
 
 
-        addMorePlots.setOnClickListener(View.OnClickListener{
-            val intent = Intent(this,FetchFarmerDetailsActivity::class.java)
+//        addMorePlots.setOnClickListener(View.OnClickListener{
+//            val intent = Intent(this,FetchFarmerDetailsActivity::class.java)
+//            startActivity(intent)
+//        })
+        updateFarmer.setOnClickListener(View.OnClickListener{
+            val intent = Intent(this,UpdatePersonalDetailsActivity::class.java)
             startActivity(intent)
         })
 

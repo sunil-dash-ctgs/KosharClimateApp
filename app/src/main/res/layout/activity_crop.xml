@@ -166,9 +166,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerInParent="true"
-                            android:fontFamily="@font/poppins_regular"
                             android:clickable="false"
                             android:focusable="false"
+                            android:fontFamily="@font/poppins_regular"
                             android:padding="10dp"
                             android:textSize="15sp" />
 
