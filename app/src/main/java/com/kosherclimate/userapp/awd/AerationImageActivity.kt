@@ -72,7 +72,8 @@ class AerationImageActivity : AppCompatActivity() {
     private lateinit var txtName: TextView
     private lateinit var txtAeriation: TextView
     private lateinit var txtPipeNumber: TextView
-
+    // Create a list of nullable Bitmap
+    val bitmapList: MutableList<Bitmap?> = mutableListOf(null, null)
     private lateinit var back: Button
     private lateinit var submit: Button
 
@@ -163,26 +164,38 @@ class AerationImageActivity : AppCompatActivity() {
             getActualLocation(2)
         })
 
+        back.setOnClickListener {
+            finish()
+        }
+
         submit.setOnClickListener(View.OnClickListener {
             val WarningDialog = SweetAlertDialog(this@AerationImageActivity, SweetAlertDialog.WARNING_TYPE)
 
-            if (imageModelPath1.isEmpty()){
+            Log.i("NEW_TEST","Bitmap list ---> $bitmapList")
+            Log.i("NEW_TEST","Bitmap list ---> $imageModelPath1 \n $imageModelPath2")
+            Log.i("NEW_TEST","Bitmap list -----=> ${imageModelPath1.isNotEmpty()} \n ${imageModelPath2.isNotEmpty()}")
+            if (bitmapList[0] == null || bitmapList[0] == null){
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = "Click image"
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+            } else if (imageModelPath1.isEmpty() || imageModelPath2.isEmpty()){
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = "Click image"
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
             }
-            else if(imageModelPath1.isNotEmpty() && imageModelPath2.isEmpty()){
-                imagePathList.add(imageModelPath1)
-
-                progress.progressHelper.barColor = Color.parseColor("#06c238")
-                progress.titleText = resources.getString(R.string.loading)
-                progress.contentText = resources.getString(R.string.data_send)
-                progress.setCancelable(false)
-                progress.show()
-
-                sendData(imagePathList)
-            }
+//            else if(imageModelPath1.isNotEmpty() && imageModelPath2.isEmpty()){
+//                imagePathList.add(imageModelPath1)
+//
+//                progress.progressHelper.barColor = Color.parseColor("#06c238")
+//                progress.titleText = resources.getString(R.string.loading)
+//                progress.contentText = resources.getString(R.string.data_send)
+//                progress.setCancelable(false)
+//                progress.show()
+//
+//                sendData(imagePathList)
+//            }
             else if (imageModelPath1.isNotEmpty() && imageModelPath2.isNotEmpty()) {
                 imagePathList.add(imageModelPath1)
                 imagePathList.add(imageModelPath2)
@@ -413,6 +426,7 @@ class AerationImageActivity : AppCompatActivity() {
 // Adding watermark to the image.
                 val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$timeStamp | $imageLat | $imageLng")
                 image1.setImageBitmap(edittedImage)
+                bitmapList[0] = edittedImage
                 image1.rotation = rotate.toFloat()
 
                 try {
@@ -430,7 +444,7 @@ class AerationImageActivity : AppCompatActivity() {
 // Storing the path of the watermarked image.
                     imageModelPath1 = outFile.absolutePath
                 } catch (e: FileNotFoundException) {
-                    Log.d("TAG", "Error Occurred" + e.message)
+                    Log.d("NEW_TEST", "Error While photo 1 --> " + e.message)
                     e.printStackTrace()
                 }
             } catch (e: Exception) {
@@ -461,6 +475,7 @@ class AerationImageActivity : AppCompatActivity() {
 // Adding watermark to the image.
                 val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$timeStamp | $imageLat | $imageLng")
                 image2.setImageBitmap(edittedImage)
+                bitmapList[1] = edittedImage
                 image2.rotation = rotate.toFloat()
 
                 try {

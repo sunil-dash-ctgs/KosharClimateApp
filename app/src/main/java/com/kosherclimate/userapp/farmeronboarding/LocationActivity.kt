@@ -385,7 +385,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
     private fun districtAPI() {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         val districtModel = DistrictModel(userId.toInt())
-
+        Log.i("NEW_TEST","user id to get district Ids $userId")
         apiInterface.newDistrict("Bearer $token", districtModel).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 districtIDList.clear()

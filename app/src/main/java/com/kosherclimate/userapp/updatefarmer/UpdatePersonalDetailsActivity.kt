@@ -184,6 +184,10 @@ class UpdatePersonalDetailsActivity : AppCompatActivity() {
 
         })
 
+        btnBack.setOnClickListener {
+            finish()
+        }
+
         btnNext.setOnClickListener {
 
             var totalArea: Double? = if (etTotalArea.text.isNullOrEmpty()) {

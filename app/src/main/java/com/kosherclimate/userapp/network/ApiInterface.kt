@@ -301,7 +301,8 @@ interface ApiInterface {
 
 
     @Headers("Accept: application/json")
-    @GET("V1/user/farmer/registration/search")
+//    @GET("V1/user/farmer/registration/search")
+    @GET("V1/user/farmer/aeration/search")
     fun registrationReportQuery(@Header( "Authorization") token: String, @Query("uniqueid") uniqueid: String) : Call<ResponseBody>
 
 

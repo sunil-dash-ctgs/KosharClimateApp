@@ -64,6 +64,7 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
     private lateinit var aeration_no: String
     private lateinit var plot_no: String
 
+    private var addRestriction = true
 
     private lateinit var progress: SweetAlertDialog
 
@@ -100,7 +101,36 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
             progress.setCancelable(false)
             progress.show()
 
-            locationReq()
+            Log.i("NEW_TEST","Add Res --- > $addRestriction")
+            if(xxxxx == 1){
+                if(addRestriction) {
+                    locationReq()
+                }else{
+                    val latlng = ArrayList<String>()
+
+                    for (i in 0 until latlngList.size) {
+                        val lat = latlngList[i].latitude
+                        val lng = latlngList[i].longitude
+                        val ll = LatLng(lat, lng).toString()
+
+                        latlng.add(ll)
+                    }
+
+                    progress.dismiss()
+                    val intent = Intent(this, AeriationReportImageActivity::class.java).apply {
+                        putStringArrayListExtra("latlngList", latlng)
+                        putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
+                        putExtra("pipe_installation_id", pipe_installation_id)
+                        putExtra("latitude", pipeLatitude)
+                        putExtra("longitude", pipeLongitude)
+                        putExtra("aeration_no", aeration_no)
+                        putExtra("unique_id", unique_id)
+                        putExtra("pipe_no", pipe_no)
+                        putExtra("plot_no", plot_no)
+                    }
+                    startActivity(intent)
+                }
+            }
         })
 
 
@@ -132,6 +162,7 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
                         }
 
                         val pipeLocationArray =  stringResponse.optJSONObject("PipeLocation")
+                       addRestriction =  stringResponse.optBoolean("add_restriction")
                         pipeLatitude = pipeLocationArray.getDouble("lat")
                         pipeLongitude = pipeLocationArray.getDouble("lng")
                     }
@@ -269,45 +300,48 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
     private fun calculate () {
         val cond = PolyUtil.containsLocation(LatLng(currentLatitude, currentLongitude), latlngList, false)
         if (xxxxx == 1) {
-            if(cond){
-            var latlng = ArrayList<String>()
+            Log.i("NEW_TEST","restsrict is $addRestriction")
+                if(cond){
+                    val latlng = ArrayList<String>()
 
-            for (i in 0 until latlngList.size) {
-                val lat = latlngList[i].latitude
-                val lng = latlngList[i].longitude
-                val ll = LatLng(lat, lng).toString()
+                    for (i in 0 until latlngList.size) {
+                        val lat = latlngList[i].latitude
+                        val lng = latlngList[i].longitude
+                        val ll = LatLng(lat, lng).toString()
 
-                latlng.add(ll)
-            }
+                        latlng.add(ll)
+                    }
 
-            progress.dismiss()
-            val intent = Intent(this, AeriationReportImageActivity::class.java).apply {
-                putStringArrayListExtra("latlngList", latlng)
-                putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
-                putExtra("pipe_installation_id", pipe_installation_id)
-                putExtra("latitude", pipeLatitude)
-                putExtra("longitude", pipeLongitude)
-                putExtra("aeration_no", aeration_no)
-                putExtra("unique_id", unique_id)
-                putExtra("pipe_no", pipe_no)
-                putExtra("plot_no", plot_no)
-            }
-            startActivity(intent)
-            }
-            else{
-                progress.dismiss()
+                    progress.dismiss()
+                    val intent = Intent(this, AeriationReportImageActivity::class.java).apply {
+                        putStringArrayListExtra("latlngList", latlng)
+                        putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
+                        putExtra("pipe_installation_id", pipe_installation_id)
+                        putExtra("latitude", pipeLatitude)
+                        putExtra("longitude", pipeLongitude)
+                        putExtra("aeration_no", aeration_no)
+                        putExtra("unique_id", unique_id)
+                        putExtra("pipe_no", pipe_no)
+                        putExtra("plot_no", plot_no)
+                    }
+                    startActivity(intent)
+                }
+                else{
+                    progress.dismiss()
 
-                val WarningDialog = SweetAlertDialog(this@AeriationReportMapActivity, SweetAlertDialog.WARNING_TYPE)
+                    val WarningDialog = SweetAlertDialog(this@AeriationReportMapActivity, SweetAlertDialog.WARNING_TYPE)
 
-                WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = "You are not inside the marked polygon."
-                WarningDialog.confirmText = " OK "
-                WarningDialog.showCancelButton(false)
-                WarningDialog.setCancelable(false)
-                WarningDialog.setConfirmClickListener {
-                    WarningDialog.cancel()
-                }.show()
-            }
+                    WarningDialog.titleText = resources.getString(R.string.warning)
+                    WarningDialog.contentText = "You are not inside the marked polygon."
+                    WarningDialog.confirmText = " OK "
+                    WarningDialog.showCancelButton(false)
+                    WarningDialog.setCancelable(false)
+                    WarningDialog.setConfirmClickListener {
+                        WarningDialog.cancel()
+                    }.show()
+                }
+
+
         }
     }
 

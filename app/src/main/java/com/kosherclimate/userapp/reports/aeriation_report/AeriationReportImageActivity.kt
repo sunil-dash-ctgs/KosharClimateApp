@@ -138,23 +138,23 @@ class AeriationReportImageActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener(View.OnClickListener {
             val WarningDialog = SweetAlertDialog(this@AeriationReportImageActivity, SweetAlertDialog.WARNING_TYPE)
 
-            if (imageModelPath1.isEmpty()){
+            if (imageModelPath1.isEmpty() || imageModelPath2.isEmpty()){
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = "Click image"
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
             }
-            else if(imageModelPath1.isNotEmpty() && imageModelPath2.isEmpty()){
-                imagePathList.add(imageModelPath1)
-
-                progress.progressHelper.barColor = Color.parseColor("#06c238")
-                progress.titleText = resources.getString(R.string.loading)
-                progress.contentText = resources.getString(R.string.data_send)
-                progress.setCancelable(false)
-                progress.show()
-
-                sendData(imagePathList)
-            }
+//            else if(imageModelPath1.isNotEmpty() && imageModelPath2.isEmpty()){
+//                imagePathList.add(imageModelPath1)
+//
+//                progress.progressHelper.barColor = Color.parseColor("#06c238")
+//                progress.titleText = resources.getString(R.string.loading)
+//                progress.contentText = resources.getString(R.string.data_send)
+//                progress.setCancelable(false)
+//                progress.show()
+//
+//                sendData(imagePathList)
+//            }
             else if (imageModelPath1.isNotEmpty() && imageModelPath2.isNotEmpty()) {
                 imagePathList.add(imageModelPath1)
                 imagePathList.add(imageModelPath2)
@@ -384,14 +384,14 @@ class AeriationReportImageActivity : AppCompatActivity() {
             val df = DecimalFormat("#####")
             val distance = df.format(SphericalUtil.computeDistanceBetween(LatLng(imageLat.toDouble(), imageLng.toDouble()), LatLng(pipeImageLatitude, pipeImageLongitude)))
 
-            if(distance.toDouble() < 15) {
+            if(distance.toDouble() < 30) {
                 stop()
             }
             else{
                 val WarningDialog = SweetAlertDialog(this@AeriationReportImageActivity, SweetAlertDialog.WARNING_TYPE)
 
                 WarningDialog.titleText = resources.getString(R.string.warning)
-                WarningDialog.contentText = "Distance should be less than ${15} meters"
+                WarningDialog.contentText = "Distance should be less than ${30} meters"
                 WarningDialog.confirmText = " OK "
                 WarningDialog.showCancelButton(false)
                 WarningDialog.setCancelable(false)
