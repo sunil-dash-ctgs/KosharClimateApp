@@ -3,6 +3,8 @@ package com.kosherclimate.userapp.polygon
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -13,11 +15,13 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.models.FarmerUniqueIdModel
 import com.kosherclimate.userapp.models.existingplots.UniqueIDModel
+import com.kosherclimate.userapp.models.updatefarmerdetails.UpdateFarmerAreaModel
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.polygon.Submitted.PolygonMapSubmittedActivity
@@ -34,7 +38,7 @@ class PolygonActivity : AppCompatActivity() {
     private lateinit var progress: SweetAlertDialog
     lateinit var edtMobile_number: EditText
     lateinit var edtFarmer_name: TextView
-    private lateinit var txtArea: TextView
+    private lateinit var txtArea: EditText
     private lateinit var search: ImageView
 
     lateinit var plot_ID: Spinner
@@ -52,6 +56,7 @@ class PolygonActivity : AppCompatActivity() {
     var FarmerUniqueList = ArrayList<String>()
     var SubPlotList = ArrayList<String>()
     var PlotArea = ArrayList<String>()
+    var areaAwdList = ArrayList<String>()
     var FarmerPlotUniqueID = ArrayList<String>()
 
 
@@ -67,6 +72,9 @@ class PolygonActivity : AppCompatActivity() {
     var availableArea :Double = 0.0
     var sumPlotArea :Double = 0.0
 
+    var newTotalArea :Double = 0.0
+
+    var needToUpdate: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +87,7 @@ class PolygonActivity : AppCompatActivity() {
         edtMobile_number = findViewById(R.id.pipe_mobile_number)
         edtFarmer_name = findViewById(R.id.pipe_farmer_name)
         txtArea = findViewById(R.id.pipe_plot_area)
+        txtArea.isEnabled = false
 
         plot_ID = findViewById(R.id.pipe_plot_unique_id)
         sub_plot = findViewById(R.id.pope_sub_plot)
@@ -88,9 +97,25 @@ class PolygonActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btn_pipe_inst_back)
         btnCaptureData = findViewById(R.id.btn_pipe_inst_captureData)
 
+
         btnBack.setOnClickListener {
             backScreen()
         }
+
+        txtArea.addTextChangedListener  (object :TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                newTotalArea = s.toString().trim().toDouble()
+            }
+
+        } )
 
         btnCaptureData.setOnClickListener {
             val WarningDialog =
@@ -121,12 +146,38 @@ class PolygonActivity : AppCompatActivity() {
 
                 }else{
                     Log.e("NEW_TEST"," Success")
-                 checkData()
+                    if(needToUpdate){
+                        if(txtArea.text.toString().isEmpty()){
+                            WarningDialog.titleText = resources.getString(R.string.warning)
+                            WarningDialog.contentText = "Total Area cannot be 0"
+                            WarningDialog.confirmText = resources.getString(R.string.ok)
+                            WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+
+                        }else{
+                            updateArea()
+                        }
+
+                    }else{
+                        checkData()
+                    }
+
                 }
 
             }else{
                 Log.e("NEW_TEST"," Success 2")
-                checkData()
+                if(needToUpdate){
+                    if(txtArea.text.toString().isEmpty()){
+                        WarningDialog.titleText = resources.getString(R.string.warning)
+                        WarningDialog.contentText = "Total Area cannot be 0"
+                        WarningDialog.confirmText = resources.getString(R.string.ok)
+                        WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+
+                    }else{
+                        updateArea()
+                    }
+                }else{
+                 checkData()
+                }
             }
         }
 
@@ -141,6 +192,46 @@ class PolygonActivity : AppCompatActivity() {
 
         getThreshold()
     }
+
+
+    /** Update Farmer Area ***/
+    private fun updateArea(){
+        progress.progressHelper.barColor = Color.parseColor("#06c238")
+        progress.titleText = resources.getString(R.string.loading)
+        progress.contentText = resources.getString(R.string.data_load)
+        progress.setCancelable(false)
+        progress.show()
+        Log.i("NEW_TEST","Updating Data ==>${FarmerUniqueList[farmerUniquePosition]} || $newTotalArea || ")
+        var newArea = UpdateFarmerAreaModel(
+            FarmerUniqueList[farmerUniquePosition],
+            newTotalArea.toString(),
+            newTotalArea.toString()
+        )
+
+        val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+        apiInterface.polygonUpdateFarmerArea("Bearer $token",newArea).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.i("NEW_TEST","Response is ${response.code()}")
+                val stringResponse = response.body()?.string()?.let { JSONObject(it) }
+                Log.i("NEW_TEST","Response is ${stringResponse}")
+                if (response.code() == 200) {
+                    if (response.body() != null) {
+                      Log.i("NEW_TEST","Response is $stringResponse")
+
+                    }
+                    btnCaptureData.text = "Next"
+                    needToUpdate = false
+                    availableArea = newTotalArea
+                    progress.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                progress.dismiss()
+            }
+        })
+    }
+    /** Update Farmer Area ***/
 
     private fun getThreshold() {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
@@ -303,7 +394,7 @@ class PolygonActivity : AppCompatActivity() {
     private fun nextScreen() {
         Log.e("NEW_TEST","Plot area is $PlotArea")
         Log.e("NEW_TEST","Plot area is ${PlotArea[subPlotUniquePosition - 1]}")
-        if (txtArea.text == "0.0") {
+        if (txtArea.text.toString().trim().toDouble() == 0.0) {
             val WarningDialog =
                 SweetAlertDialog(this@PolygonActivity, SweetAlertDialog.WARNING_TYPE)
             WarningDialog.titleText = resources.getString(R.string.warning)
@@ -409,6 +500,7 @@ class PolygonActivity : AppCompatActivity() {
 
         SubPlotList.clear()
         PlotArea.clear()
+        areaAwdList.clear()
         FarmerPlotUniqueID.clear()
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
@@ -433,9 +525,11 @@ class PolygonActivity : AppCompatActivity() {
 
                             val jsonApproved = jsonObject.getJSONObject("apprv_farmer_plot")
                             val area_in_acers = jsonObject.optString("area_in_acers")
+                            val area_acre_awd = jsonApproved.optString("area_acre_awd")
                             val tmpPlotArea = jsonObject.optString("plot_area").toDouble()
                             sumPlotArea += tmpPlotArea
                             SubPlotList.add(plot_no.toString())
+                            areaAwdList.add(if(area_in_acers.trim().toDouble() == 0.0) area_acre_awd else area_in_acers)
                             PlotArea.add(area_in_acers.toString())
                             FarmerPlotUniqueID.add(farmer_plot_uniqueid.toString())
                         }
@@ -443,6 +537,7 @@ class PolygonActivity : AppCompatActivity() {
                         if (SubPlotList.isNotEmpty()) {
                             SubPlotList.add(SubPlotList.last().toString())
                             PlotArea.add(PlotArea.last().toString())
+                            areaAwdList.add(PlotArea.last().toString())
                         }
 
                         FarmerPlotUniqueID.add("Create Plot")
@@ -513,8 +608,22 @@ class PolygonActivity : AppCompatActivity() {
                             )
                         }"
                     )
-                    txtArea.text =
-                        "%.4f".format(PlotArea[subPlotUniquePosition - 1].trim().toDouble())
+                    if (PlotArea[subPlotUniquePosition - 1].trim().toDouble() == 0.0 && areaAwdList[subPlotUniquePosition - 1].trim().toDouble() == 0.0){
+                        needToUpdate = true
+                        btnCaptureData.text = "Update"
+                        txtArea.isEnabled = true
+                    }else if(PlotArea[subPlotUniquePosition - 1].trim().toDouble() == 0.0){
+                        needToUpdate = true
+                        btnCaptureData.text = "Update"
+                        areaAwdList.forEach {
+                            var awd = it.trim().toDouble()
+                            newTotalArea += awd
+                        }
+                        txtArea.setText("%.4f".format(newTotalArea))
+                    }else{
+                        txtArea.setText("%.4f".format(PlotArea[subPlotUniquePosition - 1].trim().toDouble()))
+                    }
+
 
                     getFarmerName()
                 }

@@ -5,6 +5,7 @@ import com.kosherclimate.userapp.models.*
 import com.kosherclimate.userapp.models.WeatherForecastModel
 import com.kosherclimate.userapp.models.existingplots.UniqueIDModel
 import com.kosherclimate.userapp.models.polygonmodel.LatLongModel
+import com.kosherclimate.userapp.models.updatefarmerdetails.UpdateFarmerAreaModel
 import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatePlotInfo
 import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatedFarmerLocation
 import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatedPersonalDetails
@@ -606,4 +607,8 @@ interface ApiInterface {
                    @Part others_photo: MultipartBody.Part, @Part plotowner_sign: MultipartBody.Part, @Part farmer_uniqueId: MultipartBody.Part,@Part signature: MultipartBody.Part): Call<ResponseBody>
 
 
+
+    @Headers("Accept: application/json")
+    @POST("V1/update-farmer-area")
+    fun polygonUpdateFarmerArea(@Header( "Authorization") token: String, @Body updateFarmerAreaModel: UpdateFarmerAreaModel): Call<ResponseBody>
 }

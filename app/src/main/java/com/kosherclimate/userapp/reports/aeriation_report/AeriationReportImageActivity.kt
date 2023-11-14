@@ -207,8 +207,15 @@ class AeriationReportImageActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                val WarningDialog = SweetAlertDialog(this@AeriationReportImageActivity, SweetAlertDialog.WARNING_TYPE)
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = "Image was not submited! Please try again"
+                WarningDialog.confirmText = resources.getString(R.string.ok)
+                WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
                 Toast.makeText(this@AeriationReportImageActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
+                Log.i("UPLOAD_IMAGE","call : $call")
+                Log.i("UPLOAD_IMAGE","Throwable : $t")
             }
         })
     }

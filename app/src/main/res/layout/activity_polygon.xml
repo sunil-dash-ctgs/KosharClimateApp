@@ -226,12 +226,14 @@
                 android:layout_weight="1"
                 android:background="@drawable/editext_bg">
 
-                <TextView
+                <EditText
                     android:id="@+id/pipe_plot_area"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="false"
-                    android:focusable="false"
+                    android:layout_height="50dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="#00000000"
+                    android:inputType="numberDecimal"
                     android:fontFamily="@font/poppins_regular"
                     android:padding="10dp"
                     android:textSize="15sp" />

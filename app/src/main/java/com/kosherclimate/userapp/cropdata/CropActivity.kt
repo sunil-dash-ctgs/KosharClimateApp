@@ -959,6 +959,7 @@ class CropActivity : AppCompatActivity() {
                                 PlotNoList.add(plot_no)
                                 PlotAreaList.add(area_in_acers)
                                 AcresAreaList.add(area_in_other)
+                                Log.i("NNNN",">>$area_in_other  $AcresAreaList")
                                 AWDPlot.add(area_acre_awd)
                                 AWDAcres.add(area_other_awd)
                                 update.add(update_data)
@@ -1111,9 +1112,9 @@ class CropActivity : AppCompatActivity() {
                         WarningDialog.setConfirmClickListener {
                             WarningDialog.cancel()
                         }.show()
+                        Log.i("NNNN",">> $areaValue")
                     }
-                }
-                else if(response.code() == 422){
+                } else if(response.code() == 422){
                     if (response.errorBody() != null) {
 
                         val stringResponse = JSONObject(response.errorBody()!!.string())
@@ -1166,11 +1167,11 @@ class CropActivity : AppCompatActivity() {
 //                        viewChangeAWDArea()
                         convertOnboardingDate(onboardingDate)
                         getSeason()
+                        Log.i("NNNN",">> $areaValue")
                     }
+
                 }
-                val data = convertAcreToBigha(AcresAreaList[0].toString(),areaValue.toString())
-                edtPlotArea.setText(String.format("%.2f", data))
-                edtPlotArea.isEnabled = false
+
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -1415,8 +1416,14 @@ private fun baseValue() {
                     state = stateResponse.getString("name")
                     unit = stateResponse.optString("units")
                     areaValue = stateResponse.getString("base_value").toDouble()
+                    Log.i("NNNN",">> $areaValue")
 //                    minBValue = stateResponse.getString("min_base_value")
 //                    maxBValue = stateResponse.getString("max_base_value")
+
+                    Log.i("NNNN",">> ${AcresAreaList[0]} $areaValue")
+                    val data = convertAcreToBigha(AcresAreaList[0],areaValue.toString())
+                    edtPlotArea.setText(String.format("%.2f", data))
+                    edtPlotArea.isEnabled = false
 
                 }
             }
