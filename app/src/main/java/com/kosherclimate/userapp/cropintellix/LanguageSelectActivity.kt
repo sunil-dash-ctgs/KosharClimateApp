@@ -2,6 +2,7 @@ package com.kosherclimate.userapp.cropintellix
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
@@ -85,23 +86,28 @@ class LanguageSelectActivity : AppCompatActivity() {
     }
 
     private fun checkForUpdate() {
-        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
-            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            val isUpdateAllowed = when (updateType) {
-                AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
-                else -> false
-            }
+       try{
+           Log.e("DEBUG_EXC","Start Fun checkForUpdate in $this")
+           appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+               val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+               val isUpdateAllowed = when (updateType) {
+                   AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
+                   else -> false
+               }
 
 
-            if (isUpdateAllowed && isUpdateAvailable) {
-                appUpdateManager.startUpdateFlowForResult(
-                    info,
-                    updateType,
-                    this@LanguageSelectActivity,
-                    123
-                )
-            }
-        }
+               if (isUpdateAllowed && isUpdateAvailable) {
+                   appUpdateManager.startUpdateFlowForResult(
+                       info,
+                       updateType,
+                       this@LanguageSelectActivity,
+                       123
+                   )
+               }
+           }
+       }catch (e:Exception){
+           Log.e("DEBUG_EXC","Exception ---> $e")
+       }
     }
 
 

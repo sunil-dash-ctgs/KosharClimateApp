@@ -11,10 +11,10 @@ class ApiClient {
     companion object {
 
         // AWS
-        private val BASE_URL: String = "https://kc.carbonintellix.com/api/"
+//        private val BASE_URL: String = "https://kc.carbonintellix.com/api/"
 
 // C panel
-//    private const val BASE_URL: String = "https://ks.cropintellix.com/api/"
+    private const val BASE_URL: String = "https://ks.cropintellix.com/api/"
 
 
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
@@ -23,7 +23,7 @@ class ApiClient {
 
         val client: OkHttpClient = OkHttpClient.Builder().apply {
             this.addInterceptor(interceptor)
-        }.connectTimeout(200, TimeUnit.SECONDS).build()
+        }.connectTimeout(500, TimeUnit.SECONDS).build()
 
         fun getRetrofitInstance(): Retrofit {
             return Retrofit.Builder().baseUrl(BASE_URL)

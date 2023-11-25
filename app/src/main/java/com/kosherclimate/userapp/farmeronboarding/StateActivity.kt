@@ -2,11 +2,13 @@ package com.kosherclimate.userapp.farmeronboarding
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.models.OrganizationModel
 import com.kosherclimate.userapp.network.ApiClient
@@ -42,6 +44,7 @@ class StateActivity : AppCompatActivity() {
     var areaValue: String = ""
     var maxBValue: String = ""
     var minBValue: String = ""
+    private lateinit var progress: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +61,11 @@ class StateActivity : AppCompatActivity() {
 
         state_back = findViewById(R.id.state_back)
         state_next = findViewById(R.id.state_Next)
+        state_next.visibility = View.GONE
         txtState = findViewById(R.id.onboarding_state)
         txtOrganization = findViewById(R.id.organization)
+
+        progress  = SweetAlertDialog(this@StateActivity, SweetAlertDialog.PROGRESS_TYPE)
 
         state_back.setOnClickListener(View.OnClickListener {
             super.onBackPressed()
@@ -70,19 +76,24 @@ class StateActivity : AppCompatActivity() {
          * Going to next activity
          */
         state_next.setOnClickListener(View.OnClickListener {
-                val intent = Intent(this, FarmerOnboardingActivity::class.java).apply {
-                    putExtra("bValue", bValue)
-                    putExtra("state", state)
-                    putExtra("state_id", stateID)
-                    putExtra("org_id", orgID)
-                    putExtra("unit", unit)
-                    putExtra("area_value", areaValue)
-                    putExtra("max_base_value", maxBValue.toDouble())
-                    putExtra("min_base_value", minBValue.toDouble())
+            Log.e("DEBUG_EXC","Max value is $maxBValue")
+               try {
+                   val intent = Intent(this, FarmerOnboardingActivity::class.java).apply {
+                       putExtra("bValue", bValue)
+                       putExtra("state", state)
+                       putExtra("state_id", stateID)
+                       putExtra("org_id", orgID)
+                       putExtra("unit", unit)
+                       putExtra("area_value", areaValue)
+                       putExtra("max_base_value", maxBValue.toDouble())
+                       putExtra("min_base_value", minBValue.toDouble())
 
-                    Log.e("state_id", stateID)
-                }
-                startActivity(intent)
+                       Log.e("state_id", stateID)
+                   }
+                   startActivity(intent)
+               }catch (e:Exception){
+                   Log.e("DEBUG_EXC","Exception $this \n$e")
+               }
         })
 
         /**
@@ -96,6 +107,12 @@ class StateActivity : AppCompatActivity() {
      * Getting the base value, min, max, unit value from API.
      */
     private fun baseValue() {
+        progress.progressHelper.barColor = Color.parseColor("#06c238")
+        progress.titleText = "Loading"
+        progress.contentText = "Getting base values"
+        progress.setCancelable(false)
+        progress.show()
+
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.baseValue("Bearer $token", stateID).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -115,12 +132,15 @@ class StateActivity : AppCompatActivity() {
 
                         txtState.text = state
                         orgAPI()
+                        state_next.visibility = View.VISIBLE
                     }
+                    progress.cancel()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Toast.makeText(this@StateActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                progress.cancel()
             }
         })
     }

@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_crop.last_year_potassium
 //import kotlinx.android.synthetic.main.activity_crop.last_year_water_management
 import kotlinx.android.synthetic.main.activity_crop.last_year_yield
 import okhttp3.ResponseBody
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -966,7 +967,6 @@ class CropActivity : AppCompatActivity() {
 
                                 FarmerPlotUniqueID.add(farmer_plot_uniqueid)
                         }
-
                             progress.dismiss()
 //                            edtSub_plot.text = PlotNoList[total_number]
                             getPlotDetails()
@@ -985,8 +985,30 @@ class CropActivity : AppCompatActivity() {
                     }
 
                     progress.dismiss()
-                }
-                else{
+                }  else if(response.code() == 422){
+                    try {
+                        val errorResponse = JSONObject(response.errorBody()?.string() ?: "")
+                        val message = errorResponse.optString("message")
+
+                        Log.e("NEW_TEST", "HTTP message in 422: $message")
+
+                        val warningDialog = SweetAlertDialog(this@CropActivity, SweetAlertDialog.WARNING_TYPE)
+                        warningDialog.titleText = resources.getString(R.string.warning)
+                        warningDialog.contentText = message
+                        warningDialog.confirmText = " OK "
+                        warningDialog.showCancelButton(false)
+                        warningDialog.setCancelable(false)
+                        warningDialog.setConfirmClickListener {
+                            warningDialog.cancel()
+                            finish()
+                        }.show()
+
+                    } catch (e: JSONException) {
+                        // Handle JSON parsing error
+                        Log.e("NEW_TEST", "Error parsing JSON in 422 response", e)
+                    }
+                    progress.dismiss()
+                }else{
                     Log.e("statusCode", response.code().toString())
                     progress.dismiss()
                 }

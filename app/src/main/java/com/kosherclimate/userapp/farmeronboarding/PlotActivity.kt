@@ -1,9 +1,11 @@
 package com.kosherclimate.userapp.farmeronboarding
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
@@ -23,6 +25,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -57,6 +61,10 @@ class PlotActivity : AppCompatActivity() {
     lateinit var ownerLayout: LinearLayout
     var arrayList = ArrayList<String>()
     lateinit var uri: Uri
+
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST_CODE = 1001
+    }
 
     var imageFileName: String = ""
     lateinit var currentPhotoPath: String
@@ -258,18 +266,25 @@ class PlotActivity : AppCompatActivity() {
          * on button click start taking pictures.
          */
         txtclick.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
+            // Check if the CAMERA permission is not granted
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // Request the permission
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+            } else {
+                // Permission is already granted, proceed with camera usage
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
+                    try {
+                        photoPath = createImageFile()
 
 // Continue only if the File was successfully created
-                    uri = FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", photoPath)
-                } catch (_: IOException) { }
+                        uri = FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", photoPath)
+                    } catch (_: IOException) { }
 
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                resultLauncher.launch(intent)
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                    resultLauncher.launch(intent)
+                }
             }
         }
 

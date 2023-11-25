@@ -287,16 +287,20 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.updateFarmerPersonalDetails("Bearer $token", farmerInfo).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.e("NEW_TEST","updateFarmerPersonalDetails API >> ${response.code()}")
-            progress.cancel()
-                Log.d("NEW_TEST","Gender >>${radioButton.text}")
-                var intent = Intent(this@UpdatePersonalDetailsActivity,UpdateFarmerLocationActivity::class.java)
-                intent.putExtra("farmer_unique_id",farmerUniqueId)
-                intent.putExtra("state",state)
-                intent.putExtra("stateId",stateId)
-                intent.putExtra("base_value",areaValue.toString())
-                intent.putExtra("base_unit",areaUnit.toString())
-                startActivity(intent)
+                if(response.code() == 200){
+                    Log.e("NEW_TEST","updateFarmerPersonalDetails API >> ${response.code()}")
+                    progress.cancel()
+                    Log.d("NEW_TEST","Gender >>${radioButton.text}")
+                    var intent = Intent(this@UpdatePersonalDetailsActivity,UpdateFarmerLocationActivity::class.java)
+                    intent.putExtra("farmer_unique_id",farmerUniqueId)
+                    intent.putExtra("state",state)
+                    intent.putExtra("stateId",stateId)
+                    intent.putExtra("base_value",areaValue.toString())
+                    intent.putExtra("base_unit",areaUnit.toString())
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(this@UpdatePersonalDetailsActivity,"Something went wrong", Toast.LENGTH_LONG)
+                }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

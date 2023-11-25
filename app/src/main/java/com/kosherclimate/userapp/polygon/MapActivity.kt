@@ -841,6 +841,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
+                    Log.e("NEW_TEST", "Reponse ${response.code()}")
                     if (response.code() == 200) {
                         Toast.makeText(this@MapActivity, "Point overlapping", Toast.LENGTH_SHORT)
                             .show()
@@ -965,6 +966,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
+                    Log.e("NEW_TEST", "Modified Id = ${response.code()}")
                     if (response.code() == 200) {
                         if (response.body() != null) {
                             val jsonObject = JSONObject(response.body()!!.string())

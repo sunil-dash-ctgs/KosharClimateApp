@@ -232,7 +232,9 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                tvTotalAreaInAcres.setText(acresCalculation(edTotalArea.text.toString()))
+                if(!s.isNullOrEmpty()) {
+                    tvTotalAreaInAcres.text = acresCalculation(edTotalArea.text.toString())
+                }
             }
 
         })
@@ -243,7 +245,9 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                tvOwnAreaInAcres.setText(acresCalculation(edOwnArea.text.toString()))
+                if(!s.isNullOrEmpty()) {
+                    tvOwnAreaInAcres.text = acresCalculation(edOwnArea.text.toString())
+                }
             }
 
         })
@@ -254,7 +258,9 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                tvLeaseAreaInAcres.setText(acresCalculation(edLeaseArea.text.toString()))
+                if(!s.isNullOrEmpty()) {
+                    tvLeaseAreaInAcres.text = acresCalculation(edLeaseArea.text.toString())
+                }
             }
 
         })

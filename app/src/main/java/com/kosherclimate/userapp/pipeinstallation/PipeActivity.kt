@@ -16,6 +16,7 @@ import com.kosherclimate.userapp.pipeinstallation.Submitted.MapSubmittedActivity
 import com.google.android.gms.maps.model.LatLng
 import com.kosherclimate.userapp.polygon.MapActivity
 import okhttp3.ResponseBody
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -388,8 +389,30 @@ class PipeActivity : AppCompatActivity() {
                         progress.dismiss()
                         plotSpinner()
                     }
-                }
-                else{
+                } else if(response.code() == 422){
+                    try {
+                        val errorResponse = JSONObject(response.errorBody()?.string() ?: "")
+                        val message = errorResponse.optString("message")
+
+                        Log.e("NEW_TEST", "HTTP message in 422: $message")
+
+                        val warningDialog = SweetAlertDialog(this@PipeActivity, SweetAlertDialog.WARNING_TYPE)
+                        warningDialog.titleText = resources.getString(R.string.warning)
+                        warningDialog.contentText = message
+                        warningDialog.confirmText = " OK "
+                        warningDialog.showCancelButton(false)
+                        warningDialog.setCancelable(false)
+                        warningDialog.setConfirmClickListener {
+                            warningDialog.cancel()
+                            backScreen()
+                        }.show()
+
+                    } catch (e: JSONException) {
+                        // Handle JSON parsing error
+                        Log.e("NEW_TEST", "Error parsing JSON in 422 response", e)
+                    }
+                    progress.dismiss()
+                }else{
                     Log.e("statusCode", response.code().toString())
                     progress.dismiss()
                 }
