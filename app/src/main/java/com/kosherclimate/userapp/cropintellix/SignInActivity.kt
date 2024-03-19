@@ -49,11 +49,11 @@ class SignInActivity : AppCompatActivity() {
         val versionCode: Int = BuildConfig.VERSION_CODE
         val versionName = BuildConfig.VERSION_NAME
         val release = java.lang.Double.parseDouble(java.lang.String(Build.VERSION.RELEASE).replaceAll("(\\d+[.]\\d+)(.*)", "$1"))
-        Log.e("version", versionName + versionCode + release.toString())
+        Log.e("version", "version1   "+versionName + versionCode + release.toString())
 
         val deviceName = Build.MODEL // returns model name
         val deviceManufacturer = Build.MANUFACTURER // returns manufacturer
-        Log.e("version", deviceName + deviceManufacturer)
+        Log.e("version", "version2   "+deviceName + deviceManufacturer)
 
         btnLogin = findViewById(R.id.login)
         edtEmail = findViewById(R.id.username)

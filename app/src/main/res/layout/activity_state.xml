@@ -7,19 +7,42 @@
     android:layout_height="match_parent"
     tools:context="com.kosherclimate.userapp.farmeronboarding.StateActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout37"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right"
+        android:layout_margin="10dp"
+        android:background="@drawable/heading_bg"
+        android:orientation="vertical"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/text_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/linearLayout15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1">
-        </View>
+            android:layout_weight="1"></View>
 
 
         <LinearLayout
@@ -34,23 +57,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:fontFamily="@font/poppins_bold"
                 android:gravity="center_vertical"
                 android:text="@string/state_screen"
                 android:textColor="#ffffff"
-                android:textSize="20sp"
-                android:fontFamily="@font/poppins_bold">
-            </TextView>
+                android:textSize="20sp"></TextView>
 
         </LinearLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1">
-        </View>
+            android:layout_weight="1"></View>
 
     </LinearLayout>
-
 
     <TextView
         android:layout_width="wrap_content"

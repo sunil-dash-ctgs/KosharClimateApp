@@ -3,12 +3,15 @@ package com.kosherclimate.userapp.pipeinstallation
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -22,12 +25,13 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
@@ -47,6 +51,9 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.maps.android.PolyUtil
 import com.google.maps.android.SphericalUtil
 import com.kosherclimate.userapp.BuildConfig
+import com.kosherclimate.userapp.TimerData
+import com.kosherclimate.userapp.utils.CommonData
+import com.kosherclimate.userapp.weather.RecyclerItemClickListenr
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -82,6 +89,8 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
     private lateinit var txtFarmer_name: TextView
 //    private lateinit var txtAvailable: EditText
     private lateinit var txtPlotNumer: TextView
+    private lateinit var tvSelectYear: TextView
+    private lateinit var tvSelectSeason: TextView
 
     private lateinit var btnBack : Button
     private lateinit var btnSubmit : Button
@@ -105,6 +114,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
     var MIN: String = ""
 
     val watermark: Common = Common()
+    val watermark1: CommonData = CommonData()
     private lateinit var locationManager: LocationManager
 
     private var distanceList = ArrayList<String>()
@@ -133,6 +143,15 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
     var khasara: String = ""
     var unit: String = ""
     var block: String = ""
+    private var storelat: Double = 0.0
+    private var storelng: Double = 0.0
+
+    lateinit var text_timer: TextView
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+    lateinit var selectyear : String
+    lateinit var selectSeason : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,6 +166,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 //        txtAvailable = findViewById(R.id.spPlotUniqueId)
         txtFarmer_name = findViewById(R.id.pipe_farmer_full_name)
         txtPlotNumer = findViewById(R.id.pipe_plot_number)
+        text_timer = findViewById(R.id.text_timer)
 
         btnBack = findViewById(R.id.land_Info_Pre_Btn_Back)
         btnSubmit = findViewById(R.id.land_Info_Pre_Btn_Submit)
@@ -154,6 +174,8 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
         farmer_recyclerView = findViewById(R.id.ImagePreviewPipeInstallation)
         linearList = findViewById(R.id.layout_list)
+        tvSelectYear = findViewById(R.id.tvSelectYear)
+        tvSelectSeason = findViewById(R.id.tvSelectSeason)
 
         val bundle = intent.extras
         if (bundle != null) {
@@ -163,6 +185,11 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
             plot_no = bundle.getString("sub_plot_no").toString()
             area = bundle.getString("area").toString()
             farmer_name = bundle.getString("farmer_name").toString()
+            StartTime1 = bundle.getInt("StartTime")
+            selectyear = bundle.getString("selectyear").toString()
+            selectSeason = bundle.getString("selectSeason").toString()
+            storelat = bundle.getDouble("storelat")
+            storelng = bundle.getDouble("storelng")
 
 //            village = bundle.getString("village").toString()
 //            state = bundle.getString("state").toString()
@@ -176,6 +203,9 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
             txtPlot_Area.text = area
             txtFarmer_name.text = farmer_name
+
+            timerData = TimerData(this@LandInfoPreviewActivity, text_timer)
+            StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
             for(i in 0 until poly_list.size){
                 val dfgdg: String =  poly_list[i].replace("[^0-9,.]".toRegex(), "")
@@ -206,6 +236,41 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
         farmer_recyclerView.layoutManager = layoutManager
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         farmer_recyclerView.adapter = pipe_Image_Adapter
+        tvSelectYear.text = selectyear
+        tvSelectSeason.text = selectSeason
+
+        farmer_recyclerView.addOnItemTouchListener(RecyclerItemClickListenr(this, farmer_recyclerView, object :
+            RecyclerItemClickListenr.OnItemClickListener {
+
+            override fun onItemClick(view: View, position: Int) {
+
+
+                val dialog = Dialog(this@LandInfoPreviewActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.condition_logout)
+                val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+                val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+                // val imgBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                // on below line we are setting bitmap to our image view.
+                showdatainimage.setImageBitmap(model[position].getImage())
+
+                btn_Yes.setOnClickListener {
+                    dialog.dismiss()
+                    //finish();
+                    //System.exit(1);
+                    // File file1 = takescreenShort();
+                    //screenShortLayout(file1);
+                }
+                dialog.show()
+                val window = dialog.window
+                window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+                //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
+            }
+            override fun onItemLongClick(view: View?, position: Int) {
+                TODO("do nothing")
+            }
+        }))
 
 
 //        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, bool)
@@ -397,11 +462,13 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
             val requestFile: RequestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val farmer_id = farmer_id.toRequestBody("text/plain".toMediaTypeOrNull())
             val farmer_unique_id = unique_id.toRequestBody("text/plain".toMediaTypeOrNull())
+            val select_year = selectyear.toRequestBody("text/plain".toMediaTypeOrNull())
+            val select_season = selectSeason.toRequestBody("text/plain".toMediaTypeOrNull())
             val plot_no = plot_no.toRequestBody("text/plain".toMediaTypeOrNull())
             val area = distance.toRequestBody("text/plain".toMediaTypeOrNull())
             val pipe_count = no.toRequestBody("text/plain".toMediaTypeOrNull())
-            val lat = currentLatLng.latitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            val lng = currentLatLng.longitude.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val lat = storelat.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val lng = storelng.toString().toRequestBody("text/plain".toMediaTypeOrNull())
             val farmerPlotUniqueid = farmer_plot_uniqueid.toRequestBody("text/plain".toMediaTypeOrNull())
 //            val pipes_required = txtpipe_req.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 //            val pipe_available = txtAvailable.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
@@ -410,6 +477,8 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
             val body: MultipartBody.Part = MultipartBody.Part.createFormData("images", file.name, requestFile)
             val UniqueID: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_id", null, farmer_id)
+            val year_select: MultipartBody.Part = MultipartBody.Part.createFormData("financial_year", null, select_year)
+            val season_select: MultipartBody.Part = MultipartBody.Part.createFormData("season", null, select_season)
             val FarmerUniqueID: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_uniqueId", null, farmer_unique_id)
             val plot_NO: MultipartBody.Part = MultipartBody.Part.createFormData("plot_no", null, plot_no)
             val Distance: MultipartBody.Part = MultipartBody.Part.createFormData("distance", null, area)
@@ -424,7 +493,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
             val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
             apiInterface.sendPipeLastData("Bearer $token", UniqueID, FarmerPlotUniqueid, FarmerUniqueID, plot_NO, latitude, longitude, pipe_no,
-                Distance, installing_pipe, body).enqueue(object: Callback<ResponseBody>{
+                Distance, installing_pipe, body, year_select,season_select).enqueue(object: Callback<ResponseBody>{
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.code() == 200){
                         model.removeAt(0)
@@ -446,7 +515,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     FirebaseCrashlytics.getInstance().log("On Failed of sendData in pipe")
-                    Toast.makeText(this@LandInfoPreviewActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LandInfoPreviewActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                     progress.dismiss()
                 }
             })
@@ -568,26 +637,68 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
     }
 
     private fun openCamera(position: String) {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            try {
-                photoPath = createImageFile()
-            } catch (ex: IOException) {}
-// Continue only if the File was successfully created
-            if (photoPath != null) {
-                uri = FileProvider.getUriForFile(
-                    this@LandInfoPreviewActivity,
-                    BuildConfig.APPLICATION_ID + ".provider", photoPath
-                )
-                indx = position.toInt() - 1
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        if (intent.resolveActivity(packageManager) != null) {
+//            try {
+//                photoPath = createImageFile()
+//            } catch (ex: IOException) {}
+//// Continue only if the File was successfully created
+//            if (photoPath != null) {
+//                uri = FileProvider.getUriForFile(
+//                    this@LandInfoPreviewActivity,
+//                    BuildConfig.APPLICATION_ID + ".provider", photoPath
+//                )
+//                indx = position.toInt() - 1
+//
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+//                resultLauncher1.launch(intent)
+//                Log.e("Camera_function", "Camera_function")
+//
+//                calculation()
+//            }
+//        }
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                0
+            )
+        } else {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (takePictureIntent.resolveActivity(packageManager) != null) {
+                // Create the File where the photo should go
+                try {
+                    photoPath = createImageFile()
+                    // Continue only if the File was successfully created
+                    uri = FileProvider.getUriForFile(
+                        this,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        photoPath
+                    )
+                    takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    indx = position.toInt() - 1
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                    resultLauncher1.launch(takePictureIntent)
 
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                resultLauncher1.launch(intent)
-                Log.e("Camera_function", "Camera_function")
+                    calculation()
 
-                calculation()
+                } catch (ex: Exception) {
+                    // Error occurred while creating the File
+                    displayMessage(baseContext, ex.message.toString())
+                }
+
+            } else {
+                displayMessage(baseContext, "Null")
             }
         }
+    }
+
+    private fun displayMessage(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
     private fun calculation() {
@@ -645,7 +756,28 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
                     else -> 0
                 }
 
-                val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_no | $timeStamp | $imageLat | $imageLng")
+//                val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_no | " +
+//                        "$timeStamp | $imageLat | $imageLng \n | $selectyear | $selectSeason")
+
+                val location = "Location"
+                val year = "Year"
+                val season = "Season"
+                val nameImage = "Pipe Image"
+
+// Adding watermark to the image.
+                val water_mark = "#$unique_id - P$plot_no - $timeStamp \n $location -  $storelat , $storelng \n $year - $selectyear , " +
+                        "$season - $selectSeason \n $nameImage"
+                //   val edittedImage = watermark.addWatermark(application.applicationContext, image, water_mark)
+                val edittedImage = watermark1.drawTextToBitmap(application.applicationContext, image, water_mark)
+
+
+//                val watermarkData = "#$unique_id | P$plot_no | " +
+//                        "$timeStamp | $imageLat | $imageLng \n | $selectyear | $selectSeason"
+//                var intent = result.data
+//                val imageUri: Uri? = intent?.getData()
+//                val bitmap1 = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+//
+//                val bitmap2 = mark(this@LandInfoPreviewActivity,bitmap1,watermarkData,true)
 
                 try {
                     val bitmap = edittedImage
@@ -654,7 +786,9 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
                     val outFile = File(storageDir, "$imageFileName.jpg")
                     val outStream = FileOutputStream(outFile)
 
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    }
                     outStream.flush()
                     outStream.close()
 
@@ -667,7 +801,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
                 for (i in model.indices){
                     if (model[i].getIndex() == indx){
                         Log.e("indices", indx.toString())
-                        model[i] = PipeImageModel(edittedImage, rotate, indx, imageModelPath)
+                        model[i] = PipeImageModel(edittedImage!!, rotate, indx, imageModelPath)
                         pipe_Image_Adapter.notifyDataSetChanged()
 
                         required = true
@@ -676,8 +810,10 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
                 }
 
                 if(!required){
-                    model.add(PipeImageModel(edittedImage, rotate, indx, imageModelPath))
-                    pipe_Image_Adapter = Pipe_Image_Adapter(model)
+                    model.add(PipeImageModel(edittedImage!!, rotate, indx, imageModelPath))
+                    pipe_Image_Adapter = Pipe_Image_Adapter(
+                        model,
+                    )
                     farmer_recyclerView.adapter = pipe_Image_Adapter
                     pipe_Image_Adapter.notifyDataSetChanged()
 
@@ -694,7 +830,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
     }
 
     private fun getPipeQty(unique_id: String, plot_no: String) {
-        val pipeQtyModel = PipeQtyModel(unique_id, plot_no)
+        val pipeQtyModel = PipeQtyModel(unique_id, plot_no, unique_id, selectyear,selectSeason)
         Log.e("pipeQtyModel", pipeQtyModel.toString())
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
@@ -709,6 +845,7 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
 
 //                        txtpipe_req.text = required_pipes
 //                        txtAvailable.text = required_pipes
+
                         addView(required_pipes.toInt())
                     }
                 }
@@ -839,5 +976,22 @@ class LandInfoPreviewActivity : AppCompatActivity(), LocationListener {
             }
         }
         return true
+    }
+
+    fun mark(context: Context?, src: Bitmap, watermark: String?, underline: Boolean): Bitmap? {
+        val w = src.width
+        val h = src.height
+        val result = Bitmap.createBitmap(w, h, src.config)
+        val canvas = Canvas(result)
+        canvas.drawBitmap(src, 0f, 0f, null)
+        val paint = Paint()
+        val color = ContextCompat.getColor(context!!, R.color.black)
+        paint.color = color
+        paint.alpha = 1
+        paint.textSize = 5f
+        paint.isAntiAlias = true
+        paint.isUnderlineText = underline
+        canvas.drawText(watermark!!, 50f, 50f, paint)
+        return result
     }
 }

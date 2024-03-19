@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".reports.polygon_report.PolygonReportActivity">
+    tools:context=".reports.polygon_report.PolygonReportActivity"
+    android:background="#F1EEEE">
 
 
 
@@ -72,8 +73,8 @@
             android:id="@+id/polygon_report_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="20dp"
             android:inputType="number"
             android:queryHint="Unique ID"
@@ -83,7 +84,7 @@
     </LinearLayout>
 
 
-    <LinearLayout
+  <!--  <LinearLayout
         android:id="@+id/linearLayout9"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -168,7 +169,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.512" />
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 
     <LinearLayout
@@ -176,10 +177,10 @@
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:orientation="vertical"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+        app:layout_constraintTop_toBottomOf="@+id/linearSearchLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/polygon_report_recyclerView"

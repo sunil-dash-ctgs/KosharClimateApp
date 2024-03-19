@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">KosheRise</string>
-    <string name="version_number">3.0.6 - Live</string>
+    <string name="version_number">3.1.1 - Live</string>
     <string name="powered">ক্রপইন্টেলিক্স প্রাইভেট লিমিটেড দ্বারা বিকাশিত</string>
 
     <string name="welcome_text">কোশেরাইসে আপনাকে স্বাগতম !!</string>
@@ -11,6 +11,11 @@
     <string name="returning">ফিরে আসছেন ..??</string>
     <string name="just_login">আপনার আশ্চর্যজনক কাজ পুনরায় শুরু করতে লগ ইন করুন</string>
 
+    //data year(Bengali)
+    <string name="Data_year">ডেটা বছর</string>
+    <string name="Select_Year">বছর নির্বাচন করুন</string>
+    <string name="Select_Season">সিজন সিলেক্ট করুন</string>
+    <string name="year">বছর</string>
 
     //Language
     <string name="hindi" translatable="false">हिन्दी</string>

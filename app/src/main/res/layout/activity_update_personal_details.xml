@@ -68,27 +68,98 @@
 
         </LinearLayout>
 
-<!--        Input filed to put farmer Id or Number-->
-        <LinearLayout
-            android:id="@+id/linearLayout31"
-            android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/viewserachdata">
+
+    <!--        Input filed to put farmer Id or Number-->
+    <LinearLayout
+        android:id="@+id/linearLayout31"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:maxLines="2"
+            android:text="@string/search" />
+
+        <LinearLayout
+            android:id="@+id/mobile_number_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/editext_bg">
+
+                <EditText
+                    android:id="@+id/etFetch_farmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="15dp"
+                    android:background="#00000000"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="@string/search_here"
+                    android:padding="10dp"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:id="@+id/ivFetch_farmer"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:backgroundTint="#F9F8FA"
+                    android:paddingEnd="10dp"
+                    android:src="@drawable/ic_search" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--        Spinner to selecte Farmer Id-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:id="@+id/updateFarmerUId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="10dp">
+            android:visibility="visible"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:maxLines="2"
-                android:text="@string/search" />
+                android:text="@string/plot_id"
+                android:fontFamily="@font/poppins_medium">
+            </TextView>
 
             <LinearLayout
-                android:id="@+id/mobile_number_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="42dp"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -97,27 +168,16 @@
                     android:layout_weight="1"
                     android:background="@drawable/editext_bg">
 
-                    <EditText
-                        android:id="@+id/etFetch_farmer"
+                    <Spinner
+                        android:id="@+id/spUpdateFarmerId"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:layout_marginEnd="15dp"
-                        android:background="#00000000"
+                        android:clickable="false"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins_regular"
-                        android:hint="@string/search_here"
                         android:padding="10dp"
                         android:textSize="15sp" />
-
-                    <ImageView
-                        android:id="@+id/ivFetch_farmer"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-                        android:backgroundTint="#F9F8FA"
-                        android:paddingEnd="10dp"
-                        android:src="@drawable/ic_search" />
-
 
                 </RelativeLayout>
 
@@ -125,61 +185,10 @@
 
         </LinearLayout>
 
-<!--        Spinner to selecte Farmer Id-->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+    </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/updateFarmerUId"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="20dp"
-                android:visibility="visible"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plot_id"
-                    android:fontFamily="@font/poppins_medium">
-                </TextView>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:orientation="horizontal">
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/editext_bg">
-
-                        <Spinner
-                            android:id="@+id/spUpdateFarmerId"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_centerInParent="true"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:fontFamily="@font/poppins_regular"
-                            android:padding="10dp"
-                            android:textSize="15sp" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
+</LinearLayout>
 
 <!--        Farmer Update onboarding data-->
         <LinearLayout

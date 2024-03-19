@@ -3,10 +3,12 @@ package com.kosherclimate.userapp.reports.aeriation_report
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.LocationManager
 import android.media.ExifInterface
@@ -17,8 +19,10 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.utils.CommonData
 import okhttp3.MultipartBody
 import java.io.File
 import java.io.FileNotFoundException
@@ -66,6 +71,8 @@ class AeriationReportImageActivity : AppCompatActivity() {
     private var token: String = ""
     private var imageLat: String = ""
     private var imageLng: String = ""
+    private var financial_year: String = ""
+    private var season1: String = ""
     val watermark: Common = Common()
 
     lateinit var uri: Uri
@@ -92,6 +99,8 @@ class AeriationReportImageActivity : AppCompatActivity() {
 
     private lateinit var progress: SweetAlertDialog
 
+    val watermark1: CommonData = CommonData()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_reupload)
@@ -110,6 +119,8 @@ class AeriationReportImageActivity : AppCompatActivity() {
             pipeImageLongitude = bundle.getDouble("longitude")
             aeration_no = bundle.getString("aeration_no")!!
             plot_no = bundle.getString("plot_no")!!
+            season1 = bundle.getString("season")!!
+            financial_year = bundle.getString("financial_year")!!
         } else {
             Log.e("unique_id", "Nope")
         }
@@ -121,13 +132,30 @@ class AeriationReportImageActivity : AppCompatActivity() {
         image2 = findViewById(R.id.image_re_upload_2)
 
         image1.setOnClickListener(View.OnClickListener {
-            imageNumber = 1
-            getActualLocation(1)
+
+            if(imageModelPath1.isEmpty()){
+
+                imageNumber = 1
+                getActualLocation(1)
+
+            }else{
+
+                imageAlertDialog(imageModelPath1)
+            }
         })
 
         image2.setOnClickListener(View.OnClickListener {
-            imageNumber = 2
-            getActualLocation(2)
+
+            if(imageModelPath2.isEmpty()){
+
+                imageNumber = 2
+                getActualLocation(2)
+
+            }else{
+
+                imageAlertDialog(imageModelPath2)
+            }
+
         })
 
         ivback.setOnClickListener(View.OnClickListener {
@@ -184,6 +212,8 @@ class AeriationReportImageActivity : AppCompatActivity() {
         val plotNo = plot_no.toRequestBody("text/plain".toMediaTypeOrNull())
         val aeriationNo = aeration_no.toRequestBody("text/plain".toMediaTypeOrNull())
         val pipeNo = pipe_no.toRequestBody("text/plain".toMediaTypeOrNull())
+        val season2 = season1.toRequestBody("text/plain".toMediaTypeOrNull())
+        val financial_year = financial_year.toRequestBody("text/plain".toMediaTypeOrNull())
 
         val pipe_installation_id: MultipartBody.Part = MultipartBody.Part.createFormData("pipe_installation_id", null, pipeInstallationId)
         val farmer_uniqueId: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_uniqueId", null, uniqueId)
@@ -191,10 +221,12 @@ class AeriationReportImageActivity : AppCompatActivity() {
         val plot_no: MultipartBody.Part = MultipartBody.Part.createFormData("plot_no", null, plotNo)
         val aeration_no: MultipartBody.Part = MultipartBody.Part.createFormData("aeration_no", null, aeriationNo)
         val pipe_no: MultipartBody.Part = MultipartBody.Part.createFormData("pipe_no", null, pipeNo)
+        val season3: MultipartBody.Part = MultipartBody.Part.createFormData("season", null, season2)
+        val financialyear: MultipartBody.Part = MultipartBody.Part.createFormData("financial_year", null, financial_year)
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        apiInterface.sendAeriationReportImage("Bearer $token", pipe_installation_id, farmer_uniqueId, farmer_plot_uniqueid, plot_no, aeration_no,
-            pipe_no, listOfImages).enqueue(object : Callback<ResponseBody> {
+        apiInterface.sendAeriationReportImage("Bearer $token", pipe_installation_id, farmer_uniqueId, farmer_plot_uniqueid,
+            plot_no, aeration_no, pipe_no, listOfImages, season3, financialyear).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.code() == 200) {
                     Toast.makeText(this@AeriationReportImageActivity, "Data sent successfully", Toast.LENGTH_SHORT).show()
@@ -212,7 +244,7 @@ class AeriationReportImageActivity : AppCompatActivity() {
                 WarningDialog.contentText = "Image was not submited! Please try again"
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-                Toast.makeText(this@AeriationReportImageActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AeriationReportImageActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
                 Log.i("UPLOAD_IMAGE","call : $call")
                 Log.i("UPLOAD_IMAGE","Throwable : $t")
@@ -303,18 +335,35 @@ class AeriationReportImageActivity : AppCompatActivity() {
 
 // Adding watermark to the image.
                 val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id $timeStamp | $imageLat | $imageLng")
-                image1.setImageBitmap(edittedImage)
-                image1.rotation = rotate.toFloat()
+               // image1.setImageBitmap(edittedImage)
+               // image1.rotation = rotate.toFloat()
+
+                val location = "Location"
+                val year = "Year"
+                val season = "Season"
+                val nameImage = "Aeration Image 1"
+
+
+                //val watermarkData = "#$unique_id | P$plot_no | $timeStamp | $imageLat | $imageLng \n | $selectyear | $selectSeason"
+                val watermarkData = "#$unique_id - P$plot_no - $timeStamp \n $location - $imageLat , $imageLng \n  " +
+                        "$year - $financial_year , $season - $season1 \n $nameImage"
+
+
 
                 try {
-                    val bitmap = edittedImage
-
+                   // val bitmap = edittedImage
+                    val bitmap = watermark1.drawTextToBitmap(this@AeriationReportImageActivity,image,watermarkData)
+                    image1.setImageBitmap(bitmap)
+                    //bitmapList[0] = bitmap
+                    image1.rotation = rotate.toFloat()
                     val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     val outFile = File(storageDir, "$imageFileName.jpg")
                     val outStream = FileOutputStream(outFile)
 
 // Compressing the new watermarked image.
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    }
                     outStream.flush()
                     outStream.close()
 
@@ -350,18 +399,34 @@ class AeriationReportImageActivity : AppCompatActivity() {
 
 // Adding watermark to the image.
                 val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id $timeStamp | $imageLat | $imageLng")
-                image2.setImageBitmap(edittedImage)
-                image2.rotation = rotate.toFloat()
+               // image2.setImageBitmap(edittedImage)
+               // image2.rotation = rotate.toFloat()
+
+                val location = "Location"
+                val year = "Year"
+                val season = "Season"
+                val nameImage = "Aeration Image 2"
+
+                //val watermarkData = "#$unique_id | P$plot_no | $timeStamp | $imageLat | $imageLng \n | $selectyear | $selectSeason"
+                val watermarkData = "#$unique_id - P$plot_no - $timeStamp \n $location - $imageLat , $imageLng \n  " +
+                        "$year - $financial_year , $season - $season1 \n $nameImage"
 
                 try {
-                    val bitmap = edittedImage
+                   // val bitmap = edittedImage
+
+                    val bitmap = watermark1.drawTextToBitmap(this@AeriationReportImageActivity,image,watermarkData)
+                    image2.setImageBitmap(bitmap)
+                    //bitmapList[0] = bitmap
+                    image2.rotation = rotate.toFloat()
 
                     val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     val outFile = File(storageDir, "$imageFileName.jpg")
                     val outStream = FileOutputStream(outFile)
 
 // Compressing the new watermarked image.
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    }
                     outStream.flush()
                     outStream.close()
 
@@ -391,7 +456,7 @@ class AeriationReportImageActivity : AppCompatActivity() {
             val df = DecimalFormat("#####")
             val distance = df.format(SphericalUtil.computeDistanceBetween(LatLng(imageLat.toDouble(), imageLng.toDouble()), LatLng(pipeImageLatitude, pipeImageLongitude)))
 
-            if(distance.toDouble() < 30) {
+            if(distance.toDouble() < 100) {
                 stop()
             }
             else{
@@ -457,6 +522,34 @@ class AeriationReportImageActivity : AppCompatActivity() {
         currentPhotoPath = image.absolutePath
         Log.i("imagepath", currentPhotoPath)
         return image
+    }
+
+    fun imageAlertDialog(image: String) {
+
+        val dialog = Dialog(this@AeriationReportImageActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.condition_logout)
+        val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+        val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+        val imgBitmap = BitmapFactory.decodeFile(image)
+        // on below line we are setting bitmap to our image view.
+        showdatainimage.setImageBitmap(imgBitmap)
+
+        btn_Yes.setOnClickListener {
+            dialog.dismiss()
+            //finish();
+            //System.exit(1);
+            // File file1 = takescreenShort();
+            //screenShortLayout(file1);
+        }
+        dialog.show()
+        val window = dialog.window
+        window!!.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
     }
 
 }

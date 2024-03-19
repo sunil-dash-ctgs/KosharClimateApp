@@ -15,7 +15,7 @@ import com.kosherclimate.userapp.models.AeriationReportModel
 internal class Aeriation_Report_Adapter(private var aerationReportModel: List<AeriationReportModel>) : RecyclerView.Adapter<Aeriation_Report_Adapter.MyViewHolder>() {
 
     internal inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var srNo: TextView = view.findViewById(R.id.firstColumn)
+        //var srNo: TextView = view.findViewById(R.id.firstColumn)
         var uniqueId: TextView = view.findViewById(R.id.secondColumn)
         var farmerUniqueId: TextView = view.findViewById(R.id.thirdColumn)
         var pipeNo: TextView = view.findViewById(R.id.fourthColumn)
@@ -28,7 +28,7 @@ internal class Aeriation_Report_Adapter(private var aerationReportModel: List<Ae
 
     override fun onBindViewHolder(holder: Aeriation_Report_Adapter.MyViewHolder, position: Int) {
         val reportModel = aerationReportModel[position]
-        holder.srNo.text = reportModel.getId()
+        //holder.srNo.text = reportModel.getId()
         holder.uniqueId.text = reportModel.getFarmerId()
         holder.farmerUniqueId.text = reportModel.getFarmerPlotUniqueId()
         holder.pipeNo.text = reportModel.getPipeNo()
@@ -44,6 +44,8 @@ internal class Aeriation_Report_Adapter(private var aerationReportModel: List<Ae
                 putExtra("plot_no", reportModel.getPlotNo())
                 putExtra("farmer_name", reportModel.getFarmerName())
                 putExtra("reasons", reportModel.getReason())
+                putExtra("season", reportModel.getseason())
+                putExtra("financial_year", reportModel.getfinancial_year())
             }
             it.context.startActivity(intent)
         }

@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
@@ -48,6 +49,10 @@ class UpdatePersonalDetailsActivity : AppCompatActivity() {
     var FarmerUniqueList = ArrayList<String>()
     val common: Common = Common()
     var farmerUniqueId :String = ""
+    var viewsearchdata :String = ""
+    var frameruniqueid :String = ""
+    var financial_year :String = ""
+    var season :String = ""
 
     lateinit var farmerIdAdapter: Spinner
 
@@ -77,6 +82,7 @@ class UpdatePersonalDetailsActivity : AppCompatActivity() {
 
     private lateinit var spRelation : Spinner
     private lateinit var spMobileAccess : Spinner
+    private lateinit var viewserachdata : LinearLayout
 
     var realtionshipIDList = java.util.ArrayList<Int>()
     var relationshipNameList = java.util.ArrayList<String>()
@@ -113,6 +119,7 @@ class UpdatePersonalDetailsActivity : AppCompatActivity() {
         tvTotalAreaInAcres = findViewById(R.id.tvUpdateTotalAreaInAcres)
         tvOwnAreaInAcres = findViewById(R.id.tvUpdateOwnAreaInAcres)
         tvLeaseAreaInAcres = findViewById(R.id.tvUpdateLeaseAreaInAcres)
+        viewserachdata = findViewById(R.id.viewserachdata)
 
         tvTotalArea = findViewById(R.id.tvUpdateTotalArea)
         tvOwnArea = findViewById(R.id.tvUpdateOwnArea)
@@ -146,6 +153,19 @@ class UpdatePersonalDetailsActivity : AppCompatActivity() {
             }
             else{
                 getPlotUniqueId(etFetchFarmer.text.toString())
+            }
+        }
+
+        val bundle = intent.extras
+        if (bundle != null) {
+            viewsearchdata = bundle.getString("viewsearchdata")!!
+
+            if (viewsearchdata.equals("viewoneditdata")){
+                viewserachdata.visibility = View.GONE
+                frameruniqueid = bundle.getString("frameruniqueid")!!
+                getFarmerDetails(frameruniqueid)
+            }else{
+                viewserachdata.visibility = View.VISIBLE
             }
         }
 
@@ -287,6 +307,7 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.updateFarmerPersonalDetails("Bearer $token", farmerInfo).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.e("NEW_TEST","updateFarmerPersonalDetails API >> ${response.code()}")
                 if(response.code() == 200){
                     Log.e("NEW_TEST","updateFarmerPersonalDetails API >> ${response.code()}")
                     progress.cancel()
@@ -297,8 +318,12 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
                     intent.putExtra("stateId",stateId)
                     intent.putExtra("base_value",areaValue.toString())
                     intent.putExtra("base_unit",areaUnit.toString())
+                    intent.putExtra("message","message")
+                    intent.putExtra("financial_year",financial_year)
+                    intent.putExtra("season",season)
                     startActivity(intent)
                 }else{
+                    progress.cancel()
                     Toast.makeText(this@UpdatePersonalDetailsActivity,"Something went wrong", Toast.LENGTH_LONG)
                 }
             }
@@ -382,7 +407,7 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdatePersonalDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdatePersonalDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -435,6 +460,8 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
                         val areaInAcres = common.getStringFromJSON(farmerObject, "area_in_acers")
                         val ownAreaInAcres = common.getStringFromJSON(farmerObject, "own_area_in_acres")
                         val leaseAreaInAcres = common.getStringFromJSON(farmerObject, "lease_area_in_acres")
+                        financial_year = common.getStringFromJSON(farmerObject, "financial_year")
+                        season = common.getStringFromJSON(farmerObject, "season")
                         state = common.getStringFromJSON(farmerObject, "state")
                         stateId = common.getStringFromJSON(farmerObject, "state_id")
 
@@ -451,6 +478,8 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
                         Log.d("NEW_TEST","Area in Acres: $areaInAcres")
                         Log.d("NEW_TEST","Own Area in Acres: $ownAreaInAcres")
                         Log.d("NEW_TEST","Lease Area in Acres: $leaseAreaInAcres")
+                        Log.d("NEW_TEST","financial_year: $financial_year")
+                        Log.d("NEW_TEST","season: $season")
 
 //                        Set values in edittext
                         edtFarmerName.setText(farmerName)
@@ -495,6 +524,20 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
                         }
                         farmerDataLoaded = true
                     }
+                }else if(response.code() == 423){
+
+                    val WarningDialog = SweetAlertDialog(this@UpdatePersonalDetailsActivity, SweetAlertDialog.WARNING_TYPE)
+
+                    WarningDialog.titleText = resources.getString(R.string.warning)
+                    WarningDialog.contentText = "Farmer Onboarding not \n Completed"
+                    WarningDialog.confirmText = " OK "
+                    WarningDialog.showCancelButton(false)
+                    WarningDialog.setCancelable(false)
+                    WarningDialog.setConfirmClickListener {
+                        WarningDialog.cancel()
+
+                        backScreen()
+                    }.show()
                 }
                 progress.dismiss()
             }
@@ -558,7 +601,7 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
                 progress.dismiss()
                 Toast.makeText(
                     this@UpdatePersonalDetailsActivity,
-                    "Internet Connection Issue",
+                    "Please Retry",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -612,7 +655,7 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdatePersonalDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdatePersonalDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -644,7 +687,7 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdatePersonalDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdatePersonalDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -670,5 +713,10 @@ private fun warningDialog(warningDialog: SweetAlertDialog, string: String) {
         } else {
             "0.0"
         }
+    }
+
+    private fun backScreen() {
+        super.onBackPressed()
+        finish()
     }
 }

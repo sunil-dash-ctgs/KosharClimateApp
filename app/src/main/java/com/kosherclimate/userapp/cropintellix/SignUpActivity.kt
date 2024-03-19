@@ -260,7 +260,7 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progress.dismiss()
-                Toast.makeText(this@SignUpActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SignUpActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }

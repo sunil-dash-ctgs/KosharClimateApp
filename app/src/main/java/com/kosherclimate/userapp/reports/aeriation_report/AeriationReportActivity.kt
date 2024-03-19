@@ -199,6 +199,8 @@ class AeriationReportActivity : AppCompatActivity() {
                             val pipe_installation_id = jsonObject.optString("pipe_installation_id").toString()
                             val aeration_no = jsonObject.optString("aeration_no").toString()
                             val plot_no = jsonObject.optString("plot_no").toString()
+                            val financial_year = jsonObject.optString("financial_year").toString()
+                            val season = jsonObject.optString("season").toString()
 
                             val farmerapproved = jsonObject.getJSONObject("farmerapproved")
                             val farmer_name = farmerapproved.optString("farmer_name").toString()
@@ -208,7 +210,8 @@ class AeriationReportActivity : AppCompatActivity() {
 
                             Log.e("uniqueId", uniqueId)
 
-                            aeriationReportModel = AeriationReportModel(id, uniqueId, pipe_no, farmer_plot_uniqueid, pipe_installation_id, aeration_no, plot_no, farmer_name, reasons)
+                            aeriationReportModel = AeriationReportModel(id, uniqueId, pipe_no, farmer_plot_uniqueid, pipe_installation_id,
+                                aeration_no, plot_no, farmer_name, reasons, season, financial_year)
                             reportModel.add(aeriationReportModel)
                         }
 
@@ -264,6 +267,8 @@ class AeriationReportActivity : AppCompatActivity() {
                             val pipe_installation_id = jsonObject.optString("pipe_installation_id").toString()
                             val aeration_no = jsonObject.optString("aeration_no").toString()
                             val plot_no = jsonObject.optString("plot_no").toString()
+                            val financial_year = jsonObject.optString("financial_year").toString()
+                            val season = jsonObject.optString("season").toString()
 
                             val farmerapproved = jsonObject.getJSONObject("farmerapproved")
                             val farmer_name = farmerapproved.optString("farmer_name").toString()
@@ -273,7 +278,8 @@ class AeriationReportActivity : AppCompatActivity() {
 
                             Log.e("uniqueId", uniqueId)
 
-                            val aeriationReportModel = AeriationReportModel(id, uniqueId, pipe_no, farmer_plot_uniqueid, pipe_installation_id, aeration_no, plot_no, farmer_name, reasons)
+                            val aeriationReportModel = AeriationReportModel(id, uniqueId, pipe_no, farmer_plot_uniqueid, pipe_installation_id, aeration_no,
+                                plot_no, farmer_name, reasons, season, financial_year)
                             reportModel.add(aeriationReportModel)
                             aeriationReportAdapter.notifyDataSetChanged()
                         }

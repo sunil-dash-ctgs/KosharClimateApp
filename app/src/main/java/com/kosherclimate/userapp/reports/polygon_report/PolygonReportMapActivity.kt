@@ -66,6 +66,7 @@ import java.util.Calendar
 import java.util.Timer
 
 class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
+
     private val MY_PERMISSIONS_REQUEST_LOCATION = 99
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mapFragment: SupportMapFragment
@@ -86,6 +87,8 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var farmer_id: String = ""
     private var sub_plot_no: String = ""
     private var farmer_plot_uniqueid: String = ""
+    private var financial_year: String = ""
+    private var season: String = ""
     private var editable: Boolean = false
 
     private var polygon_date_time : String = ""
@@ -134,6 +137,8 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
             sub_plot_no = bundle.getString("plot_no")!!
             farmer_id = bundle.getString("farmer_uniqueId")!!
             farmer_plot_uniqueid = bundle.getString("farmer_uniqueId")!!
+            financial_year = bundle.getString("financial_year")!!
+            season = bundle.getString("season")!!
         } else {
             Log.e("area", "Nope")
         }
@@ -220,27 +225,30 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 val add = area.toDouble() + dif
                 Log.e("add", add.toString())
 
-                if (polygon_area > minus && polygon_area < add) {
-                    runnable?.let { handler.removeCallbacks(it) } //stop handler when activity not visible
+                postData(latLngArrayListPolygon)
 
-                    postData(latLngArrayListPolygon)
-                } else if (polygon_area < minus) {
-                    val WarningDialog =
-                        SweetAlertDialog(this@PolygonReportMapActivity, SweetAlertDialog.WARNING_TYPE)
-                    WarningDialog.titleText = resources.getString(R.string.warning)
-                    WarningDialog.contentText = "Area drawn is less than plot \n area"
-                    WarningDialog.confirmText = resources.getString(R.string.ok)
-                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-
-                } else if (polygon_area > add) {
-                    val WarningDialog =
-                        SweetAlertDialog(this@PolygonReportMapActivity, SweetAlertDialog.WARNING_TYPE)
-                    WarningDialog.titleText = resources.getString(R.string.warning)
-                    WarningDialog.contentText = "Area drawn is more than plot \n area"
-                    WarningDialog.confirmText = resources.getString(R.string.ok)
-                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-
-                }
+//                if (polygon_area > minus && polygon_area < add) {
+//                    runnable?.let { handler.removeCallbacks(it) } //stop handler when activity not visible
+//
+//                    postData(latLngArrayListPolygon)
+//
+//                } else if (polygon_area < minus) {
+//                    val WarningDialog =
+//                        SweetAlertDialog(this@PolygonReportMapActivity, SweetAlertDialog.WARNING_TYPE)
+//                    WarningDialog.titleText = resources.getString(R.string.warning)
+//                    WarningDialog.contentText = "Area drawn is less than plot \n area"
+//                    WarningDialog.confirmText = resources.getString(R.string.ok)
+//                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+//
+//                } else if (polygon_area > add) {
+//                    val WarningDialog =
+//                        SweetAlertDialog(this@PolygonReportMapActivity, SweetAlertDialog.WARNING_TYPE)
+//                    WarningDialog.titleText = resources.getString(R.string.warning)
+//                    WarningDialog.contentText = "Area drawn is more than plot \n area"
+//                    WarningDialog.confirmText = resources.getString(R.string.ok)
+//                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+//
+//                }
             }
         }
 
@@ -405,7 +413,7 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progress.dismiss()
-                Toast.makeText(this@PolygonReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PolygonReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -613,7 +621,7 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@PolygonReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PolygonReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
                 resetMarkers()
             }
@@ -721,7 +729,7 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@PolygonReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PolygonReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
 
             }
@@ -977,7 +985,7 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
             latList.add(locationModel)
         }
 
-        val updatePolygonModel = UpdatePolygonModel(unique_id, area, currentTime.toString(), latList)
+        val updatePolygonModel = UpdatePolygonModel(unique_id, area, currentTime.toString(), latList, financial_year, season)
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.updatePipePolygon("Bearer $token", updatePolygonModel).enqueue(object : Callback<ResponseBody> {
@@ -1001,7 +1009,7 @@ class PolygonReportMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@PolygonReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PolygonReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })

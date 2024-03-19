@@ -14,7 +14,7 @@ import com.kosherclimate.userapp.reports.farmer_report.OnBoardingDetailsActivity
 internal class Farmer_Report_Adapter(private var farmerReportModel: List<FarmerReportModel>) : RecyclerView.Adapter<Farmer_Report_Adapter.MyViewHolder>()  {
 
     internal inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var srNo: TextView = view.findViewById(R.id.firstColumn)
+        //var srNo: TextView = view.findViewById(R.id.firstColumn)
         var uniqueId: TextView = view.findViewById(R.id.secondColumn)
         var date: TextView = view.findViewById(R.id.thirdColumn)
         var time: TextView = view.findViewById(R.id.fourthColumn)
@@ -27,7 +27,7 @@ internal class Farmer_Report_Adapter(private var farmerReportModel: List<FarmerR
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val reportModel = farmerReportModel[position]
-        holder.srNo.text = reportModel.getId()
+        //holder.srNo.text = reportModel.getId()
         holder.uniqueId.text = reportModel.getFarmerId()
         holder.date.text = reportModel.getDate()
         holder.time.text = reportModel.getTime()

@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.maps.android.PolyUtil
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.pipeinstallation.LandInfoPreviewActivity
 import com.kosherclimate.userapp.pipeinstallation.Submitted.LandInfoSubmittedPreviewActivity
 import java.text.DecimalFormat
@@ -74,6 +75,11 @@ class PolygonMapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, Loc
     lateinit var txtSubmitted: TextView
 
 
+    lateinit var text_timer: TextView
+    lateinit var timerData: TimerData
+    var StartTime = 0
+    var StartTime1 = 0
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +106,8 @@ class PolygonMapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, Loc
             Polygon_lat_lng = bundle.getStringArrayList("polygon_lat_lng")!!
             status = bundle.getInt("status")
             polygon_status = bundle.getInt("polygon_status")
+            StartTime1 = bundle.getInt("StartTime")
+
         } else {
             Log.e("area", "Nope")
         }
@@ -107,6 +115,7 @@ class PolygonMapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, Loc
         ok = findViewById(R.id.polygon_submitted_ok)
         back = findViewById(R.id.polygon_submitted_back)
         txtSubmitted = findViewById(R.id.polygon_submitted)
+        text_timer = findViewById(R.id.text_timer)
         txtSubmitted.text = "Polygon already submitted"
 
 
@@ -122,6 +131,9 @@ class PolygonMapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, Loc
             finish()
         }
 
+        timerData = TimerData(this@PolygonMapSubmittedActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
+
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.googleMapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -129,6 +141,7 @@ class PolygonMapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, Loc
         fusedLocationProviderClient =  LocationServices.getFusedLocationProviderClient(this@PolygonMapSubmittedActivity)
         getCurrentLocation()
     }
+
 
 
     private fun getCurrentLocation() {

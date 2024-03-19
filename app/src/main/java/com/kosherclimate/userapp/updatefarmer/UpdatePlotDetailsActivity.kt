@@ -2,19 +2,20 @@ package com.kosherclimate.userapp.updatefarmer
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.ExifInterface
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,12 +30,13 @@ import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.adapters.ImageRecyclerView
 import com.kosherclimate.userapp.cropintellix.DashboardActivity
-import com.kosherclimate.userapp.farmeronboarding.TNCActivity
 import com.kosherclimate.userapp.models.LandRecordsModel
 import com.kosherclimate.userapp.models.updatefarmerdetails.UpdatePlotInfo
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.utils.Common
+import com.kosherclimate.userapp.utils.CommonData
+import com.kosherclimate.userapp.weather.RecyclerItemClickListenr
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -128,6 +130,9 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
 
     private lateinit var perProgressBar: CircularProgressBar
     private lateinit var cardview: CardView
+    val watermark1 : CommonData = CommonData()
+    var selectSeason: String = ""
+    var selectyear: String = ""
 
     @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("SetTextI18n")
@@ -149,7 +154,13 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
             state_ID = bundle.getString("state_id")!!
             areaValue = bundle.getString("base_value")!!.toDouble()
             areaUnit = bundle.getString("base_unit")!!
+            selectyear = bundle.getString("financial_year")!!
+            selectSeason = bundle.getString("season")!!
 //            longitude = bundle.getString("longitude")!!
+
+            Log.d("data","financial_year : "+selectyear)
+            Log.d("data","season : "+selectSeason)
+
         } else {
             Log.e("total_plot", "Nope")
         }
@@ -247,6 +258,36 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
         imageRecyclerView = ImageRecyclerView(imageModel)
         recyclerView.adapter = imageRecyclerView
 
+        recyclerView.addOnItemTouchListener(RecyclerItemClickListenr(this, recyclerView, object : RecyclerItemClickListenr.OnItemClickListener {
+
+            override fun onItemClick(view: View, position: Int) {
+
+                val dialog = Dialog(this@UpdatePlotDetailsActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.condition_logout)
+                val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+                val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+                // val imgBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                // on below line we are setting bitmap to our image view.
+                showdatainimage.setImageBitmap(imageModel[position].image)
+
+                btn_Yes.setOnClickListener {
+                    dialog.dismiss()
+                    //finish();
+                    //System.exit(1);
+                    // File file1 = takescreenShort();
+                    //screenShortLayout(file1);
+                }
+                dialog.show()
+                val window = dialog.window
+                window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+                //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
+            }
+            override fun onItemLongClick(view: View?, position: Int) {
+                TODO("do nothing")
+            }
+        }))
 
         /**
          * on button click start taking pictures.
@@ -421,6 +462,8 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
 
             val intent = Intent(this@UpdatePlotDetailsActivity, UpdateTNCActivity::class.java).apply {
                 putExtra("farmer_unique_id",farmerUniqueId)
+                putExtra("selectyear",selectyear)
+                putExtra("selectSeason",selectSeason)
             }
             startActivity(intent)
 
@@ -608,7 +651,7 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
                         cardview.visibility = View.GONE
                         back.isEnabled = true
                         next.isEnabled = true
-                        Toast.makeText(this@UpdatePlotDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@UpdatePlotDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                     }
                 })
         }
@@ -694,7 +737,11 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
                     else -> 0
                 }
 
-                val stampImage = watermark.addWatermark(application.applicationContext, image, "#$farmerUniqueId | P1 | $timeStamp ")
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Plot Image "
+                var watertext = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+                val stampImage = watermark1.drawTextToBitmap(this@UpdatePlotDetailsActivity,image,watertext)
                 count += 1
 
                 try {
@@ -702,16 +749,25 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
                     val outFile = File(storageDir, "$imageFileName.jpg")
 
                     val outStream = FileOutputStream(outFile)
-                    stampImage.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    if (stampImage != null) {
+                        val resized = Bitmap.createScaledBitmap(stampImage, 1000, 1000, true)
+                        resized.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    }
                     outStream.flush()
                     outStream.close()
 
-                    val data = LandRecordsModel(count, stampImage, rotate)
+                    val data = LandRecordsModel(count, stampImage!!, rotate)
                     imageModel.add(data)
                     imageRecyclerView.notifyDataSetChanged()
 
                     val imagePath = outFile.absolutePath
                     arrayList.add(imagePath)
+
+                    val file = File(imagePath)
+                    var length = file.length()
+                    length = length / 1024
+                    println("File Path : " + file.path + ", File size : " + length + " KB")
+                    Log.d("FileImagePath","File Path : " + file.path + ", File size : " + length + " KB")
 
 
                 } catch (e: FileNotFoundException) {
@@ -753,6 +809,11 @@ class UpdatePlotDetailsActivity : AppCompatActivity() {
                         edtSurvey_Number.setText( common.getStringFromJSON(farmerObject,"survey_no"))
                         edtOwner_Name.setText( common.getStringFromJSON(farmerObject,"actual_owner_name"))
                         var landOwner = common.getStringFromJSON(farmerObject,"land_ownership")
+                        //selectyear = common.getStringFromJSON(farmerObject,"financial_year")
+                        //selectSeason = common.getStringFromJSON(farmerObject,"season")
+
+                        //Log.d("data3","financial_year : "+selectyear)
+                        //Log.d("data3","season : "+selectSeason)
 
                         if (landOwner.lowercase() == "own"){
                             ownership_spinner.setSelection(1)

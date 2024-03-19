@@ -735,7 +735,7 @@ class FetchFarmerDetailsActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FetchFarmerDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FetchFarmerDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -770,7 +770,7 @@ class FetchFarmerDetailsActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FetchFarmerDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FetchFarmerDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -803,7 +803,7 @@ class FetchFarmerDetailsActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FetchFarmerDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FetchFarmerDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -838,7 +838,7 @@ class FetchFarmerDetailsActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progress.dismiss()
-                Toast.makeText(this@FetchFarmerDetailsActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FetchFarmerDetailsActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }

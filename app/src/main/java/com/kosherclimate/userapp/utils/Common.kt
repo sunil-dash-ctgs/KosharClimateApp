@@ -42,22 +42,23 @@ class Common {
         }
         val textSize = result.width * options.textSizeToWidthRatio
         paint.textSize = textSize
-        paint.color = ContextCompat.getColor(context, R.color.image_text)
+        paint.color = ContextCompat.getColor(context, R.color.primary)
         if (options.shadowColor != null) {
-            paint.setShadowLayer(textSize / 2, 0f, 0f, options.shadowColor)
+            paint.setShadowLayer(textSize / 2, 1f, 1f, options.shadowColor)
         }
         if (options.typeface != null) {
             paint.typeface = options.typeface
         }
         val padding = result.width * options.paddingToWidthRatio
-        val coordinates =
-            calculateCoordinates(watermarkText, paint, options, canvas.width, canvas.height, padding)
+        val coordinates = calculateCoordinates(watermarkText, paint, options, canvas.width, canvas.height, padding)
         canvas.drawText(watermarkText, coordinates.x, coordinates.y, paint)
         return result
     }
 
 
-    private fun calculateCoordinates(watermarkText: String, paint: Paint, options: WatermarkOptions, width: Int, height: Int, padding: Float): PointF {
+    private fun calculateCoordinates(watermarkText: String, paint: Paint, options: WatermarkOptions, width: Int, height: Int,
+                                     padding: Float): PointF {
+
         val x = when (options.corner) {
             Corner.TOP_LEFT,
             Corner.BOTTOM_LEFT -> {

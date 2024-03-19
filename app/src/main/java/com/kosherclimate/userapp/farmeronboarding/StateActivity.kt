@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.*
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.models.OrganizationModel
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
@@ -44,7 +45,13 @@ class StateActivity : AppCompatActivity() {
     var areaValue: String = ""
     var maxBValue: String = ""
     var minBValue: String = ""
+    var selectSeason: String = ""
+    var selectyear: String = ""
     private lateinit var progress: SweetAlertDialog
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+    lateinit var text_timer: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +71,23 @@ class StateActivity : AppCompatActivity() {
         state_next.visibility = View.GONE
         txtState = findViewById(R.id.onboarding_state)
         txtOrganization = findViewById(R.id.organization)
+        text_timer = findViewById(R.id.text_timer)
 
         progress  = SweetAlertDialog(this@StateActivity, SweetAlertDialog.PROGRESS_TYPE)
 
         state_back.setOnClickListener(View.OnClickListener {
             super.onBackPressed()
         })
+
+        val bundle = intent.extras
+        if (bundle != null) {
+            StartTime1 = bundle.getInt("StartTime")!!
+            selectSeason = bundle.getString("selectSeason")!!
+            selectyear = bundle.getString("selectyear")!!
+        }
+
+        timerData = TimerData(this@StateActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
 
         /**
@@ -85,6 +103,9 @@ class StateActivity : AppCompatActivity() {
                        putExtra("org_id", orgID)
                        putExtra("unit", unit)
                        putExtra("area_value", areaValue)
+                       putExtra("selectyear", selectyear)
+                       putExtra("selectSeason", selectSeason)
+                       putExtra("StartTime", StartTime)
                        putExtra("max_base_value", maxBValue.toDouble())
                        putExtra("min_base_value", minBValue.toDouble())
 
@@ -139,7 +160,7 @@ class StateActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@StateActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@StateActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.cancel()
             }
         })
@@ -172,7 +193,7 @@ class StateActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@StateActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@StateActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }

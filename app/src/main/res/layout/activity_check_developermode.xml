@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CheckDevelopermode"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/settingpng"
+            android:layout_margin="30dp">
+
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="Access Restricted"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:fontFamily="@font/poppins_bold">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="Please Turn Off Developer Option \n Go to Settings > Search developer options and \n toggle them off."
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:fontFamily="@font/poppins_bold">
+        </TextView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/location_Clickhere"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/green_bg"
+        style="@style/yourButtonStyle"
+        android:text="Click Here"
+        android:layout_alignParentBottom="true"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:layout_margin="20dp">
+    </Button>
+
+</RelativeLayout>

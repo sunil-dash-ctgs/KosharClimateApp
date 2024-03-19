@@ -3,11 +3,13 @@ package com.kosherclimate.userapp.reports.pipe_report
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.ExifInterface
 import android.net.Uri
@@ -18,8 +20,10 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,6 +46,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.utils.CommonData
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -73,12 +78,15 @@ class PipeReportImageActivity : AppCompatActivity() {
     private lateinit var plot_no: String
     private lateinit var pipe_img_id: String
     private lateinit var progress: SweetAlertDialog
+    private var financial_year: String = ""
+    private var season: String = ""
 
     private var imageModelPath1: String = ""
     private lateinit var pipeImageLatitude: String
     private lateinit var pipeImageLongitude: String
 
     val watermark: Common = Common()
+    val watermark1: CommonData = CommonData()
     lateinit var uri: Uri
     lateinit var photoPath: File
     lateinit var currentPhotoPath: String
@@ -106,6 +114,10 @@ class PipeReportImageActivity : AppCompatActivity() {
             plot_no = bundle.getString("plot_no")!!
             pipe_no = bundle.getString("pipe_no")!!
             distance = bundle.getString("distance")!!
+            financial_year = bundle.getString("financial_year")!!
+            season = bundle.getString("season")!!
+
+            Log.d("userdetails",financial_year+"  "+season)
 
         } else {
             Log.e("unique_id", "Nope")
@@ -115,7 +127,16 @@ class PipeReportImageActivity : AppCompatActivity() {
 
         image1 = findViewById(R.id.image_re_upload_1)
         image1.setOnClickListener(View.OnClickListener {
-            getActualLocation()
+
+            if (imageModelPath1.isEmpty()){
+
+                getActualLocation()
+
+            }else{
+
+                imageAlertDialog(imageModelPath1)
+            }
+
         })
 
         imgBack.setOnClickListener(View.OnClickListener {
@@ -159,6 +180,8 @@ class PipeReportImageActivity : AppCompatActivity() {
         val plot = plot_no.toRequestBody("text/plain".toMediaTypeOrNull())
         val pipe = pipe_no.toRequestBody("text/plain".toMediaTypeOrNull())
         val entryId = pipe_img_id.toRequestBody("text/plain".toMediaTypeOrNull())
+        val financialyear = financial_year.toRequestBody("text/plain".toMediaTypeOrNull())
+        val season1 = season.toRequestBody("text/plain".toMediaTypeOrNull())
         val requestFile: RequestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
         val farmerUniqueID: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_uniqueId", null, farmer_unique_id)
@@ -169,12 +192,15 @@ class PipeReportImageActivity : AppCompatActivity() {
         val Longitude: MultipartBody.Part = MultipartBody.Part.createFormData("lng", null, longitude)
         val Distance: MultipartBody.Part = MultipartBody.Part.createFormData("distance", null, dis)
         val pipeID: MultipartBody.Part = MultipartBody.Part.createFormData("pipe_img_id", null, entryId)
+        val yearfinancial: MultipartBody.Part = MultipartBody.Part.createFormData("financial_year", null, financialyear)
+        val season2: MultipartBody.Part = MultipartBody.Part.createFormData("season", null, season1)
 
         val body: MultipartBody.Part = MultipartBody.Part.createFormData("images", file.name, requestFile)
 
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.pipeReUploadImage("Bearer $token", farmerUniqueID, farmerID, pipeNumber, plotNumber, Latitude, Longitude, Distance, pipeID, body)
+        retIn.pipeReUploadImage("Bearer $token", farmerUniqueID, farmerID, pipeNumber, plotNumber, Latitude, Longitude,
+            Distance, pipeID, body, yearfinancial, season2)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.code() == 200){
@@ -262,7 +288,17 @@ class PipeReportImageActivity : AppCompatActivity() {
                 }
 
 // Adding watermark to the image.
-                val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id $timeStamp | $imageLat | $imageLng")
+                //val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id $timeStamp |
+                // $imageLat | $imageLng")
+
+                val location = "Location"
+                val year = "Year"
+                val season1 = "Season"
+                val nameImage = "Pipe Image"
+
+                var watertext = "#$unique_id - $timeStamp \n $location - $imageLat , $imageLng \n $year - $financial_year , " +
+                        "$season1 - $season \n $nameImage"
+                val edittedImage = watermark1.drawTextToBitmap(this@PipeReportImageActivity,image,watertext)
                 image1.setImageBitmap(edittedImage)
                 image1.rotation = rotate.toFloat()
 
@@ -274,7 +310,9 @@ class PipeReportImageActivity : AppCompatActivity() {
                     val outStream = FileOutputStream(outFile)
 
 // Compressing the new watermarked image.
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    }
                     outStream.flush()
                     outStream.close()
 
@@ -396,5 +434,33 @@ class PipeReportImageActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun imageAlertDialog(image: String) {
+
+        val dialog = Dialog(this@PipeReportImageActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.condition_logout)
+        val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+        val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+        val imgBitmap = BitmapFactory.decodeFile(image)
+        // on below line we are setting bitmap to our image view.
+        showdatainimage.setImageBitmap(imgBitmap)
+
+        btn_Yes.setOnClickListener {
+            dialog.dismiss()
+            //finish();
+            //System.exit(1);
+            // File file1 = takescreenShort();
+            //screenShortLayout(file1);
+        }
+        dialog.show()
+        val window = dialog.window
+        window!!.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
     }
 }

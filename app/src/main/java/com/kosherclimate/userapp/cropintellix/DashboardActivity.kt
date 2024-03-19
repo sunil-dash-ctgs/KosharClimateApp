@@ -136,6 +136,7 @@ class DashboardActivity : AppCompatActivity() {
         val config = Configuration()
         config.locale = locale
         baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+
         setContentView(R.layout.activity_dashboard)
 
         progress = SweetAlertDialog(this@DashboardActivity, SweetAlertDialog.PROGRESS_TYPE)
@@ -143,6 +144,7 @@ class DashboardActivity : AppCompatActivity() {
         token = sharedPreference.getString("token","")!!
         state_id = sharedPreference.getString("state_id","")!!
 
+        Log.d("suniltoken",token)
 
 
         farmer_onboarding = findViewById(R.id.farmer)
@@ -177,7 +179,10 @@ class DashboardActivity : AppCompatActivity() {
 
         farmer_onboarding.setOnClickListener {
             if (FarmerRegistration == 1) {
-                val intent = Intent(this, StateActivity::class.java)
+                val intent = Intent(this, YearRegistractionActivity::class.java)
+                intent.putExtra("farmer_classname","farmer_onboarding")
+                intent.putExtra("pagename","Onboarding")
+                intent.putExtra("language", language)
                 startActivity(intent)
             } else {
                 val WarningDialog =
@@ -192,7 +197,9 @@ class DashboardActivity : AppCompatActivity() {
 
         crop_info.setOnClickListener {
             if (CropData == 1) {
-                val intent = Intent(this, CropActivity::class.java).apply {
+                val intent = Intent(this, YearRegistractionActivity::class.java).apply {
+                    putExtra("farmer_classname","farmer_cropinfo")
+                    putExtra("pagename","Crop Data")
                     putExtra("total_sub_plots", 0)
                     putExtra("total_number", 0)
                     putStringArrayListExtra("plot_area", AcresList)
@@ -213,6 +220,7 @@ class DashboardActivity : AppCompatActivity() {
                     putExtra("transplantation_day", 0)
                     putExtra("transplantation_month", 0)
                     putExtra("transplantation_year", 0)
+                    intent.putExtra("language", language)
                 }
                 startActivity(intent)
             } else {
@@ -227,7 +235,10 @@ class DashboardActivity : AppCompatActivity() {
 
         benefit.setOnClickListener {
             if (FarmerBenefit == 1) {
-                val intent = Intent(this, FarmerBenefitActivity::class.java).apply { }
+                val intent = Intent(this, YearRegistractionActivity::class.java).apply { }
+                intent.putExtra("farmer_classname","farmer_Benefit")
+                intent.putExtra("pagename","Farmer Benefits")
+                intent.putExtra("language", language)
                 startActivity(intent)
             } else {
                 val WarningDialog =
@@ -258,12 +269,16 @@ class DashboardActivity : AppCompatActivity() {
 //        })
         updateFarmer.setOnClickListener(View.OnClickListener{
             val intent = Intent(this,UpdatePersonalDetailsActivity::class.java)
+            intent.putExtra("viewsearchdata","viewondashbord")
             startActivity(intent)
         })
 
         ivPipeOne.setOnClickListener{
             if (Polygon == 1) {
-                val intent = Intent(this, PolygonActivity::class.java)
+                val intent = Intent(this, YearRegistractionActivity::class.java)
+                intent.putExtra("farmer_classname","framer_Polygon")
+                intent.putExtra("pagename","Polygon")
+                intent.putExtra("language", language)
                 startActivity(intent)
             }
             else{
@@ -278,7 +293,10 @@ class DashboardActivity : AppCompatActivity() {
 
         ivPipeTwo.setOnClickListener{
             if (PipeInstallation == 1) {
-                val intent = Intent(this, PipeActivity::class.java)
+                val intent = Intent(this, YearRegistractionActivity::class.java)
+                intent.putExtra("farmer_classname","framer_Pipe")
+                intent.putExtra("pagename","Pipe Installation")
+                intent.putExtra("language", language)
                 startActivity(intent)
             }
             else{
@@ -293,7 +311,10 @@ class DashboardActivity : AppCompatActivity() {
 
         aeration.setOnClickListener {
             if (CaptureAeration == 1) {
-                val intent = Intent(this, AerationActivity::class.java)
+                val intent = Intent(this, YearRegistractionActivity::class.java)
+                intent.putExtra("farmer_classname","framer_aeration")
+                intent.putExtra("pagename","Capture Aeration")
+                intent.putExtra("language", language)
                 startActivity(intent)
             } else {
                 val WarningDialog = SweetAlertDialog(this@DashboardActivity, SweetAlertDialog.WARNING_TYPE)
@@ -307,6 +328,7 @@ class DashboardActivity : AppCompatActivity() {
 
         weather.setOnClickListener{
             if(current_longitude == 0.0 && current_latitude == 0.0){
+
                 progress.progressHelper.barColor = Color.parseColor("#06c238")
                 progress.titleText = "Loading"
                 progress.contentText = "Getting current location"
@@ -342,9 +364,13 @@ class DashboardActivity : AppCompatActivity() {
         val deviceManufacturer = Build.MANUFACTURER // returns manufacturer
         Log.e("version", deviceName + deviceManufacturer)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         checkVersion(versionName, versionCode)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getCurrentLocation()
+
+
 
         val active = isLocationEnabled(this@DashboardActivity)
         Log.e("active", active.toString())
@@ -475,12 +501,13 @@ class DashboardActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<WeatherResponseModel>, t: Throwable) {
-                Toast.makeText(this@DashboardActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DashboardActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun checkVersion(versionName: String, versionCode: Int) {
+
         println("Checking app Version Current is $versionCode");
         progress.progressHelper.barColor = Color.parseColor("#06c238")
         progress.titleText = "Checking"
@@ -509,7 +536,7 @@ class DashboardActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@DashboardActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DashboardActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -584,7 +611,7 @@ class DashboardActivity : AppCompatActivity() {
 
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@DashboardActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DashboardActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })

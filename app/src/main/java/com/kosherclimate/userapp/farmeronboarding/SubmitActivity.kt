@@ -2,9 +2,12 @@ package com.kosherclimate.userapp.farmeronboarding
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.ExifInterface
 import android.net.Uri
@@ -14,6 +17,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,9 +28,11 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.cropintellix.DashboardActivity
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.utils.Common
+import com.kosherclimate.userapp.utils.CommonData
 import com.kosherclimate.userapp.utils.SignatureActivity
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -52,6 +58,7 @@ class SubmitActivity : AppCompatActivity() {
     private lateinit var imgCarbonCredit: ImageView
     private lateinit var imgPlotOwner: ImageView
     private lateinit var txtPercent: TextView
+    private lateinit var text_timer: TextView
 
     private lateinit var carbonCreditLayout: LinearLayout
     private lateinit var plotOwnerLayout: LinearLayout
@@ -59,6 +66,7 @@ class SubmitActivity : AppCompatActivity() {
     private lateinit var button: Button
 
     val watermark: Common = Common()
+    val watermark1: CommonData = CommonData()
 
     private var percentage = 75
     val CARBON_CREDIT = 222
@@ -110,11 +118,22 @@ class SubmitActivity : AppCompatActivity() {
 
     private lateinit var perProgressBar: CircularProgressBar
     private lateinit var cardview: CardView
+
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+    var selectSeason = "";
+    var selectyear = "";
+
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_submit)
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+
+        var sharedprefernce: SharedPreferences = getSharedPreferences("farmer_onboarding", 0)
+        selectSeason = sharedprefernce.getString("selectSeason", null).toString(); // getting String
+        selectyear = sharedprefernce.getString("selectyear", null).toString(); // getting String
 
         /**
          * Getting some data's from previous screen.
@@ -139,6 +158,7 @@ class SubmitActivity : AppCompatActivity() {
             khatha_number = bundle.getString("khatha_number")!!
             Pattadhar_number = bundle.getString("pattadhar_number")!!
             khatian_number = bundle.getString("khatian_number")!!
+            StartTime1 = bundle.getInt("StartTime")!!
 
             Log.e("plot_number", plot_number)
 
@@ -164,6 +184,11 @@ class SubmitActivity : AppCompatActivity() {
         cardview = findViewById(R.id.submit_progresscard)
 
         button = findViewById(R.id.end_Submit)
+
+        text_timer = findViewById(R.id.text_timer)
+
+        timerData = TimerData(this@SubmitActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
 
         token = sharedPreference.getString("token", "")!!
@@ -193,47 +218,62 @@ class SubmitActivity : AppCompatActivity() {
          *  Taking farmer image
          */
         imgCamera1.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
-                } catch (_: IOException) {
-                }
+            if (image1.isEmpty()){
+
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+
+                    try {
+                        photoPath = createImageFile()
+                    } catch (_: IOException) {
+                    }
 
 // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this@SubmitActivity,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher1.launch(intent)
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this@SubmitActivity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher1.launch(intent)
+                    }
                 }
+            }else{
+
+                imageAlertDialog(image1)
+
             }
+
         }
 
         /**
          *  Taking aadhar image
          */
         imgCamera2.setOnClickListener(View.OnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
-                } catch (_: IOException) { }
+            if (image2.isEmpty()){
+
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+
+                    try {
+                        photoPath = createImageFile()
+                    } catch (_: IOException) { }
 // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this@SubmitActivity,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher2.launch(intent)
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this@SubmitActivity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher2.launch(intent)
+                    }
                 }
+            }else{
+                imageAlertDialog(image2)
             }
 
         })
@@ -243,22 +283,29 @@ class SubmitActivity : AppCompatActivity() {
          *  Taking other image
          */
         imgCamera3.setOnClickListener(View.OnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
-                } catch (_: IOException) { }
+            if (image3.isEmpty()){
+
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+
+                    try {
+                        photoPath = createImageFile()
+                    } catch (_: IOException) { }
 // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this@SubmitActivity,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher3.launch(intent)
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this@SubmitActivity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher3.launch(intent)
+                    }
                 }
+
+            }else{
+                imageAlertDialog(image3)
             }
 
         })
@@ -445,6 +492,7 @@ Log.e("NEW_TEST","VAILD Data")
                         txtPercent.text = "50 %"
 
                         upLoadSingleImage(arrayList, "Bearer $token")
+
                     } else {
                         button.isEnabled = true
                         cardview.visibility = View.GONE
@@ -455,7 +503,7 @@ Log.e("NEW_TEST","VAILD Data")
                     println("failure reposne $call")
                     Toast.makeText(
                         this@SubmitActivity,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                     button.isEnabled = true
@@ -534,7 +582,7 @@ Log.e("NEW_TEST","VAILD Data")
                         cardview.visibility = View.GONE
                         Toast.makeText(
                             this@SubmitActivity,
-                            "Internet Connection Issue",
+                            "Please Retry",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -565,6 +613,7 @@ Log.e("NEW_TEST","VAILD Data")
 
 
     private fun lastScreenData() {
+
         Log.e("NEW_TEST","Last screen fun")
         Log.e("Here", "iuervniowetuewmqvoi")
 
@@ -579,6 +628,8 @@ Log.e("NEW_TEST","VAILD Data")
         val requestFileImage1: RequestBody = file1.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val requestFileImage2: RequestBody = file2.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val uniqueID: RequestBody = unique_id.toRequestBody("text/plain".toMediaTypeOrNull())
+        val select_Season: RequestBody = selectSeason.toRequestBody("text/plain".toMediaTypeOrNull())
+        val select_year: RequestBody = selectyear.toRequestBody("text/plain".toMediaTypeOrNull())
 
 
         val ScreenBody: MultipartBody.Part = MultipartBody.Part.createFormData("screen", null, lastFile)
@@ -588,6 +639,8 @@ Log.e("NEW_TEST","VAILD Data")
         val ImageBody1 : MultipartBody.Part = MultipartBody.Part.createFormData("farmer_photo", file1.name, requestFileImage1)
         val ImageBody2: MultipartBody.Part = MultipartBody.Part.createFormData("aadhaar_photo", file2.name, requestFileImage2)
         val farmeUniqueIdBody: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_uniqueId", null, uniqueID)
+        val selectyear: MultipartBody.Part = MultipartBody.Part.createFormData("financial_year", null, select_year)
+        val selectSeason: MultipartBody.Part = MultipartBody.Part.createFormData("season", null, select_Season)
 
         val requestOwnerFile: RequestBody = "".toRequestBody("multipart/form-data".toMediaTypeOrNull())
         var SignOwner: MultipartBody.Part = MultipartBody.Part.createFormData("plotowner_sign", null, requestOwnerFile)
@@ -617,18 +670,22 @@ Log.e("NEW_TEST","VAILD Data")
         }
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.lastScreen("Bearer $token", ScreenBody, FarmerIdBody, CurrentDateBody, CurrentTimeBody, ImageBody1, ImageBody2, ImageBody3, SignOwner, farmeUniqueIdBody,creditBody).enqueue(
-            object: Callback<ResponseBody>{
+        retIn.lastScreen("Bearer $token", ScreenBody, FarmerIdBody, CurrentDateBody, CurrentTimeBody,
+            ImageBody1, ImageBody2, ImageBody3, SignOwner, farmeUniqueIdBody,creditBody,selectyear,selectSeason).enqueue(
+            /* callback = */ object: Callback<ResponseBody>{
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+
                     if (response.code() == 200) {
                         button.isEnabled = true
                         cardview.visibility = View.GONE
 
                         nextScreen()
+
                     } else if (response.code() == 500) {
                         button.isEnabled = true
                         cardview.visibility = View.GONE
                     }
+
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -636,7 +693,7 @@ Log.e("NEW_TEST","VAILD Data")
                     cardview.visibility = View.GONE
                     Toast.makeText(
                         this@SubmitActivity,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -701,7 +758,12 @@ Log.e("NEW_TEST","VAILD Data")
                 }
 
                 Log.e("rotate", rotate.toString())
-                imgCamera1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp "))
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Image "
+                val water_mark = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+                //  imgCamera1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, water_mark))
+                imgCamera1.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, water_mark))
                 imgCamera1.rotation = rotate.toFloat()
 
                 try {
@@ -711,12 +773,19 @@ Log.e("NEW_TEST","VAILD Data")
                     val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     val outFile = File(storageDir, "$imageFileName.jpg")
                     val outStream = FileOutputStream(outFile)
-
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    val resized = Bitmap.createScaledBitmap(bitmap, 1000, 1000, true)
+                    resized.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
                     outStream.flush()
                     outStream.close()
 
                     image1 = outFile.absolutePath
+
+                    val file = File(image1)
+                    var length = file.length()
+                    length = length / 1024
+                    println("File Path : " + file.path + ", File size : " + length + " KB")
+                    Log.d("FileImagePath","File Path1 : " + file.path + ", File size1 : " + length + " KB")
+
                 } catch (e: FileNotFoundException) {
                     Log.d("TAG", "Error Occurred" + e.message)
                     e.printStackTrace()
@@ -743,7 +812,13 @@ Log.e("NEW_TEST","VAILD Data")
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                imgCamera2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp "))
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Aadhaar Image "
+                val water_mark = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+               // val water_mark = "#$unique_id - P$plot_number - $timeStamp "
+             //   imgCamera2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, water_mark))
+                imgCamera2.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, water_mark))
                 imgCamera2.rotation = rotate.toFloat()
 
                 try {
@@ -753,12 +828,19 @@ Log.e("NEW_TEST","VAILD Data")
                     val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     val outFile = File(storageDir, "$imageFileName.jpg")
                     val outStream = FileOutputStream(outFile)
-
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    val resized = Bitmap.createScaledBitmap(bitmap, 1000, 1000, true)
+                    resized.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
                     outStream.flush()
                     outStream.close()
 
                     image2 = outFile.absolutePath
+
+                    val file = File(image2)
+                    var length = file.length()
+                    length = length / 1024
+                    println("File Path : " + file.path + ", File size : " + length + " KB")
+                    Log.d("FileImagePath","File Path2 : " + file.path + ", File size2 : " + length + " KB")
+
                 } catch (e: FileNotFoundException) {
                     Log.d("TAG", "Error Occurred" + e.message)
                     e.printStackTrace()
@@ -787,7 +869,13 @@ Log.e("NEW_TEST","VAILD Data")
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                imgCamera3.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp "))
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Other Image "
+                val water_mark = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+                //val water_mark = "#$unique_id - P$plot_number - $timeStamp "
+               // imgCamera3.setImageBitmap(watermark.addWatermark(application.applicationContext, image, water_mark))
+                imgCamera3.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, water_mark))
                 imgCamera3.rotation = rotate.toFloat()
 
                 try {
@@ -797,12 +885,19 @@ Log.e("NEW_TEST","VAILD Data")
                     val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     val outFile = File(storageDir, "$imageFileName.jpg")
                     val outStream = FileOutputStream(outFile)
-
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    val resized = Bitmap.createScaledBitmap(bitmap, 1000, 1000, true)
+                    resized.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
                     outStream.flush()
                     outStream.close()
 
                     image3 = outFile.absolutePath
+
+                    val file = File(image2)
+                    var length = file.length()
+                    length = length / 1024
+                    println("File Path : " + file.path + ", File size : " + length + " KB")
+                    Log.d("FileImagePath","File Path3 : " + file.path + ", File size3 : " + length + " KB")
+
                 } catch (e: FileNotFoundException) {
                     Log.d("TAG", "Error Occurred" + e.message)
                     e.printStackTrace()
@@ -815,6 +910,34 @@ Log.e("NEW_TEST","VAILD Data")
 
 
     override fun onBackPressed() {
+    }
+
+    fun imageAlertDialog(image: String) {
+
+        val dialog = Dialog(this@SubmitActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.condition_logout)
+        val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+        val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+        val imgBitmap = BitmapFactory.decodeFile(image)
+        // on below line we are setting bitmap to our image view.
+        showdatainimage.setImageBitmap(imgBitmap)
+
+        btn_Yes.setOnClickListener {
+            dialog.dismiss()
+            //finish();
+            //System.exit(1);
+            // File file1 = takescreenShort();
+            //screenShortLayout(file1);
+        }
+        dialog.show()
+        val window = dialog.window
+        window!!.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
     }
 
 }

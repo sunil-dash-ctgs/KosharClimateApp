@@ -38,6 +38,7 @@ import com.google.maps.android.PolyUtil
 import com.google.maps.android.SphericalUtil
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.editpolygon.EditPolygonActivity
 import com.kosherclimate.userapp.models.CheckPolygonModel
 import com.kosherclimate.userapp.models.polygonmodel.LatLongModel
@@ -119,6 +120,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var progress: SweetAlertDialog
 
+    lateinit var text_timer: TextView
+    lateinit var timerData: TimerData
+    var StartTime = 0
+    var StartTime1 = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
@@ -136,6 +142,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             farmer_plot_uniqueid = bundle.getString("farmer_plot_uniqueid")!!
             threshold = bundle.getString("threshold")!!
             farmer_name = bundle.getString("farmer_name")!!
+            StartTime1 = bundle.getInt("StartTime")
         } else {
             Log.e("area", "Nope")
         }
@@ -148,8 +155,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             warnAboutDevOpt()
         }
 
-
-
         save = findViewById(R.id.ivSaveLocation)
         delete = findViewById(R.id.bin)
         back = findViewById(R.id.ivBackMap)
@@ -158,6 +163,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         txtPolygon = findViewById(R.id.polygon_area)
         txtAccuracy = findViewById(R.id.polygon_accuracy)
         txtAreaAcres = findViewById(R.id.area_acres)
+        text_timer = findViewById(R.id.text_timer)
 
         delete.setOnClickListener {
             if (polygon != null)
@@ -177,6 +183,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             getRadiusPolygon(firstLat, firstLng)
         }
+
+        timerData = TimerData(this@MapActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         edit.setOnClickListener {
 //Creating the instance of PopupMenu
@@ -201,11 +210,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         save.setOnClickListener {
+
             if (Polygon_lat_lng.size < 3) {
+
                 Toast.makeText(this@MapActivity, "Markers less than 3", Toast.LENGTH_SHORT).show()
+
             } else {
+
 // Calculating meters from polygon list
                 val m = SphericalUtil.computeArea(latLngArrayListPolygon)
+
                 Log.e("m", "computeArea $m")
                 Log.e("NEW_TEST", "in Else")
 
@@ -225,9 +239,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.e("add", add.toString())
 
                 if (polygon_area < add) {
+
                     runnable?.let { handler.removeCallbacks(it) } //stop handler when activity not visible
 
                     val stringList = convertLatLngListToStringList(latLngArrayListPolygon)
+
                     val intent = Intent(this, LandInfoActivity::class.java).apply {
                         putExtra("locationList", stringList)
                         putExtra("area", area)
@@ -239,9 +255,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
                         putExtra("polygon_date_time", polygon_date_time)
                         putExtra("farmer_name", farmer_name)
+
                     }
+
                     startActivity(intent)
                     finish()
+
                 } 
 //                else if (polygon_area < minus) {
 //                    val WarningDialog =
@@ -418,7 +437,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     Log.e("NEW_TEST", "API Request Failed", t)
                     Toast.makeText(
                         this@MapActivity,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -506,11 +525,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     progress.dismiss()
-                    Toast.makeText(
-                        this@MapActivity,
-                        "Internet Connection Issue",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        this@MapActivity,
+//                        "Please Retry",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
             })
     }
@@ -704,6 +723,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         undo.setOnClickListener {
+
             try {
                 if (!markerList.isEmpty()) {
                     Log.e("latLngArrayListPolygon", latLngArrayListPolygon.size.toString())
@@ -770,6 +790,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
         }
 
         mMap.setOnMapClickListener { latLng ->
@@ -832,8 +853,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
         Log.e("NEW_TEST", "Modified Id = $modifiedUniqueId")
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        val checkPolygonModel =
-            CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
+        val checkPolygonModel = CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
 
         apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
             .enqueue(object : Callback<ResponseBody> {
@@ -860,7 +880,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(
                         this@MapActivity,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                     progress.dismiss()
@@ -958,8 +978,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         val modifiedUniqueId = farmer_plot_uniqueid.replace(Regex("P\\d+"), "P1")
         Log.e("NEW_TEST", "Modified Id = $modifiedUniqueId")
-        val checkPolygonModel =
-            CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
+        val checkPolygonModel = CheckPolygonModel(modifiedUniqueId, latLng.latitude, latLng.longitude)
         apiInterface.checkCoordinates("Bearer $token", checkPolygonModel)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
@@ -995,7 +1014,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(
                         this@MapActivity,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                     progress.dismiss()

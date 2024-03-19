@@ -2,9 +2,11 @@ package com.kosherclimate.userapp.updatefarmer
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.ExifInterface
 import android.net.Uri
@@ -14,6 +16,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -31,6 +34,7 @@ import com.kosherclimate.userapp.cropintellix.DashboardActivity
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.utils.Common
+import com.kosherclimate.userapp.utils.CommonData
 import com.kosherclimate.userapp.utils.SignatureActivity
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -39,8 +43,6 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
-import org.json.JSONException
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -64,6 +66,7 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
     private lateinit var button: Button
 
     val watermark: Common = Common()
+    val watermark1: CommonData = CommonData()
 
     private var percentage = 75
     val CARBON_CREDIT = 222
@@ -115,6 +118,8 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
 
     private lateinit var perProgressBar: CircularProgressBar
     private lateinit var cardview: CardView
+    var selectSeason = "";
+    var selectyear = "";
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update_farmer_image)
@@ -128,6 +133,8 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
         val bundle = intent.extras
         if (bundle != null) {
             farmerId = bundle.getString("farmer_unique_id")!!
+            selectyear = bundle.getString("selectyear")!!
+            selectSeason = bundle.getString("selectSeason")!!
 
             Log.e("plot_number", plot_number)
 
@@ -182,48 +189,59 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
          *  Taking farmer image
          */
         imgCamera1.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
-                } catch (_: IOException) {
-                }
+            if (image1.isEmpty()){
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+
+                    try {
+                        photoPath = createImageFile()
+                    } catch (_: IOException) {
+                    }
 
 // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this ,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher1.launch(intent)
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this ,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher1.launch(intent)
+                    }
                 }
+            }else{
+                imageAlertDialog(image1)
             }
+
         }
 
         /**
          *  Taking aadhar image
          */
         imgCamera2.setOnClickListener(View.OnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
+            if (image2.isEmpty()){
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
-                } catch (_: IOException) { }
+                    try {
+                        photoPath = createImageFile()
+                    } catch (_: IOException) { }
 // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this ,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher2.launch(intent)
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this ,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher2.launch(intent)
+                    }
                 }
+            }else{
+                imageAlertDialog(image2)
             }
+
 
         })
 
@@ -232,23 +250,30 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
          *  Taking other image
          */
         imgCamera3.setOnClickListener(View.OnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
+            if (image3.isEmpty()){
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
 
-                try {
-                    photoPath = createImageFile()
-                } catch (_: IOException) { }
+                    try {
+                        photoPath = createImageFile()
+                    } catch (_: IOException) { }
 // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this ,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher3.launch(intent)
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this ,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher3.launch(intent)
+                    }
                 }
+
+            }else{
+
+                imageAlertDialog(image3)
             }
+
 
         })
 
@@ -358,6 +383,8 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
         val requestFileImage1: RequestBody = file1.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val requestFileImage2: RequestBody = file2.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val uniqueID: RequestBody = farmerId.toRequestBody("text/plain".toMediaTypeOrNull())
+        val select_Season: RequestBody = selectSeason.toRequestBody("text/plain".toMediaTypeOrNull())
+        val selec_tyear: RequestBody = selectyear.toRequestBody("text/plain".toMediaTypeOrNull())
 
 
         val ScreenBody: MultipartBody.Part = MultipartBody.Part.createFormData("screen", null, lastFile)
@@ -367,6 +394,8 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
         val ImageBody1 : MultipartBody.Part = MultipartBody.Part.createFormData("farmer_photo", file1.name, requestFileImage1)
         val ImageBody2: MultipartBody.Part = MultipartBody.Part.createFormData("aadhaar_photo", file2.name, requestFileImage2)
         val farmeUniqueIdBody: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_uniqueId", null, uniqueID)
+        val yearselect: MultipartBody.Part = MultipartBody.Part.createFormData("financial_year", null, selec_tyear)
+        val seasonselect: MultipartBody.Part = MultipartBody.Part.createFormData("season", null, select_Season)
 
         val requestOwnerFile: RequestBody = "".toRequestBody("multipart/form-data".toMediaTypeOrNull())
         var SignOwner: MultipartBody.Part = MultipartBody.Part.createFormData("plotowner_sign", null, requestOwnerFile)
@@ -396,7 +425,8 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
         }
 
         val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        retIn.updateFarmerImage("Bearer $token", ScreenBody, CurrentDateBody, CurrentTimeBody, ImageBody1, ImageBody2, ImageBody3, SignOwner, farmeUniqueIdBody,creditBody).enqueue(
+        retIn.updateFarmerImage("Bearer $token", ScreenBody, CurrentDateBody, CurrentTimeBody, ImageBody1,
+            ImageBody2, ImageBody3, SignOwner, farmeUniqueIdBody,creditBody,yearselect,seasonselect).enqueue(
             object: Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.code() == 200) {
@@ -415,7 +445,7 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
                     cardview.visibility = View.GONE
                     Toast.makeText(
                         this@UpdateFarmerImageActivity ,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -480,7 +510,12 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
                 }
 
                 Log.e("rotate", rotate.toString())
-                imgCamera1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$farmerId | P1 | $timeStamp "))
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Image "
+                val water_mark = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason  \n $nameImage"
+                //  imgCamera1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, water_mark))
+                imgCamera1.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, water_mark))
                 imgCamera1.rotation = rotate.toFloat()
 
                 try {
@@ -522,7 +557,13 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                imgCamera2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$farmerId | P1 | $timeStamp "))
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Aadhaar Image "
+                val water_mark = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+                // val water_mark = "#$unique_id - P$plot_number - $timeStamp "
+                //   imgCamera2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, water_mark))
+                imgCamera2.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, water_mark))
                 imgCamera2.rotation = rotate.toFloat()
 
                 try {
@@ -565,8 +606,15 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
                     8 -> -90
                     else -> 0
                 }
+
                 Log.e("rotate", rotate.toString())
-                imgCamera3.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$farmerId | P1 | $timeStamp "))
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Other Image "
+                val water_mark = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+                //val water_mark = "#$unique_id - P$plot_number - $timeStamp "
+                // imgCamera3.setImageBitmap(watermark.addWatermark(application.applicationContext, image, water_mark))
+                imgCamera3.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, water_mark))
                 imgCamera3.rotation = rotate.toFloat()
 
                 try {
@@ -594,6 +642,34 @@ class UpdateFarmerImageActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
+    }
+
+    fun imageAlertDialog(image: String) {
+
+        val dialog = Dialog(this@UpdateFarmerImageActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.condition_logout)
+        val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+        val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+        val imgBitmap = BitmapFactory.decodeFile(image)
+        // on below line we are setting bitmap to our image view.
+        showdatainimage.setImageBitmap(imgBitmap)
+
+        btn_Yes.setOnClickListener {
+            dialog.dismiss()
+            //finish();
+            //System.exit(1);
+            // File file1 = takescreenShort();
+            //screenShortLayout(file1);
+        }
+        dialog.show()
+        val window = dialog.window
+        window!!.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
     }
 
 }

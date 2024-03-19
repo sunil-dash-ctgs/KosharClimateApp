@@ -319,7 +319,7 @@ class ExistingLocationActivity : AppCompatActivity(), LocationListener {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@ExistingLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ExistingLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -456,7 +456,7 @@ class ExistingLocationActivity : AppCompatActivity(), LocationListener {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@ExistingLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ExistingLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -497,7 +497,7 @@ class ExistingLocationActivity : AppCompatActivity(), LocationListener {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@ExistingLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ExistingLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -537,7 +537,7 @@ class ExistingLocationActivity : AppCompatActivity(), LocationListener {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@ExistingLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ExistingLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
 
         })

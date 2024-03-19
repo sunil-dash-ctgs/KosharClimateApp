@@ -1,15 +1,23 @@
 package com.kosherclimate.userapp.adapters
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.kosherclimate.userapp.R
 import com.kosherclimate.userapp.models.PipeImageModel
 
 
-internal class Pipe_Image_Adapter(private var pipeImageModel: ArrayList<PipeImageModel>) : RecyclerView.Adapter<Pipe_Image_Adapter.MyViewHolder>() {
+internal class Pipe_Image_Adapter(
+    private var pipeImageModel: ArrayList<PipeImageModel>,
+) : RecyclerView.Adapter<Pipe_Image_Adapter.MyViewHolder>() {
 
     internal inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 //        var remove: ImageView = view.findViewById(R.id.image_cancel)
@@ -37,4 +45,5 @@ internal class Pipe_Image_Adapter(private var pipeImageModel: ArrayList<PipeImag
     override fun getItemCount(): Int {
         return  pipeImageModel.size
     }
+
 }

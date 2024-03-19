@@ -3,6 +3,7 @@ package com.kosherclimate.userapp.farmerbenefit
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -12,32 +13,23 @@ import android.location.Location
 import android.location.LocationManager
 import android.media.ExifInterface
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.location.LocationManagerCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.kosherclimate.userapp.BuildConfig
-import com.kosherclimate.userapp.cropintellix.DashboardActivity
-import com.kosherclimate.userapp.R
-import com.kosherclimate.userapp.models.BenefitCheckModel
-import com.kosherclimate.userapp.models.BenefitModel
-import com.kosherclimate.userapp.network.ApiClient
-import com.kosherclimate.userapp.network.ApiInterface
-import com.kosherclimate.userapp.utils.Common
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -46,6 +38,18 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.kosherclimate.userapp.BuildConfig
+import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
+import com.kosherclimate.userapp.cropintellix.DashboardActivity
+import com.kosherclimate.userapp.models.BenefitCheckModel
+import com.kosherclimate.userapp.models.BenefitModel
+import com.kosherclimate.userapp.network.ApiClient
+import com.kosherclimate.userapp.network.ApiInterface
+import com.kosherclimate.userapp.utils.Common
+import com.kosherclimate.userapp.utils.CommonData
+import com.watermark.androidwm.WatermarkBuilder
+import com.watermark.androidwm.bean.WatermarkText
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -64,6 +68,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var currentLocation: Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -81,6 +86,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
     var arrayList = ArrayList<String>()
 
     val watermark: Common = Common()
+    val watermark1: CommonData = CommonData()
 
     lateinit var edtMobile_number: EditText
 
@@ -89,6 +95,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
     lateinit var benefit_spinner: Spinner
 
     lateinit var txtFarmer_name: TextView
+    lateinit var text_timer: TextView
     lateinit var sub_plot: TextView
     lateinit var firstLinear: LinearLayout
 
@@ -124,6 +131,10 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var photoPath: File
     private lateinit var uri: Uri
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_farmer_benefit)
@@ -140,6 +151,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
         season_spinner = findViewById(R.id.season)
         benefit_spinner = findViewById(R.id.benefit)
         search = findViewById(R.id.benefit_search)
+        text_timer = findViewById(R.id.text_timer)
 
         submit = findViewById(R.id.benefit_submit)
         home = findViewById(R.id.farmer_benefit_home)
@@ -158,43 +170,71 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
         benefit_image1.isEnabled = false
         benefit_image2.isEnabled = false
 
+        val bundle = intent.extras
+        if (bundle != null) {
+            StartTime1 = bundle.getInt("StartTime")
+        }
+
+        timerData = TimerData(this@FarmerBenefitActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
+
 
         benefit_image1.setOnClickListener(View.OnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
-                try {
-                    photoPath = createImageFile()
-                } catch (ex: IOException) {
+
+            if (image1.isEmpty()){
+
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+                    try {
+                        photoPath = createImageFile()
+                    } catch (ex: IOException) {
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this@FarmerBenefitActivity,
+                            BuildConfig.APPLICATION_ID.toString() + ".provider", photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher1.launch(intent)
+                    }
                 }
-                // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this@FarmerBenefitActivity,
-                        BuildConfig.APPLICATION_ID.toString() + ".provider", photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher1.launch(intent)
-                }
+            }else{
+
+                imageAlertDialog(image1)
+
             }
+
+
         })
 
         benefit_image2.setOnClickListener(View.OnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
-                try {
-                    photoPath = createImageFile()
-                } catch (ex: IOException) {
+
+            if(image2.isEmpty()){
+
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(packageManager) != null) {
+                    try {
+                        photoPath = createImageFile()
+                    } catch (ex: IOException) {
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoPath != null) {
+                        uri = FileProvider.getUriForFile(
+                            this@FarmerBenefitActivity,
+                            BuildConfig.APPLICATION_ID.toString() + ".provider", photoPath
+                        )
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                        resultLauncher2.launch(intent)
+                    }
                 }
-                // Continue only if the File was successfully created
-                if (photoPath != null) {
-                    uri = FileProvider.getUriForFile(
-                        this@FarmerBenefitActivity,
-                        BuildConfig.APPLICATION_ID.toString() + ".provider", photoPath
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                    resultLauncher2.launch(intent)
-                }
+            }else{
+
+                imageAlertDialog(image2)
+
             }
+
+
         })
 
 
@@ -386,7 +426,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                     progress.dismiss()
                     Log.e("message", t.message.toString())
                 }
@@ -425,7 +465,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -461,7 +501,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -511,7 +551,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -605,7 +645,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -656,7 +696,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -718,7 +758,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
 
             }
         })
@@ -789,10 +829,20 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                         else -> 0
                     }
                     Log.e("rotate", rotate.toString())
-                    benefit_image1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#${NameList[uniquePlotPosition]} | B1 | $timeStamp | $latitude | $longitude"))
+                    val location : String = "Location"
+                    val image_name = "Name"
+                    val nameImage = "Farmer Benefit Image 1"
+                    var inputText : String = "#${NameList[uniquePlotPosition]} - B1 - $timeStamp \n $location - $latitude , $longitude \n $nameImage"
+
+
+                   // benefit_image1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, inputText))
+                    benefit_image1.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, inputText))
                     benefit_image1.rotation = rotate.toFloat()
 
+
+
                     try {
+
                         val draw = benefit_image1.drawable
                         val bitmap = draw.toBitmap()
 
@@ -832,7 +882,11 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                benefit_image2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#${NameList[uniquePlotPosition]} | B1 | $timeStamp | $latitude | $longitude"))
+                val location : String = "Location"
+                val image_name = "Name"
+                val nameImage = "Farmer Benefit Image 2"
+                var inputText : String = "#${NameList[uniquePlotPosition]} - B1 - $timeStamp \n $location - $latitude , $longitude \n $nameImage"
+                benefit_image2.setImageBitmap(watermark1.drawTextToBitmap(application.applicationContext, image, inputText))
                 benefit_image2.rotation = rotate.toFloat()
 
                 try {
@@ -848,6 +902,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                     outStream.close()
 
                     image2 = outFile.absolutePath
+
                 } catch (e: FileNotFoundException) {
                     Log.d("TAG", "Error Occurred" + e.message)
                     e.printStackTrace()
@@ -918,7 +973,7 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@FarmerBenefitActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FarmerBenefitActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
 
@@ -1012,5 +1067,33 @@ class FarmerBenefitActivity : AppCompatActivity(), OnMapReadyCallback {
 //            Log.e("location", "catch block")
 //        }
 //    }
+
+    fun imageAlertDialog(image: String) {
+
+        val dialog = Dialog(this@FarmerBenefitActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.condition_logout)
+        val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+        val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+        val imgBitmap = BitmapFactory.decodeFile(image)
+        // on below line we are setting bitmap to our image view.
+        showdatainimage.setImageBitmap(imgBitmap)
+
+        btn_Yes.setOnClickListener {
+            dialog.dismiss()
+            //finish();
+            //System.exit(1);
+            // File file1 = takescreenShort();
+            //screenShortLayout(file1);
+        }
+        dialog.show()
+        val window = dialog.window
+        window!!.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
+    }
 
 }

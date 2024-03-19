@@ -40,7 +40,7 @@ class LanguageSelectActivity : AppCompatActivity() {
         val llBengali = findViewById<View>(R.id.bengali) as LinearLayout
 
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
-        checkForUpdate()
+//        checkForUpdate()
 
         english.setOnClickListener {
             val intent = Intent(this@LanguageSelectActivity, DashboardActivity::class.java)
@@ -130,6 +130,6 @@ class LanguageSelectActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        checkForUpdate()
+//        checkForUpdate()
     }
 }

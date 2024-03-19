@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -268,6 +269,8 @@ class ReportActivity : AppCompatActivity() {
 
     private fun getFormCount() {
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+
+        Log.d("tokendata",token)
 
         apiInterface.formCount("Bearer $token").enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

@@ -34,10 +34,12 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.maps.android.PolyUtil
+import com.kosherclimate.userapp.TimerData
 import java.text.DecimalFormat
 import kotlin.collections.ArrayList
 
 class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
+
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val locationPermissionRequestCode = 1001
     private lateinit var mMap: GoogleMap
@@ -76,6 +78,11 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
     private var acers_units: String = ""
     private var imageLat: String = ""
     private var imageLng: String = ""
+    private var storelat: Double = 0.0
+    private var storelng: Double = 0.0
+
+
+
 
     private var status: Int = 0
     private var polygon_status: Int = 0
@@ -85,6 +92,13 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
     lateinit var save: ImageView
     lateinit var back: ImageView
     lateinit var txtArea: TextView
+
+    lateinit var text_timer: TextView
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+    lateinit var selectyear : String
+    lateinit var selectSeason : String
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,11 +122,17 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
             area_in_acers  = bundle.getString("area_in_acers")!!
             area  = bundle.getString("area")!!
             farmer_name = bundle.getString("farmer_name")!!
+            selectyear = bundle.getString("selectyear")!!
+            selectSeason = bundle.getString("selectSeason")!!
 
             Polygon_lat_lng = bundle.getStringArrayList("polygon_lat_lng")!!
             status = bundle.getInt("status")
             polygon_status = bundle.getInt("polygon_status")
+            StartTime1 = bundle.getInt("StartTime")
             Log.e("TTTETETTE", Polygon_lat_lng.toString())
+
+            Log.d("userdetailsyear",selectSeason +"  "+selectyear)
+
         } else {
             Log.e("area", "Nope")
         }
@@ -120,9 +140,12 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
         save = findViewById(R.id.pipe_polygon_SaveLocation)
         back = findViewById(R.id.pipe_map_back)
         txtArea = findViewById(R.id.pipe_polygon_area)
+        text_timer = findViewById(R.id.text_timer)
 
         txtArea.text = "$area   $acers_units"
 
+        timerData = TimerData(this@MapSubmittedActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         back.setOnClickListener {
             mMap.clear()
@@ -133,8 +156,12 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
 
         save.setOnClickListener {
             var isInside = isLatLngInsidePolygon(latLngslist)
+
+            //var isInside = true
             Log.e("pipe_map_location",isInside.toString() + "  ${status != 0}")
             if(isInside){
+                Log.e("pipe_map_location1", "pipe3  "+storelat.toString())
+                Log.e("pipe_map_location2", "pipe4  "+storelng.toString())
                 if (status != 0) {
                     val intent = Intent(this, LandInfoSubmittedPreviewActivity::class.java).apply {
                         putExtra("farmer_id", farmer_id)
@@ -150,6 +177,11 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
                         putExtra("acers_units", acers_units)
                         putExtra("area", area_in_acers)
                         putExtra("farmer_name", farmer_name)
+                        putExtra("StartTime", StartTime)
+                        putExtra("selectyear", selectyear)
+                        putExtra("selectSeason", selectSeason)
+                        putExtra("storelat", storelat)
+                        putExtra("storelng", storelng)
                         putStringArrayListExtra("polygon_lat_lng", Polygon_lat_lng)
                     }
                     startActivity(intent)
@@ -162,6 +194,11 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
                         putExtra("area", area_in_acers)
                         putExtra("farmer_name", farmer_name)
                         putExtra("area", area)
+                        putExtra("StartTime", StartTime)
+                        putExtra("selectyear", selectyear)
+                        putExtra("selectSeason", selectSeason)
+                        putExtra("storelng", storelng)
+                        putExtra("storelat", storelat)
                     }
                     startActivity(intent)
                 }
@@ -188,8 +225,10 @@ class MapSubmittedActivity : AppCompatActivity(), OnMapReadyCallback, LocationLi
         val lng = imageLng.toDouble()
 
         val latlng = LatLng(lat, lng)
-        Log.e("pipe_map_location", latlng.toString())
-        Log.e("pipe_map_location", latLngslist.toString())
+        Log.e("pipe_map_location", "pipe1  "+latlng.toString())
+        Log.e("pipe_map_location", "pipe2  "+latLngslist.toString())
+        storelat = lat
+        storelng = lng
         return PolyUtil.containsLocation(latlng, latLngslist, false)
     }
 

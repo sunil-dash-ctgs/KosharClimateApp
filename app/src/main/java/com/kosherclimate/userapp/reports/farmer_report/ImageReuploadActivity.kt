@@ -3,11 +3,13 @@ package com.kosherclimate.userapp.reports.farmer_report
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
@@ -20,8 +22,10 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +47,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.utils.CommonData
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -58,6 +63,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ImageReuploadActivity : AppCompatActivity(), LocationListener {
+
     val MY_PERMISSIONS_REQUEST_LOCATION = 99
     var locationManager: LocationManager? = null
     private var lat1: Double = 0.0
@@ -73,7 +79,10 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
     private lateinit var name: String
     private lateinit var reason_id: String
     private lateinit var farmer_id: String
+    private lateinit var financial_year: String
+    private lateinit var season: String
     private var token: String = ""
+    val watermark1 : CommonData = CommonData()
 
     lateinit var uri: Uri
     lateinit var photoPath: File
@@ -105,6 +114,8 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
         if (bundle != null) {
             unique_id = bundle.getString("unique_id")!!
             plot_no = bundle.getString("plot_no")!!
+            financial_year = bundle.getString("financial_year")!!
+            season = bundle.getString("season")!!
         } else {
             Log.e("unique_id", "Nope")
         }
@@ -146,23 +157,44 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
 
 
         image1.setOnClickListener(View.OnClickListener {
-            progress.progressHelper.barColor = Color.parseColor("#06c238")
-            progress.titleText = resources.getString(R.string.loading)
-            progress.contentText = "Getting current location"
-            progress.setCancelable(false)
-            progress.show()
+//            progress.progressHelper.barColor = Color.parseColor("#06c238")
+//            progress.titleText = resources.getString(R.string.loading)
+//            progress.contentText = "Getting current location"
+//            progress.setCancelable(false)
+//            progress.show()
+//
+//            imageLocation(1)
 
-            imageLocation(1)
+            if (img1.isEmpty()){
+
+                cameraOpenStatus(1)
+
+            }else{
+
+                imageAlertDialog(img1)
+            }
+
+
         })
 
         image2.setOnClickListener(View.OnClickListener {
-            progress.progressHelper.barColor = Color.parseColor("#06c238")
-            progress.titleText = resources.getString(R.string.loading)
-            progress.contentText = "Getting current location"
-            progress.setCancelable(false)
-            progress.show()
+//            progress.progressHelper.barColor = Color.parseColor("#06c238")
+//            progress.titleText = resources.getString(R.string.loading)
+//            progress.contentText = "Getting current location"
+//            progress.setCancelable(false)
+//            progress.show()
+//
+//            imageLocation(2)
 
-            imageLocation(2)
+            if (img2.isEmpty()){
+
+                cameraOpenStatus(2)
+            }else{
+
+                imageAlertDialog(img2)
+            }
+
+
         })
 
         checkGPS()
@@ -209,15 +241,19 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
             val farmer_unique_id = unique_id.toRequestBody("text/plain".toMediaTypeOrNull())
             val farmer =  farmer_id.toRequestBody("text/plain".toMediaTypeOrNull())
             val plot = plot_no.toRequestBody("text/plain".toMediaTypeOrNull())
+            val financialyear = financial_year.toRequestBody("text/plain".toMediaTypeOrNull())
+            val season = season.toRequestBody("text/plain".toMediaTypeOrNull())
             val requestFile: RequestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
             val farmerUniqueID: MultipartBody.Part = MultipartBody.Part.createFormData("unique", null, farmer_unique_id)
             val farmerID: MultipartBody.Part = MultipartBody.Part.createFormData("farmer_id", null, farmer)
             val plotNumber: MultipartBody.Part = MultipartBody.Part.createFormData("plotno", null, plot)
+            val financialyear1: MultipartBody.Part = MultipartBody.Part.createFormData("financial_year", null, financialyear)
+            val season1: MultipartBody.Part = MultipartBody.Part.createFormData("season", null, season)
             val body: MultipartBody.Part = MultipartBody.Part.createFormData("image", file.name, requestFile)
 
             val retIn = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-            retIn.reUploadImage("Bearer $token", farmerUniqueID, farmerID, plotNumber, body)
+            retIn.reUploadImage("Bearer $token", farmerUniqueID, farmerID, plotNumber, body,season1,financialyear1)
                 .enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                         if (response.code() == 200){
@@ -312,9 +348,16 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
                 }
 
                 Log.e("rotate", rotate.toString())
-                image1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_no | $timeStamp | $lat1 | $lng1"))
-                image1.rotation = rotate.toFloat()
+                //image1.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_no | $timeStamp | $lat1 | $lng1"))
+                //image1.rotation = rotate.toFloat()
 
+                val year = "Year"
+                val season1 = "Season"
+                val nameImage = "Plot Image"
+                var watertext = "#$unique_id - P$plot_no - $timeStamp \n $year - $financial_year , $season1 - $season \n $nameImage"
+                val stampImage = watermark1.drawTextToBitmap(this@ImageReuploadActivity,image,watertext)
+                image1.setImageBitmap(stampImage)
+                image1.rotation = rotate.toFloat()
                 try {
                     val draw = image1.drawable
                     val bitmap = draw.toBitmap()
@@ -355,9 +398,15 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
                     else -> 0
                 }
                 Log.e("rotate", rotate.toString())
-                image2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_no | $timeStamp | $lat2 | $lng2"))
-                image2.rotation = rotate.toFloat()
+                //image2.setImageBitmap(watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_no | $timeStamp | $lat2 | $lng2"))
+                //image2.rotation = rotate.toFloat()
 
+                val year = "Year"
+                val season1 = "Season"
+                var watertext = "#$unique_id - P$plot_no - $timeStamp \n $year - $financial_year , $season1 - $season"
+                val stampImage = watermark1.drawTextToBitmap(this@ImageReuploadActivity,image,watertext)
+                image2.setImageBitmap(stampImage)
+                image2.rotation = rotate.toFloat()
                 try {
                     val draw = image2.drawable
                     val bitmap = draw.toBitmap()
@@ -413,18 +462,18 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
                     Log.i("here--here", location.toString())
                     locationManager!!.removeUpdates(this)
 
-                    cameraOpenStatus(requestCode, location.latitude, location.longitude)
+                    cameraOpenStatus(requestCode)
                 }
             })
     }
 
-    private fun cameraOpenStatus(requestCode: Int, latitude: Double, longitude: Double) {
+    private fun cameraOpenStatus(requestCode: Int) {
         if (requestCode == 1){
             progress.dismiss()
 
-            val df = DecimalFormat("#.#####")
-            lat1 = df.format(latitude).toDouble()
-            lng1 = df.format(longitude).toDouble()
+           // val df = DecimalFormat("#.#####")
+           // lat1 = df.format(latitude).toDouble()
+            //lng1 = df.format(longitude).toDouble()
 
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (intent.resolveActivity(packageManager) != null) {
@@ -449,9 +498,9 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
         else{
             progress.dismiss()
 
-            val df = DecimalFormat("#.#####")
-            lat2 = df.format(latitude).toDouble()
-            lng2 = df.format(longitude).toDouble()
+            //val df = DecimalFormat("#.#####")
+            //lat2 = df.format(latitude).toDouble()
+           // lng2 = df.format(longitude).toDouble()
 
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (intent.resolveActivity(packageManager) != null) {
@@ -471,6 +520,34 @@ class ImageReuploadActivity : AppCompatActivity(), LocationListener {
                 }
             }
         }
+    }
+
+    fun imageAlertDialog(image: String) {
+
+        val dialog = Dialog(this@ImageReuploadActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.condition_logout)
+        val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+        val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+        val imgBitmap = BitmapFactory.decodeFile(image)
+        // on below line we are setting bitmap to our image view.
+        showdatainimage.setImageBitmap(imgBitmap)
+
+        btn_Yes.setOnClickListener {
+            dialog.dismiss()
+            //finish();
+            //System.exit(1);
+            // File file1 = takescreenShort();
+            //screenShortLayout(file1);
+        }
+        dialog.show()
+        val window = dialog.window
+        window!!.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
     }
 
 }

@@ -19,6 +19,7 @@ import androidx.core.widget.addTextChangedListener
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.maps.model.LatLng
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.models.FarmerUniqueIdModel
 import com.kosherclimate.userapp.models.existingplots.UniqueIDModel
 import com.kosherclimate.userapp.models.updatefarmerdetails.UpdateFarmerAreaModel
@@ -35,6 +36,7 @@ import retrofit2.Response
 import java.util.Locale
 
 class PolygonActivity : AppCompatActivity() {
+
     private var Polygon_lat_lng = ArrayList<String>()
     private lateinit var progress: SweetAlertDialog
     lateinit var edtMobile_number: EditText
@@ -60,7 +62,6 @@ class PolygonActivity : AppCompatActivity() {
     var areaAwdList = ArrayList<String>()
     var FarmerPlotUniqueID = ArrayList<String>()
 
-
     private var nextPlot: Int = 0
     private var nextPlotId :String = ""
     private var lastPlotId :String = ""
@@ -77,6 +78,11 @@ class PolygonActivity : AppCompatActivity() {
 
     var needToUpdate: Boolean = false
 
+    lateinit var text_timer: TextView
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_polygon)
@@ -88,6 +94,7 @@ class PolygonActivity : AppCompatActivity() {
         edtMobile_number = findViewById(R.id.pipe_mobile_number)
         edtFarmer_name = findViewById(R.id.pipe_farmer_name)
         txtArea = findViewById(R.id.pipe_plot_area)
+        text_timer = findViewById(R.id.text_timer)
         txtArea.isEnabled = false
 
         plot_ID = findViewById(R.id.pipe_plot_unique_id)
@@ -98,6 +105,13 @@ class PolygonActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btn_pipe_inst_back)
         btnCaptureData = findViewById(R.id.btn_pipe_inst_captureData)
 
+        val bundle = intent.extras
+        if (bundle != null) {
+            StartTime1 = bundle.getInt("StartTime")
+        }
+
+        timerData = TimerData(this@PolygonActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         btnBack.setOnClickListener {
             backScreen()
@@ -259,8 +273,10 @@ class PolygonActivity : AppCompatActivity() {
         var farmerUniqueList: String = FarmerPlotUniqueID[subPlotUniquePosition]
         var plotNumber: String = SubPlotList[subPlotUniquePosition - 1]
 
+        Log.d("ploatresponse",plotUniqueIDName+"    "+farmerUniqueList+"   "+plotNumber+"   "+token)
+
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        apiInterface.checkPipeData("Bearer $token", plotUniqueIDName, farmerUniqueList, plotNumber)
+        apiInterface.checkPipeData("Bearer $token", plotUniqueIDName, farmerUniqueList, plotNumber,"","")
             .enqueue(object :
                 Callback<ResponseBody> {
                 override fun onResponse(
@@ -268,6 +284,9 @@ class PolygonActivity : AppCompatActivity() {
                     response: Response<ResponseBody>
                 ) {
                     if (response.code() == 200) {
+
+                        Polygon_lat_lng.clear()
+
                         if (response.body() != null) {
                             val stringResponse = JSONObject(response.body()!!.string())
                             val data = stringResponse.getJSONObject("data")
@@ -282,7 +301,6 @@ class PolygonActivity : AppCompatActivity() {
                                 val jsonObject = locationArray.getJSONObject(i)
                                 val lat = jsonObject.optString("lat")
                                 val lng = jsonObject.optString("lng")
-
 
                                 val latLng = LatLng(lat.toDouble(), lng.toDouble())
                                 Polygon_lat_lng.add(latLng.toString())
@@ -304,6 +322,8 @@ class PolygonActivity : AppCompatActivity() {
 //                        val polygon_status = 1
                             Log.e("status", status.toString())
 
+
+
                             submittedScreen(id, farmer_id, farmer_uniqueId, plot_no, latitude,
                                 longitude,
                                 state,
@@ -317,8 +337,20 @@ class PolygonActivity : AppCompatActivity() {
                                 polygon_status,
                                 area_in_acers
                             )
+
+                            edtMobile_number.setText("")
+                            txtArea.setText("")
+                            edtFarmer_name.setText("")
+
+                            IDList.clear()
+                            FarmerUniqueList.clear()
+                            SubPlotList.clear()
+                            PlotArea.clear()
+                            areaAwdList.clear()
+                            FarmerPlotUniqueID.clear()
                         }
                     } else if (response.code() == 422) {
+                        Log.d("responsedetails",response.body().toString())
                         nextScreen()
                     }
                 }
@@ -360,10 +392,13 @@ class PolygonActivity : AppCompatActivity() {
             putExtra("acers_units", acers_units)
             putExtra("area_in_acers", area_in_acers)
             putExtra("area", plot_area)
+            putExtra("StartTime", StartTime)
             putStringArrayListExtra("polygon_lat_lng", Polygon_lat_lng)
             putExtra("status", status)
             putExtra("polygon_status", polygon_status)
             putExtra("farmer_name", edtFarmer_name.text.toString())
+
+
         }
         startActivity(intent)
 //        }
@@ -415,9 +450,21 @@ class PolygonActivity : AppCompatActivity() {
                 putExtra("farmer_plot_uniqueid", nextPlotId)
                 putExtra("farmer_name", edtFarmer_name.text.toString())
                 putExtra("threshold", threshold)
+                putExtra("StartTime", StartTime)
 //            putExtra("area_acers", )
             }
             startActivity(intent)
+
+            edtMobile_number.setText("")
+            txtArea.setText("")
+            edtFarmer_name.setText("")
+
+            IDList.clear()
+            FarmerUniqueList.clear()
+            SubPlotList.clear()
+            PlotArea.clear()
+            areaAwdList.clear()
+            FarmerPlotUniqueID.clear()
         }
     }
 
@@ -436,6 +483,7 @@ class PolygonActivity : AppCompatActivity() {
         apiInterface.plotUniqueId("Bearer $token", mobile).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.code() == 200) {
+                    FarmerUniqueList.clear()
                     if (response.body() != null) {
                         IDList.add(0)
                         FarmerUniqueList.add("--Select--")
@@ -787,5 +835,23 @@ class PolygonActivity : AppCompatActivity() {
     private fun backScreen() {
         super.onBackPressed()
         finish()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        edtMobile_number.setText("")
+        txtArea.setText("")
+        edtFarmer_name.setText("")
+
+        IDList.clear()
+        FarmerUniqueList.clear()
+        SubPlotList.clear()
+        PlotArea.clear()
+        areaAwdList.clear()
+        FarmerPlotUniqueID.clear()
+
+        plot_ID.setAdapter(null)
+        sub_plot.setAdapter(null)
     }
 }

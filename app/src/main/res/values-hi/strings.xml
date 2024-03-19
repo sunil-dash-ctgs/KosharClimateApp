@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">KosheRise</string>
-    <string name="version_number">3.0.6 - Live</string>
+    <string name="version_number">3.1.7 - Live</string>
     <string name="powered">Developed by CROPINTELLIX PRIVATE LIMITED</string>
 
     <string name="welcome_text">Welcome to KosheRise..!!</string>
@@ -11,6 +11,11 @@
     <string name="returning">Returning..??</string>
     <string name="just_login">Just login to resume your\n amazing work</string>
 
+    //data year(hindi)
+    <string name="Data_year">डेटा वर्ष</string>
+    <string name="Select_Year">वर्ष चुनें</string>
+    <string name="Select_Season">सीज़न चुनें</string>
+    <string name="year">वर्ष</string>
 
     //Language
     <string name="hindi" translatable="false">हिन्दी</string>

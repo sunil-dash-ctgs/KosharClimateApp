@@ -20,7 +20,7 @@ import java.lang.Integer.min
 class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : RecyclerView.Adapter<Pipe_Report_Adapter.MyViewHolder>() {
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var srNo: TextView = view.findViewById(R.id.firstColumn)
+       // var srNo: TextView = view.findViewById(R.id.firstColumn)
 //        var uniqueId: TextView = view.findViewById(R.id.secondColumn)
         var farmerName: TextView = view.findViewById(R.id.secondColumn)
         var farmerUniqueId: TextView = view.findViewById(R.id.thirdColumn)
@@ -35,7 +35,8 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val reportModel = pipeReportModel[position]
-        holder.srNo.text = reportModel.getId()
+       //.
+        // 3holder.srNo.text = reportModel.getId()
         holder.farmerName.text = reportModel.getFarmerFirstName()
         holder.farmerUniqueId.text = reportModel.getFarmerPlotUniqueId()
 
@@ -63,6 +64,7 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
             Log.e("uniqueId", reportModel.getFarmerId())
 
             val intent = Intent(it.context, PipeReportDetailActivity::class.java).apply {
+
                 putExtra("pipe_img_id", reportModel.getId())
                 putExtra("farmer_uniqueId", holder.farmerUniqueId.text.toString())
                 putExtra("pipe_no", reportModel.getPlotNo())
@@ -80,8 +82,12 @@ class Pipe_Report_Adapter(var pipeReportModel: List<PipeReportModel>) : Recycler
                 putExtra("village", reportModel.getVillage())
                 putExtra("aadhar", reportModel.getAadhar())
                 putExtra("mobile", reportModel.getMobile())
+                putExtra("season", reportModel.getseason())
+                putExtra("financial_year", reportModel.getfinancial_year())
 
                 Log.e("mLastLocation.latitude", reportModel.getLat())
+                Log.e("mLastLocation.longitude",reportModel.getLng())
+                Log.e("mLastLocation.longitude",reportModel.getLng())
                 Log.e("mLastLocation.longitude",reportModel.getLng())
             }
             it.context.startActivity(intent)

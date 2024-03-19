@@ -1,7 +1,7 @@
 package com.kosherclimate.userapp.models
 
 class AeriationReportModel(id: String, farmer_uniqueId: String, pipe_no: String, farmer_plot_uniqueid: String, pipe_installation_id: String, aeration_no: String, plot_no: String, farmer_name : String,
-        reasons: String) {
+        reasons: String, season: String, financial_year: String) {
     private var id: String
     private var farmer_uniqueId: String
     private var pipe_no: String
@@ -11,6 +11,8 @@ class AeriationReportModel(id: String, farmer_uniqueId: String, pipe_no: String,
     private var plot_no: String
     private var farmer_name: String
     private var reasons: String
+    private var season: String
+    private var financial_year: String
 
     init {
         this.id = id
@@ -22,8 +24,24 @@ class AeriationReportModel(id: String, farmer_uniqueId: String, pipe_no: String,
         this.plot_no = plot_no
         this.farmer_name = farmer_name
         this.reasons = reasons
+        this.season = season
+        this.financial_year = financial_year
     }
 
+    fun getfinancial_year(): String {
+        return financial_year
+    }
+
+    fun setfinancial_year(financial_year: String) {
+        this.financial_year = financial_year
+    }
+    fun getseason(): String {
+        return season
+    }
+
+    fun setseason(season: String) {
+        this.season = season
+    }
     fun getId(): String {
         return id
     }

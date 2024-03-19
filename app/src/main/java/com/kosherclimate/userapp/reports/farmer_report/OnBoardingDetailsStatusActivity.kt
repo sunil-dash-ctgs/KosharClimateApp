@@ -23,6 +23,8 @@ class OnBoardingDetailsStatusActivity : AppCompatActivity() {
     private lateinit var plot_no: String
     private var token: String = ""
     private var base_value: Double = 0.0
+    var financial_year = ""
+    var season = ""
 
     private lateinit var myAdapter: RejectedOnBoardingList_Adapter
     private var rejectedList: ArrayList<RejectedListModel> = ArrayList()
@@ -38,6 +40,9 @@ class OnBoardingDetailsStatusActivity : AppCompatActivity() {
             unique_id = bundle.getString("unique_id")!!
             plot_no = bundle.getString("plot_no")!!
             base_value = bundle.getDouble("base_value")
+            financial_year = bundle.getString("financial_year")!!
+            season = bundle.getString("season")!!
+
         } else {
             Log.e("unique_id", "Nope")
         }
@@ -63,6 +68,8 @@ class OnBoardingDetailsStatusActivity : AppCompatActivity() {
                     if (response.body() != null){
                         val jsonObject = JSONObject(response.body()!!.string())
 
+                        Log.d("userdatareson",jsonObject.toString())
+
                         val jsonObject1 = jsonObject.optJSONObject("plot")
                         val reject_comment = jsonObject1.optString("reject_comment")
 
@@ -71,7 +78,7 @@ class OnBoardingDetailsStatusActivity : AppCompatActivity() {
                         val id = jsonObject2.optString("id")
                         val reasons = jsonObject2.optString("reasons")
 
-                        rejectedList.add(RejectedListModel(reasons, reject_comment, id, unique_id, plot_no, base_value))
+                        rejectedList.add(RejectedListModel(reasons, reject_comment, id, unique_id, plot_no, base_value,financial_year,season))
                         myAdapter.notifyDataSetChanged()
                     }
                 }

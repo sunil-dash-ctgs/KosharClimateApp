@@ -15,6 +15,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.kosherclimate.userapp.network.ApiInterface
@@ -45,6 +46,7 @@ import java.util.*
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.maps.android.PolyUtil
+import com.kosherclimate.userapp.TimerData
 
 class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -76,6 +78,13 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
 
     private lateinit var progress: SweetAlertDialog
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+    lateinit var text_timer: TextView
+    lateinit var selectSeason: String
+    lateinit var selectyear: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aeration_map)
@@ -84,6 +93,7 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
         token = sharedPreference.getString("token","")!!
 
         back = findViewById(R.id.aeriation_map_back)
+        text_timer = findViewById(R.id.text_timer)
         back.setOnClickListener(View.OnClickListener {
             super.onBackPressed()
             finish()
@@ -91,6 +101,7 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
 
         val bundle = intent.extras
         if (bundle != null) {
+
             farmer_plot_uniqueid = bundle.getString("farmer_plot_uniqueid").toString()
             pipe_no = bundle.getString("pipe_no")!!
             unique_id = bundle.getString("unique_id")!!
@@ -99,9 +110,16 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
             mobile_number = bundle.getString("mobile_number")!!
             pipe_installation_id = bundle.getInt("pipe_installation_id")
             plot_no = bundle.getInt("plot_no")
+            StartTime1 = bundle.getInt("StartTime")
+            selectSeason = bundle.getString("selectSeason").toString()
+            selectyear = bundle.getString("selectyear").toString()
 
             Log.e("pipe_installation_id", pipe_installation_id.toString())
+
         }
+
+        timerData = TimerData(this@AerationMapActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         xxxxx = 1
 
@@ -115,7 +133,7 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
         next = findViewById(R.id.fabNext)
         next.setOnClickListener {
             calculate()
-//            getLocationList()
+            //getLocationList()
         }
 
 
@@ -143,7 +161,8 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
     }
 
     private fun askForPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,), MY_PERMISSIONS_REQUEST_LOCATION)
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,),
+            MY_PERMISSIONS_REQUEST_LOCATION)
     }
 
     private fun requestNewLocationData() {
@@ -198,7 +217,9 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
     }
 
     private fun getLocationList() {
+
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
+
         apiInterface.aeriationPloygonList("Bearer $token", farmer_plot_uniqueid, pipe_no).enqueue(object :
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -219,6 +240,7 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                         val pipeLocationArray =  stringResponse.optJSONObject("PipeLocation")
                         pipeLatitude = pipeLocationArray.getDouble("lat")
                         pipeLongitude = pipeLocationArray.getDouble("lng")
+
                     }
 
                     plotPolygons()
@@ -228,7 +250,7 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@AerationMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AerationMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -253,18 +275,19 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                 .icon(bitmapDescriptorFromVector(this@AerationMapActivity, R.drawable.ic_location_marker)))
         }
 
-
         mMap.addMarker(MarkerOptions().anchor(0.5f, 0.5f).position(LatLng(pipeLatitude, pipeLongitude))
                 .icon(bitmapDescriptorFromVector(this@AerationMapActivity, R.drawable.ic_plot_marker)))
 
     }
 
     override fun onLocationChanged(location: Location) {
+
         mLastLocation = location
         val latLng = LatLng(location.latitude, location.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
         mMap.moveCamera(CameraUpdateFactory.zoomIn())
         mMap.animateCamera(CameraUpdateFactory.zoomTo(20f))
+
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
@@ -281,10 +304,10 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
             val mLastLocation = locationResult.lastLocation
             Log.e("mLastLocation.latitude", mLastLocation?.latitude.toString())
             Log.e("mLastLocation.longitude", mLastLocation?.longitude.toString())
-
             currentLatitude = mLastLocation!!.latitude
             currentLongitude = mLastLocation!!.longitude
-            stop()
+
+           // stop()
         }
     }
 
@@ -296,9 +319,9 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
     }
 
     private fun calculate (){
-//       val cond = PolyUtil.containsLocation(LatLng(currentLatitude, currentLongitude), latlngList, false)
-//        if (xxxxx == 1){
-//            if(cond){
+       val cond = PolyUtil.containsLocation(LatLng(currentLatitude, currentLongitude), latlngList, false)
+        if (xxxxx == 1){
+            if(cond){
                 var latlng = ArrayList<String>()
 //
                 for (i in 0 until latlngList.size){
@@ -309,8 +332,9 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                     latlng.add(ll)
                 }
 //
-//                progress.dismiss()
+                progress.dismiss()
                 val intent = Intent(this, AerationImageActivity::class.java).apply {
+
                     putStringArrayListExtra("latlngList", latlng)
                     putExtra("farmer_plot_uniqueid", farmer_plot_uniqueid)
                     putExtra("latitude", pipeLatitude)
@@ -322,24 +346,29 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                     putExtra("pipe_no", pipe_no)
                     putExtra("pipe_installation_id", pipe_installation_id)
                     putExtra("plot_no", plot_no)
+                    putExtra("StartTime", StartTime)
+                    putExtra("selectSeason", selectSeason)
+                    putExtra("selectyear", selectyear)
+
+
                 }
                 startActivity(intent)
-//            }
-//            else{
-//                progress.dismiss()
-//
-//                val WarningDialog = SweetAlertDialog(this@AerationMapActivity, SweetAlertDialog.WARNING_TYPE)
-//
-//                WarningDialog.titleText = resources.getString(R.string.warning)
-//                WarningDialog.contentText = "You are not inside the marked polygon."
-//                WarningDialog.confirmText = " OK "
-//                WarningDialog.showCancelButton(false)
-//                WarningDialog.setCancelable(false)
-//                WarningDialog.setConfirmClickListener {
-//                    WarningDialog.cancel()
-//                }.show()
-//            }
-//        }
+            }
+            else{
+                progress.dismiss()
+
+                val WarningDialog = SweetAlertDialog(this@AerationMapActivity, SweetAlertDialog.WARNING_TYPE)
+
+                WarningDialog.titleText = resources.getString(R.string.warning)
+                WarningDialog.contentText = "You are not inside the marked polygon."
+                WarningDialog.confirmText = " OK "
+                WarningDialog.showCancelButton(false)
+                WarningDialog.setCancelable(false)
+                WarningDialog.setConfirmClickListener {
+                    WarningDialog.cancel()
+                }.show()
+            }
+        }
     }
 
     override fun onBackPressed() {

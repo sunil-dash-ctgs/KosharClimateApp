@@ -1,12 +1,15 @@
 package com.kosherclimate.userapp.models
 
-class RejectedListModel(rejectedTitle: String, rejectedReason: String, id: String, unique_id: String, plot_no: String, base_vale: Double) {
+class RejectedListModel(rejectedTitle: String, rejectedReason: String, id: String, unique_id: String, plot_no: String, base_vale: Double,
+                        financial_year: String, season: String) {
     private var rejectedTitle: String
     private var rejectedReason: String
     private var id: String
     private var unique_id: String
     private var plot_no: String
     private var base_vale: Double
+    private var financial_year: String
+    private var season: String
 
     init {
         this.rejectedTitle = rejectedTitle
@@ -15,8 +18,23 @@ class RejectedListModel(rejectedTitle: String, rejectedReason: String, id: Strin
         this.unique_id = unique_id
         this.plot_no = plot_no
         this.base_vale = base_vale
+        this.financial_year = financial_year
+        this.season = season
+    }
+    fun getseason(): String {
+        return season
     }
 
+    fun setseason(season: String) {
+        this.season = season
+    }
+    fun getfinancial_year(): String {
+        return financial_year
+    }
+
+    fun setfinancial_year(financial_year: String) {
+        this.financial_year = financial_year
+    }
 
     fun getRejectedTitle(): String {
         return rejectedTitle

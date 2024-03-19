@@ -41,6 +41,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class LandInfoActivity : AppCompatActivity(), OnMapReadyCallback {
+
     private var LATLNG = ArrayList<LatLng>()
     private var Polygon_lat_lng = ArrayList<String>()
     private var LocationList = ArrayList<LatLng>()

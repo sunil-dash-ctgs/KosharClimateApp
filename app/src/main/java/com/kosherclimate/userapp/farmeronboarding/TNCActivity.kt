@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import okhttp3.ResponseBody
@@ -22,6 +23,7 @@ import java.util.ArrayList
 class TNCActivity : AppCompatActivity() {
     private lateinit var btnNext: Button
     private lateinit var txtCarbonLink: TextView
+    private lateinit var text_timer: TextView
     private lateinit var checkCarbonCredit: CheckBox
 
     lateinit var tnc: TextView
@@ -45,6 +47,11 @@ class TNCActivity : AppCompatActivity() {
     private var farmerId: String = ""
     private var plot: String = ""
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tncactivity)
@@ -53,6 +60,7 @@ class TNCActivity : AppCompatActivity() {
         btnNext = findViewById(R.id.tncNext)
         txtCarbonLink = findViewById(R.id.carbon_credit_link)
         checkCarbonCredit = findViewById(R.id.carbon_credit_checkBox)
+        text_timer = findViewById(R.id.text_timer)
 
         /**
          * Getting some data's from previous screen.
@@ -78,12 +86,16 @@ class TNCActivity : AppCompatActivity() {
             khatha_number = bundle.getString("khatha_number")!!
             Pattadhar_number = bundle.getString("pattadhar_number")!!
             khatian_number = bundle.getString("khatian_number")!!
+            StartTime1 = bundle.getInt("StartTime")
 
 
 //            Log.e("plot_number", plot_number)
         } else {
             Log.e("total_plot", "Nope")
         }
+
+        timerData = TimerData(this@TNCActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         /**
          * Checking if terms & condition is accepted or not.
@@ -123,6 +135,7 @@ class TNCActivity : AppCompatActivity() {
                 putExtra("khatha_number", khatha_number)
                 putExtra("pattadhar_number", Pattadhar_number)
                 putExtra("khatian_number", khatian_number)
+                putExtra("StartTime", StartTime)
             }
             startActivity(intent)
         }

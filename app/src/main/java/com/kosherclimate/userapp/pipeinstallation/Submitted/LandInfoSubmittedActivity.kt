@@ -96,6 +96,7 @@ class LandInfoSubmittedActivity : AppCompatActivity(), OnMapReadyCallback{
 
         val bundle = intent.extras
         if (bundle != null) {
+
             area = bundle.getString("plot_area")!!
             unique_id = bundle.getString("farmer_uniqueId")!!
             sub_plot_no = bundle.getString("plot_no")!!
@@ -118,6 +119,7 @@ class LandInfoSubmittedActivity : AppCompatActivity(), OnMapReadyCallback{
             txtVillage.text = village
             txtUnit.text = acers_units
             txtArea.text = area
+
         } else {
             Log.e("area", "Nope")
         }

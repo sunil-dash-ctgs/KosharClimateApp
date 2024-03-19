@@ -28,6 +28,7 @@ import retrofit2.Response
 import java.util.ArrayList
 
 class PolygonPendingActivity : AppCompatActivity() {
+
     private var token: String = ""
     private var status: String = ""
     private var isScrolling: Boolean = true
@@ -213,6 +214,15 @@ class PolygonPendingActivity : AppCompatActivity() {
                             val district = jsonObject.optString("district").toString()
                             val taluka = jsonObject.optString("taluka").toString()
                             val villageName = jsonObject.optString("village").toString()
+                            var financial_year = jsonObject.optString("financial_year").toString()
+                            var season = jsonObject.optString("season").toString()
+
+                            if(financial_year.contains("null")){
+                                financial_year = ""
+                            }
+                           if (season.contains("null")){
+                               season = ""
+                           }
 
 
                             val farmerapproved = jsonObject.getJSONObject("farmerapproved")
@@ -234,7 +244,9 @@ class PolygonPendingActivity : AppCompatActivity() {
                             Log.e("uniqueId", uniqueId)
                             Log.e("NEW_TEST", "LAT LONG $lat $lng $location")
 
-                            pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district,taluka,villageName,aadharNum,mobileNum)
+                            pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no,
+                                distance, farmer_name, reasons, reason_id, area_in_acers,state,district,taluka,villageName,
+                                aadharNum,mobileNum,season,financial_year)
                             reportModel.add(pipeReportModel)
                         }
 
@@ -299,6 +311,16 @@ class PolygonPendingActivity : AppCompatActivity() {
                             val district = jsonObject.optString("district").toString()
                             val taluka = jsonObject.optString("taluka").toString()
                             val villageName = jsonObject.optString("village").toString()
+                            var financial_year = jsonObject.optString("financial_year").toString()
+                            var season = jsonObject.optString("season").toString()
+
+                            if(financial_year.contains("null")){
+                                financial_year = ""
+                            }
+                            if (season.contains("null")){
+                                season = ""
+                            }
+
 
                             Log.e("uniqueId", uniqueId)
 
@@ -320,7 +342,10 @@ class PolygonPendingActivity : AppCompatActivity() {
                             val pipeinstallation = jsonObject.getJSONObject("pipeinstallation")
                             val area_in_acers = pipeinstallation.optString("area_in_acers").toString()
 
-                            val pipeReportActivity = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district, taluka,villageName,aadharNum,mobileNum)
+                            val pipeReportActivity = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no,
+                                pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district,
+                                taluka,villageName,aadharNum,mobileNum,season,financial_year)
+
                             reportModel.add(pipeReportActivity)
                         }
 

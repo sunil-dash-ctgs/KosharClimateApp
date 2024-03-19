@@ -63,6 +63,8 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
     private lateinit var unique_id: String
     private lateinit var aeration_no: String
     private lateinit var plot_no: String
+    private lateinit var season: String
+    private lateinit var financial_year: String
 
     private var addRestriction = true
 
@@ -83,6 +85,8 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
             unique_id = bundle.getString("unique_id")!!
             aeration_no = bundle.getString("aeration_no")!!
             pipe_installation_id = bundle.getString("pipe_installation_id")!!
+            season = bundle.getString("season")!!
+            financial_year = bundle.getString("financial_year")!!
         }
 
         back = findViewById(R.id.aeriation_map_back)
@@ -102,7 +106,7 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
             progress.show()
 
             Log.i("NEW_TEST","Add Res --- > $addRestriction")
-            if(xxxxx == 1){
+           /* if(xxxxx == 1){
                 if(addRestriction) {
                     locationReq()
                 }else{
@@ -127,10 +131,14 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
                         putExtra("unique_id", unique_id)
                         putExtra("pipe_no", pipe_no)
                         putExtra("plot_no", plot_no)
+                        putExtra("season", season)
+                        putExtra("financial_year", financial_year)
                     }
                     startActivity(intent)
                 }
-            }
+            }*/
+
+            calculate ()
         })
 
 
@@ -174,7 +182,7 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@AeriationReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AeriationReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -285,7 +293,7 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
 
             currentLatitude = mLastLocation!!.latitude
             currentLongitude = mLastLocation!!.longitude
-            stop()
+           // stop()
         }
     }
 
@@ -323,6 +331,8 @@ class AeriationReportMapActivity: AppCompatActivity() , OnMapReadyCallback, Loca
                         putExtra("unique_id", unique_id)
                         putExtra("pipe_no", pipe_no)
                         putExtra("plot_no", plot_no)
+                        putExtra("financial_year", financial_year)
+                        putExtra("season", season)
                     }
                     startActivity(intent)
                 }

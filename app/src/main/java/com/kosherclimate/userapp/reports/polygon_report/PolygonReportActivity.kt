@@ -105,8 +105,7 @@ class PolygonReportActivity : AppCompatActivity() {
             val size = reportModel.size
             if(startIndex >= size){
 
-            }
-            else{
+            } else{
                 startIndex += 10
                 endIndex = startIndex + 10
 
@@ -194,6 +193,8 @@ class PolygonReportActivity : AppCompatActivity() {
                     if (response.body() != null) {
                         val jsonObject = JSONObject(response.body()!!.string())
 
+                        Log.d("userdetaliss",jsonObject.toString())
+
                         val jsonArray = jsonObject.optJSONArray("polygon")
 
                         for (i in 0 until jsonArray.length()) {
@@ -213,7 +214,15 @@ class PolygonReportActivity : AppCompatActivity() {
                             val district = jsonObject.optString("district").toString()
                             val taluka = jsonObject.optString("taluka").toString()
                             val villageName = jsonObject.optString("village").toString()
+                            var financial_year = jsonObject.optString("financial_year").toString()
+                            var season = jsonObject.optString("season").toString()
 
+                            if(financial_year.contains("null")){
+                                financial_year = ""
+                            }
+                            if (season.contains("null")){
+                                season = ""
+                            }
 
                             val farmerapproved = jsonObject.getJSONObject("farmerapproved")
                             val farmer_name = farmerapproved.optString("farmer_name").toString()
@@ -223,6 +232,7 @@ class PolygonReportActivity : AppCompatActivity() {
                             val reject_reason = jsonObject.getJSONObject("reject_reason")
                             val reason_id = reject_reason.optString("id").toString()
                             val reasons = reject_reason.optString("reasons").toString()
+
 
                             if (aadharNum == null){
                                 aadharNum = "N.A"
@@ -234,7 +244,10 @@ class PolygonReportActivity : AppCompatActivity() {
                             Log.e("uniqueId", uniqueId)
                             Log.e("NEW_TEST", "LAT LONG $lat $lng $location")
 
-                            pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district,taluka,villageName,aadharNum,mobileNum)
+                            pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no,
+                                distance, farmer_name, reasons, reason_id, area_in_acers,state,district,taluka,
+                                villageName,aadharNum,mobileNum,season,financial_year)
+
                             reportModel.add(pipeReportModel)
                         }
 
@@ -307,6 +320,17 @@ class PolygonReportActivity : AppCompatActivity() {
                             var aadharNum :String?= farmerapproved.optString("aadhaar").toString()
                             var mobileNum :String?= farmerapproved.optString("mobile").toString()
 
+                            var financial_year = jsonObject.optString("financial_year").toString()
+                            var season = jsonObject.optString("season").toString()
+
+                            if(financial_year.contains("null")){
+                                financial_year = ""
+                            }
+                            if (season.contains("null")){
+                                season = ""
+                            }
+
+
                             if (aadharNum == null){
                                 aadharNum = "N.A"
                             }
@@ -320,7 +344,8 @@ class PolygonReportActivity : AppCompatActivity() {
                             val pipeinstallation = jsonObject.getJSONObject("pipeinstallation")
                             val area_in_acers = pipeinstallation.optString("area_in_acers").toString()
 
-                            val pipeReportActivity = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district, taluka,villageName,aadharNum,mobileNum)
+                            val pipeReportActivity = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state,district, taluka,villageName,
+                                aadharNum,mobileNum, season,financial_year)
                             reportModel.add(pipeReportActivity)
                         }
 

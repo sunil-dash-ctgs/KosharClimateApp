@@ -184,6 +184,8 @@ class PipeReportActivity : AppCompatActivity() {
         progress.setCancelable(false)
         progress.show()
 
+        Log.d("usertokendetails",token)
+
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.pipeReportList("Bearer $token").enqueue(object : Callback<ResponseBody> {
             @SuppressLint("NotifyDataSetChanged")
@@ -191,6 +193,8 @@ class PipeReportActivity : AppCompatActivity() {
                 if(response.code() == 200){
                     if (response.body() != null) {
                         val jsonObject = JSONObject(response.body()!!.string())
+
+                        Log.d("datauser",jsonObject.toString())
 
                         val jsonArray = jsonObject.optJSONArray("pipe")
 
@@ -205,17 +209,24 @@ class PipeReportActivity : AppCompatActivity() {
                             val lat = jsonObject.optString("lat").toString()
                             val lng = jsonObject.optString("lng").toString()
                             val distance = jsonObject.optString("distance").toString()
-                            val state = jsonObject.optString("state").toString()
-                            val district = jsonObject.optString("district").toString()
-                            val taluka = jsonObject.optString("taluka").toString()
-                            val villageName = jsonObject.optString("village").toString()
+                            var financial_year = jsonObject.optString("financial_year")
+                            var season = jsonObject.optString("season")
 
+                            if(financial_year.contains("null")){
+                                financial_year = "N.A"
+                            }
+                            if (season.contains("null")){
+                                season = "N.A"
+                            }
 
                             val farmerapproved = jsonObject.getJSONObject("farmerapproved")
                             val farmer_name = farmerapproved.optString("farmer_name").toString()
-
                             var aadharNum :String?= farmerapproved.optString("aadhaar").toString()
                             var mobileNum :String?= farmerapproved.optString("mobile").toString()
+                            val state  = farmerapproved.optString("state").toString()
+                            val district  = farmerapproved.optString("district").toString()
+                            val taluka  = farmerapproved.optString("taluka").toString()
+                            val villageName  = farmerapproved.optString("village").toString()
 
                             if (aadharNum == null){
                                 aadharNum = "N.A"
@@ -234,7 +245,9 @@ class PipeReportActivity : AppCompatActivity() {
                             Log.e("uniqueId", uniqueId)
 
 
-                            pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state, district, taluka,villageName,aadharNum,mobileNum)
+                            pipeReportModel = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no,
+                                pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state, district,
+                                taluka,villageName,aadharNum,mobileNum,season,financial_year)
                             reportModel.add(pipeReportModel)
                         }
 
@@ -298,6 +311,8 @@ class PipeReportActivity : AppCompatActivity() {
                             val district = jsonObject.optString("district").toString()
                             val taluka = jsonObject.optString("taluka").toString()
                             val villageName = jsonObject.optString("village").toString()
+                            val financial_year = jsonObject.optString("financial_year").toString()
+                            val season = jsonObject.optString("season").toString()
 
                             Log.e("uniqueId", uniqueId)
 
@@ -320,7 +335,9 @@ class PipeReportActivity : AppCompatActivity() {
                             val pipeinstallation = jsonObject.getJSONObject("pipeinstallation")
                             val area_in_acers = pipeinstallation.optString("area_in_acers").toString()
 
-                            val pipeReportActivity = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no, distance, farmer_name, reasons, reason_id, area_in_acers,state, district, taluka,villageName,aadharNum,mobileNum)
+                            val pipeReportActivity = PipeReportModel(id, uniqueId, lat, farmer_plot_uniqueid, lng, plot_no, pipe_no,
+                                distance, farmer_name, reasons, reason_id, area_in_acers,state, district, taluka,villageName,
+                                aadharNum,mobileNum,season,financial_year)
                             reportModel.add(pipeReportActivity)
                         }
 

@@ -1,7 +1,7 @@
 
 <resources>
 <string name="app_name">KosheRise</string>
-<string name="version_number">3.0.6 - Live</string>
+<string name="version_number">3.1.1 - Live</string>
 <string name="powered">Developed by CROPINTELLIX PRIVATE LIMITED</string>
 
 <string name="welcome_text">Welcome to KosheRise..!!</string>
@@ -12,6 +12,11 @@
 <string name="returning">Returning..??</string>
 <string name="just_login">Just login to resume your\n amazing work</string>
 
+    //data year(ASsmese)
+    <string name="Data_year">তথ্য বছৰ</string>
+    <string name="Select_Year">বছৰ নিৰ্বাচন কৰক</string>
+    <string name="Select_Season">ঋতু নিৰ্বাচন কৰক</string>
+    <string name="year">বছৰ</string>
 
 //Language
 <string name="hindi" translatable="false">हिन्दी</string>
@@ -404,6 +409,8 @@
 <string name="lease_area_in_acres">Lease Area in Acres</string>
 
 <string name="exeeding_total">Own Area and Lease Area Combine cannot be More than Total Area</string>
+
+
 
 
 </resources>

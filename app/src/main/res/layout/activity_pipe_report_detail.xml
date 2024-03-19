@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,437 +8,463 @@
     tools:context="com.kosherclimate.userapp.reports.pipe_report.PipeReportDetailActivity">
 
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/linearLayout8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/pipe_report_detail_back"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/left_arrow">
-            </ImageView>
-
-
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="@drawable/heading_bg"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingHorizontal="20dp">
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_uniqueId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:textColor="#ffffff"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/poppins_bold">
-                </TextView>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-            </View>
-
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/version_number">
-        </TextView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical">
-
-            <LinearLayout
+                android:id="@+id/linearLayout8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/reports_title_bg"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/farmer_details"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/poppins_bold">
-                </TextView>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/farmer_name"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plot_number"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_plot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/pipe_number"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_pipe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plot_unique_id"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_plot_uniqueId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plot_area"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_plot_area"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-<!--            State-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/state"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_plot_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-<!--            District-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/district"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_district"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-<!--            Taluka-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/taluka"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_taluka"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-<!--            Village-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/village"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_village"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-            <!--            Aadhar-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/aadhar"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_aadhar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-            <!--            Mobile-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mobile"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-                <TextView
-                    android:id="@+id/pipe_report_detail_mobile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/reports_title_bg"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/report_detail_reason"
-                android:textSize="20sp"
-                android:fontFamily="@font/poppins_bold"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-            </TextView>
+
+                <ImageView
+                    android:id="@+id/pipe_report_detail_back"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/left_arrow">
+                </ImageView>
 
 
-            <ImageView
-                android:id="@+id/pipe_report_detail_edit"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/edit"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black">
-            </ImageView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/heading_bg"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp">
 
+                    <TextView
+                        android:id="@+id/pipe_report_detail_uniqueId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/poppins_bold">
+                    </TextView>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="horizontal">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                </View>
+
+            </LinearLayout>
+
 
             <TextView
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="@string/reason"
-                android:fontFamily="@font/poppins_medium"
-                android:textSize="18sp">
-            </TextView>
-
-            <TextView
-                android:id="@+id/pipe_report_detail_reason"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:textSize="18sp">
+                android:layout_gravity="center"
+                android:text="@string/version_number">
             </TextView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/header"
+                android:layout_marginBottom="25dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:cardCornerRadius="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:id="@+id/relback"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:background="@drawable/rejectlistview">
+
+
+                            <TextView
+                                android:id="@+id/click_view_req"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:fontFamily="@font/poppins_bold"
+                                android:text="@string/farmer_details"
+                                android:textColor="@color/white"
+                                android:textSize="15sp"
+                                android:translationY="2dp" />
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/farmer_name"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/plot_number"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_plot"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/pipe_number"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_pipe"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/plot_unique_id"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_plot_uniqueId"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/plot_area"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_plot_area"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/state"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_plot_state"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/district"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_district"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/taluka"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_taluka"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/village"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_village"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/aadhar"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_aadhar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/mobile"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_mobile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/season"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_Season"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/year"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_Year"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:background="@drawable/rejectlistview">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:text="@string/report_detail_reason"
+                                    android:textColor="@color/white"
+                                    android:textSize="15sp"
+                                    android:translationY="2dp" />
+
+                                <ImageView
+                                    android:id="@+id/pipe_report_detail_edit"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_alignParentRight="true"
+                                    android:src="@drawable/edit"
+                                    app:tint="@color/red">
+                                </ImageView>
+
+                            </RelativeLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="@string/reason"
+                                android:textColorHint="@color/primary"
+                                app:boxStrokeColor="#50CA70"
+                                app:boxStrokeWidthFocused="1dp"
+                                app:boxStrokeWidth="1dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/pipe_report_detail_reason"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins_medium"
+                                    android:padding="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:enabled="false" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 
-
-
-    </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:layout_marginEnd="36dp"
         android:clickable="true"
@@ -446,7 +472,8 @@
         android:backgroundTint="@color/white"
         android:contentDescription="@string/submit"
         android:src="@drawable/direction"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:focusable="true" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

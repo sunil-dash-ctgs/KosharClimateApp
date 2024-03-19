@@ -20,7 +20,7 @@ internal class OnBoardingDetailsAdapter(private var onBoardingDetailsModel: List
         var plot_no: TextView = view.findViewById(R.id.details_plot_number)
         var area: TextView = view.findViewById(R.id.details_area_hector)
         var ownership: TextView = view.findViewById(R.id.details_ownership)
-        var owner_ship: TextView = view.findViewById(R.id.details_owner_name)
+        //var owner_ship: TextView = view.findViewById(R.id.details_owner_name)
         var survey_number: TextView = view.findViewById(R.id.details_survey_number)
         var ivEdit : ImageView = view.findViewById(R.id.ivEdit)
         var linear : LinearLayout = view.findViewById(R.id.layoutLinear)
@@ -37,7 +37,7 @@ internal class OnBoardingDetailsAdapter(private var onBoardingDetailsModel: List
         holder.plot_no.text = reportModel.getPlotNo()
         holder.area.text = reportModel.getArea()
         holder.ownership.text = reportModel.getOwnership()
-        holder.owner_ship.text = reportModel.getOwnerName()
+       // holder.owner_ship.text = reportModel.getOwnerName()
         holder.survey_number.text = reportModel.getSurveyNo()
         holder.linear
 

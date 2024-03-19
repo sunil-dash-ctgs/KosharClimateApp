@@ -77,126 +77,252 @@
             android:layout_marginEnd="10dp"
             android:orientation="vertical">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/reports_title_bg"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/farmer_details"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/poppins_bold">
-                </TextView>
+                    android:background="@color/header">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        app:cardCornerRadius="5dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:id="@+id/relback"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:background="@drawable/rejectlistview">
 
 
-            </LinearLayout>
+                                <TextView
+                                    android:id="@+id/click_view_req"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:text="@string/farmer_details"
+                                    android:textColor="@color/white"
+                                    android:textSize="15sp"
+                                    android:translationY="2dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                            </RelativeLayout>
 
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/farmer_name"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/aeration_details_farmer_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/farmer_name"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
 
-            </LinearLayout>
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeration_details_farmer_name"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
+                                </com.google.android.material.textfield.TextInputLayout>
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/plot_number"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
 
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plot_number"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeration_details_plot_number"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
 
-                <TextView
-                    android:id="@+id/aeration_details_plot_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
+                                </com.google.android.material.textfield.TextInputLayout>
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/aeration_event_number"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
 
-            </LinearLayout>
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeration_details_aeration_number"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/plot_unique_id"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeration_details_plot_unique_id"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/season"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeration_details_aeration_Season"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/year"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeration_details_FinancialYear"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/aeration_event_number"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
 
-                <TextView
-                    android:id="@+id/aeration_details_aeration_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
 
-            </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:background="@drawable/rejectlistview">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#aeb1b8"
-                android:orientation="horizontal">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:fontFamily="@font/poppins_bold"
+                                        android:text="@string/report_detail_reason"
+                                        android:textColor="@color/white"
+                                        android:textSize="15sp"
+                                        android:translationY="2dp" />
 
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plot_unique_id"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
+                                    <ImageView
+                                        android:id="@+id/aeriation_report_detail_edit"
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_alignParentRight="true"
+                                        android:src="@drawable/edit"
+                                        app:tint="@color/red">
+                                    </ImageView>
 
-                <TextView
-                    android:id="@+id/aeration_details_plot_unique_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textSize="18sp">
-                </TextView>
+                                </RelativeLayout>
 
-            </LinearLayout>
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:hint="@string/reason"
+                                    android:textColorHint="@color/primary"
+                                    app:boxStrokeColor="#50CA70"
+                                    app:boxStrokeWidthFocused="1dp"
+                                    app:boxStrokeWidth="1dp">
 
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/aeriation_report_detail_reason"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:padding="10dp"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:enabled="false" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </RelativeLayout>
+
+            </ScrollView>
 
         </LinearLayout>
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<!--        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -259,7 +385,7 @@
                 android:textSize="18sp">
             </TextView>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 

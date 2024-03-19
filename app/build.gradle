@@ -14,8 +14,8 @@ android {
         applicationId "com.kosherclimate.userapp"
         minSdk 23
         targetSdk 33
-        versionCode 27
-        versionName "3.0.6"
+        versionCode 37
+        versionName "3.1.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -104,5 +104,10 @@ dependencies {
 
 // Auto-Update from google play
     implementation 'com.google.android.play:app-update-ktx:2.0.0'
+
+    //water mark
+    implementation 'com.huangyz0918:androidwm:0.2.3'
+
+    implementation 'com.huangyz0918:androidwm-light:0.1.2'
 
 }

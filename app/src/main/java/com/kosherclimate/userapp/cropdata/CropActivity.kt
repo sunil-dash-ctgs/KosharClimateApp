@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.cropintellix.DashboardActivity
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.models.CropInfoModel
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
@@ -46,6 +47,7 @@ import kotlin.collections.ArrayList
  */
 
 class CropActivity : AppCompatActivity() {
+
     private lateinit var progress: SweetAlertDialog
 
     private var filled: Boolean = false
@@ -133,6 +135,7 @@ class CropActivity : AppCompatActivity() {
     private lateinit var txtSeason_last: TextView
     private lateinit var txtSeason_current: TextView
     private lateinit var txtVariety_last: TextView
+    private lateinit var text_timer: TextView
     private lateinit var txtVariety_current: TextView
     private lateinit var nitrogen_last_year: EditText
     private lateinit var nitrogen_current_year: EditText
@@ -168,6 +171,10 @@ class CropActivity : AppCompatActivity() {
     var unit: String =  "Bigha"
     var totalAreaInAcers:String = ""
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,6 +195,7 @@ class CropActivity : AppCompatActivity() {
 
         edtMobile_nmuber = findViewById(R.id.crop_mobile)
         plot_ID = findViewById(R.id.crop_plot_unique_id)
+        text_timer = findViewById(R.id.text_timer)
 
         txtArea = findViewById(R.id.auto_area)
         txtSeason_last = findViewById(R.id.first_season_last)
@@ -263,14 +271,19 @@ class CropActivity : AppCompatActivity() {
             edtMobile_nmuber.setText(bundle.getString("mobile_number"))
             farmer_id = bundle.getString("unique_id").toString()
             end_of_date = bundle.getInt("cropdata_end_days")
+            StartTime1 = bundle.getInt("StartTime")
         }
         else{
             Log.e("preparation_date_interval", "Bundle issue")
         }
 
 
+
         if (bundle != null) {
             PlotAreaList = bundle.getStringArrayList("plot_area")!!
+
+            Log.d("sunilploatdata",PlotAreaList.toString())
+
             if (PlotAreaList.size != 0) {
                 Log.e("PlotAreaList", PlotAreaList[total_number])
 //                edtPlotArea.setText(PlotAreaList[total_number])
@@ -278,6 +291,7 @@ class CropActivity : AppCompatActivity() {
                 first_unique_view.visibility = View.GONE
                 second_unique_view.visibility = View.VISIBLE
                 transplant_day = bundle.getInt("transplantation_day")
+                StartTime1 = bundle.getInt("StartTime")
                 transplant_month = bundle.getInt("transplantation_month")
                 transplant_year = bundle.getInt("transplantation_year")
                 txtunique_id.text = bundle.getString("unique_list_id")
@@ -328,6 +342,8 @@ class CropActivity : AppCompatActivity() {
             }
         }
 
+        timerData = TimerData(this@CropActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         /**
          * Search function is here.
@@ -887,7 +903,7 @@ class CropActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@CropActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CropActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -1014,7 +1030,7 @@ class CropActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@CropActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CropActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -1197,7 +1213,7 @@ class CropActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@CropActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CropActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -1260,7 +1276,7 @@ class CropActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@CropActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CropActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -1452,7 +1468,7 @@ private fun baseValue() {
         }
 
         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-            Toast.makeText(this@CropActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@CropActivity, "Please Retry", Toast.LENGTH_SHORT).show()
         }
     })
 }

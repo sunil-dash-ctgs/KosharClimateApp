@@ -3,22 +3,22 @@ package com.kosherclimate.userapp.farmeronboarding
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ImageDecoder
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,12 +33,16 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.adapters.ImageRecyclerView
 import com.kosherclimate.userapp.cropintellix.DashboardActivity
 import com.kosherclimate.userapp.models.LandRecordsModel
 import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.utils.Common
+import com.kosherclimate.userapp.utils.CommonData
+import com.kosherclimate.userapp.weather.RecyclerItemClickListenr
+import com.kosherclimate.userapp.weather.RecyclerViewEvent
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -57,7 +61,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PlotActivity : AppCompatActivity() {
+class PlotActivity : AppCompatActivity(){
     lateinit var ownerLayout: LinearLayout
     var arrayList = ArrayList<String>()
     lateinit var uri: Uri
@@ -101,6 +105,7 @@ class PlotActivity : AppCompatActivity() {
     private lateinit var txtLandArea: TextView
     private lateinit var txtLandAreaUnit: TextView
     private lateinit var txtAutoAcres: TextView
+    private lateinit var text_timer: TextView
 //    private lateinit var editAreaChoose: EditText
 //    private lateinit var txtAutoAreaChoose: TextView
     private lateinit var edtSurvey_Number: EditText
@@ -133,12 +138,24 @@ class PlotActivity : AppCompatActivity() {
     private lateinit var perProgressBar: CircularProgressBar
     private lateinit var cardview: CardView
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+
+    val watermark1 : CommonData = CommonData()
+    var selectSeason: String = ""
+    var selectyear: String = ""
+
     @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plot)
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+
+        var sharedprefernce: SharedPreferences = getSharedPreferences("farmer_onboarding", 0)
+        selectSeason = sharedprefernce.getString("selectSeason", null).toString(); // getting String
+        selectyear = sharedprefernce.getString("selectyear", null).toString(); // getting String
 
         /**
          * Getting some data's from previous screen.
@@ -155,6 +172,7 @@ class PlotActivity : AppCompatActivity() {
             state_ID = bundle.getString("state_id")!!
             unique_id = bundle.getString("unique_id")!!
             farmerId = bundle.getString("FarmerId")!!
+            StartTime1 = bundle.getInt("StartTime")!!
 //            latitude = bundle.getString("latitude")!!
 //            longitude = bundle.getString("longitude")!!
         } else {
@@ -199,6 +217,7 @@ class PlotActivity : AppCompatActivity() {
         llTelangana = findViewById(R.id.telangana_linear)
         llBengal = findViewById(R.id.bengal_linear)
         llAssam = findViewById(R.id.assam_linear)
+        text_timer = findViewById(R.id.text_timer)
 
 
         /**
@@ -210,6 +229,8 @@ class PlotActivity : AppCompatActivity() {
         txtAutoAcres.text = areaHectare
         txtLandAreaUnit.text = unit
 
+        timerData = TimerData(this@PlotActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         /**
          * Showing the unit based on the state selected.
@@ -260,6 +281,37 @@ class PlotActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         imageRecyclerView = ImageRecyclerView(imageModel)
         recyclerView.adapter = imageRecyclerView
+
+        recyclerView.addOnItemTouchListener(RecyclerItemClickListenr(this, recyclerView, object : RecyclerItemClickListenr.OnItemClickListener {
+
+            override fun onItemClick(view: View, position: Int) {
+
+                val dialog = Dialog(this@PlotActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.condition_logout)
+                val btn_Yes = dialog.findViewById<Button>(R.id.yes)
+                val showdatainimage = dialog.findViewById<ImageView>(R.id.showdatainimage)
+                // val imgBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                // on below line we are setting bitmap to our image view.
+                showdatainimage.setImageBitmap(imageModel[position].image)
+
+                btn_Yes.setOnClickListener {
+                    dialog.dismiss()
+                    //finish();
+                    //System.exit(1);
+                    // File file1 = takescreenShort();
+                    //screenShortLayout(file1);
+                }
+                dialog.show()
+                val window = dialog.window
+                window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+                //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
+            }
+            override fun onItemLongClick(view: View?, position: Int) {
+                TODO("do nothing")
+            }
+        }))
 
 
         /**
@@ -459,6 +511,7 @@ class PlotActivity : AppCompatActivity() {
                 putExtra("khatha_number", edtKhathaNumber.text.toString())
                 putExtra("pattadhar_number", edtPattadharNumber.text.toString())
                 putExtra("khatian_number", edtKhatianNumber.text.toString())
+                putExtra("StartTime", StartTime)
 
             }
             startActivity(intent)
@@ -651,7 +704,7 @@ class PlotActivity : AppCompatActivity() {
                         cardview.visibility = View.GONE
                         back.isEnabled = true
                         next.isEnabled = true
-                        Toast.makeText(this@PlotActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PlotActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                     }
                 })
         }
@@ -778,7 +831,12 @@ class PlotActivity : AppCompatActivity() {
                     else -> 0
                 }
 
-                val stampImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp ")
+               // val stampImage = watermark.addWatermark(application.applicationContext, image, "#$unique_id | P$plot_number | $timeStamp ")
+                val year = "Year"
+                val season = "Season"
+                val nameImage = " Farmer Plot Image "
+                var watertext = "#$unique_id - P$plot_number - $timeStamp \n $year - $selectyear , $season - $selectSeason \n $nameImage"
+                val stampImage = watermark1.drawTextToBitmap(this@PlotActivity,image,watertext)
                 count += 1
 
                 try {
@@ -786,16 +844,25 @@ class PlotActivity : AppCompatActivity() {
                     val outFile = File(storageDir, "$imageFileName.jpg")
 
                     val outStream = FileOutputStream(outFile)
-                    stampImage.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    if (stampImage != null) {
+                        val resized = Bitmap.createScaledBitmap(stampImage, 1000, 1000, true)
+                        resized.compress(Bitmap.CompressFormat.JPEG, 50, outStream)
+                    }
                     outStream.flush()
                     outStream.close()
 
-                    val data = LandRecordsModel(count, stampImage, rotate)
+                    val data = LandRecordsModel(count, stampImage!!, rotate)
                     imageModel.add(data)
                     imageRecyclerView.notifyDataSetChanged()
 
                     val imagePath = outFile.absolutePath
                     arrayList.add(imagePath)
+
+                    val file = File(imagePath)
+                    var length = file.length()
+                    length = length / 1024
+                    println("File Path : " + file.path + ", File size : " + length + " KB")
+                    Log.d("FileImagePath","File Path : " + file.path + ", File size : " + length + " KB")
 
 
                 } catch (e: FileNotFoundException) {

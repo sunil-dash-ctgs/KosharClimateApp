@@ -45,6 +45,8 @@ class UpdateTNCActivity : AppCompatActivity() {
     //    private var latitude: String = ""
     private var farmerId: String = ""
     private var plot: String = ""
+    var selectSeason: String = ""
+    var selectyear: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,8 @@ class UpdateTNCActivity : AppCompatActivity() {
         val bundle = intent.extras
         if (bundle != null) {
             farmerId = bundle.getString("farmer_unique_id")!!
+            selectSeason = bundle.getString("selectSeason")!!
+            selectyear = bundle.getString("selectyear")!!
 
 //            Log.e("plot_number", plot_number)
         } else {
@@ -89,6 +93,8 @@ class UpdateTNCActivity : AppCompatActivity() {
         btnNext.setOnClickListener {
             val intent = Intent(this, UpdateFarmerImageActivity::class.java).apply {
                 putExtra("farmer_unique_id", farmerId)
+                putExtra("selectSeason", selectSeason)
+                putExtra("selectyear", selectyear)
 
             }
             startActivity(intent)

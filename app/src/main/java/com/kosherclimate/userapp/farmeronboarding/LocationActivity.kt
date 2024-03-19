@@ -32,6 +32,7 @@ import android.os.CountDownTimer
 import android.provider.Settings
 import androidx.core.location.LocationManagerCompat
 import com.kosherclimate.userapp.BuildConfig
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.models.DistrictModel
 import com.kosherclimate.userapp.models.NewFarmerLocationModel
 import java.text.DecimalFormat
@@ -47,6 +48,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
     lateinit var taluka_spinner: Spinner
     lateinit var village_spinner: Spinner
     lateinit var panchayat_spinner: Spinner
+    lateinit var text_timer: TextView
 
     private  lateinit var areaAcres :String
     private  lateinit var areaHectare :String
@@ -87,6 +89,10 @@ class LocationActivity : AppCompatActivity(), LocationListener {
     var areaValue: Double = 0.0
     private lateinit var progress: SweetAlertDialog
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
@@ -117,6 +123,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
 
             state_ID = bundle.getString("state_id")!!
             selectedState = bundle.getString("state")!!
+            StartTime1 = bundle.getInt("StartTime")!!
 
             stateIDList.add(state_ID.toInt())
             stateNameList.add(selectedState)
@@ -131,6 +138,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
         taluka_spinner = findViewById(R.id.taluka)
         village_spinner = findViewById(R.id.village)
         panchayat_spinner = findViewById(R.id.panchayat)
+        text_timer = findViewById(R.id.text_timer)
 
 
         val next = findViewById<Button>(R.id.location_Next)
@@ -160,6 +168,8 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             warnAboutDevOpt()
         }
 
+        timerData = TimerData(this@LocationActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         /**
          * Assign the adapter to statw spinner.
@@ -281,7 +291,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@LocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -372,6 +382,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             putExtra("plot_number", 1)
             putExtra("FarmerId", farmerId)
             putExtra("state_id", state_ID)
+            putExtra("StartTime", StartTime)
 
         }
         startActivity(intent)
@@ -413,7 +424,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@LocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -454,7 +465,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@LocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -494,7 +505,7 @@ class LocationActivity : AppCompatActivity(), LocationListener {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@LocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
 
         })

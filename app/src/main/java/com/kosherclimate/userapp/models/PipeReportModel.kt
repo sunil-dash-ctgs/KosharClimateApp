@@ -3,7 +3,8 @@ package com.kosherclimate.userapp.models
 import android.util.Log
 
 class PipeReportModel (id: String, farmer_uniqueId: String, lat: String, farmer_plot_uniqueid: String, lng: String, plot_no: String, pipe_no: String, distance: String, farmer_name: String,
-    reason: String, reason_id: String, area_in_acers: String,state :String,district:String,taluka:String,vilageName :String,aadharNum :String, mobileNum :String) {
+    reason: String, reason_id: String, area_in_acers: String,state :String,district:String,taluka:String,vilageName :String,
+                       aadharNum :String, mobileNum :String, season: String, financial_year: String) {
     private var id: String
     private var farmer_uniqueId: String
     private var lat: String
@@ -22,6 +23,8 @@ class PipeReportModel (id: String, farmer_uniqueId: String, lat: String, farmer_
     private var vilageName: String
     private var aadharNum: String
     private var mobileNum: String
+    private var season: String
+    private var financial_year: String
 
     init {
         this.id = id
@@ -42,6 +45,22 @@ class PipeReportModel (id: String, farmer_uniqueId: String, lat: String, farmer_
         this.vilageName = vilageName
         this.aadharNum = aadharNum
         this.mobileNum = mobileNum
+        this.season = season
+        this.financial_year = financial_year
+    }
+    fun getfinancial_year(): String {
+        return financial_year
+    }
+
+    fun setfinancial_year(financial_year: String) {
+        this.financial_year = financial_year
+    }
+    fun getseason(): String {
+        return season
+    }
+
+    fun setseason(season: String) {
+        this.season = season
     }
 
     fun getId(): String {
@@ -167,5 +186,7 @@ class PipeReportModel (id: String, farmer_uniqueId: String, lat: String, farmer_
     fun setAreaInAcers(area_in_acers: String) {
         this.area_in_acers = area_in_acers
     }
+
+
 
 }

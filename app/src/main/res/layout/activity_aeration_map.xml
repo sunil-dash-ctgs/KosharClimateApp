@@ -7,6 +7,28 @@
     android:layout_height="match_parent"
     tools:context="com.kosherclimate.userapp.awd.AerationMapActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout38"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right"
+        android:layout_margin="10dp"
+        android:background="@drawable/heading_bg"
+        android:orientation="vertical"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+    </LinearLayout>
 
 
     <ImageView

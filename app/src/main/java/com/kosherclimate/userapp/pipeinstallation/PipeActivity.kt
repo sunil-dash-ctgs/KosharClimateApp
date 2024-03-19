@@ -14,6 +14,7 @@ import com.kosherclimate.userapp.network.ApiClient
 import com.kosherclimate.userapp.network.ApiInterface
 import com.kosherclimate.userapp.pipeinstallation.Submitted.MapSubmittedActivity
 import com.google.android.gms.maps.model.LatLng
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.polygon.MapActivity
 import okhttp3.ResponseBody
 import org.json.JSONException
@@ -29,6 +30,7 @@ class PipeActivity : AppCompatActivity() {
     lateinit var edtMobile_number: EditText
     lateinit var edtFarmer_name: TextView
     private lateinit var txtArea: TextView
+    private lateinit var text_timer: TextView
     private lateinit var search: ImageView
 
     lateinit var plot_ID: Spinner
@@ -51,6 +53,13 @@ class PipeActivity : AppCompatActivity() {
     private lateinit var btnBack : Button
     private lateinit var btnCaptureData : Button
 
+    lateinit var timerData: TimerData
+    var StartTime = 0
+    var StartTime1 = 0
+
+    lateinit var selectyear : String
+    lateinit var selectSeason : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pipe)
@@ -68,11 +77,24 @@ class PipeActivity : AppCompatActivity() {
         search = findViewById(R.id.pipe_search)
 
         btnBack = findViewById(R.id.btn_pipe_inst_back)
+        text_timer = findViewById(R.id.text_timer)
         btnCaptureData = findViewById(R.id.btn_pipe_inst_captureData)
 
         btnBack.setOnClickListener {
             backScreen()
         }
+
+        val bundle = intent.extras
+        if (bundle != null) {
+            StartTime1 = bundle.getInt("StartTime")
+            selectSeason = bundle.getString("selectSeason").toString()
+            selectyear = bundle.getString("selectyear").toString()
+
+            Log.d("userdetailsyear",selectSeason +"  "+selectyear)
+        }
+
+        timerData = TimerData(this@PipeActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
         btnCaptureData.setOnClickListener {
             val WarningDialog = SweetAlertDialog(this@PipeActivity, SweetAlertDialog.WARNING_TYPE)
@@ -112,7 +134,8 @@ class PipeActivity : AppCompatActivity() {
 
             }
             else{
-                getPlotUniqueId(edtMobile_number.text.toString())
+                var datalist = edtMobile_number.text.trim().toString()
+                getPlotUniqueId(datalist)
             }
         }
 
@@ -143,9 +166,12 @@ class PipeActivity : AppCompatActivity() {
         var plotNumber: String = SubPlotList[subPlotUniquePosition - 1]
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
-        apiInterface.checkPipeData("Bearer $token", plotUniqueIDName, farmerUniqueList, plotNumber).enqueue(object : Callback<ResponseBody>{
+        apiInterface.checkPipeData("Bearer $token", plotUniqueIDName, farmerUniqueList, plotNumber,selectyear,selectSeason).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
+
+                    Polygon_lat_lng.clear()
+
                     if(response.body() != null){
                         val stringResponse = JSONObject(response.body()!!.string())
                         val data = stringResponse.getJSONObject("data")
@@ -184,12 +210,31 @@ class PipeActivity : AppCompatActivity() {
                         Log.e("status", status.toString())
 
                         submittedScreen(id, farmer_id, farmer_uniqueId, plot_no, latitude, longitude, state, district, taluka, village, khasara_no, acers_units, plot_area, status, polygon_status, area_in_acers)
+
+                        edtMobile_number.setText("")
+                        txtArea.setText("")
+                        edtFarmer_name.setText("")
+
+                        IDList.clear()
+                        FarmerUniqueList.clear()
+                        SubPlotList.clear()
+                        PlotArea.clear()
+                        FarmerPlotUniqueID.clear()
                     }
                 }
                 else if (response.code() == 422){
+
                     val WarningDialog = SweetAlertDialog(this@PipeActivity, SweetAlertDialog.WARNING_TYPE)
                     WarningDialog.titleText = resources.getString(R.string.warning)
                     WarningDialog.contentText = "Fill Polygon First"
+                    WarningDialog.confirmText = resources.getString(R.string.ok)
+                    WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
+
+                }else if (response.code() == 423){
+
+                    val WarningDialog = SweetAlertDialog(this@PipeActivity, SweetAlertDialog.WARNING_TYPE)
+                    WarningDialog.titleText = resources.getString(R.string.warning)
+                    WarningDialog.contentText = "Pipe Already Submitted"
                     WarningDialog.confirmText = resources.getString(R.string.ok)
                     WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
                 }
@@ -234,7 +279,10 @@ class PipeActivity : AppCompatActivity() {
                 putStringArrayListExtra("polygon_lat_lng", Polygon_lat_lng)
                 putExtra("status", status)
                 putExtra("polygon_status", polygon_status)
+                putExtra("StartTime", StartTime)
                 putExtra("farmer_name", edtFarmer_name.text.toString())
+                putExtra("selectSeason", selectSeason)
+                putExtra("selectyear", selectyear)
             }
             startActivity(intent)
 //        }
@@ -274,6 +322,8 @@ class PipeActivity : AppCompatActivity() {
             putExtra("farmer_plot_uniqueid",  FarmerPlotUniqueID[subPlotUniquePosition])
             putExtra("farmer_name", edtFarmer_name.text.toString())
             putExtra("threshold", threshold)
+            putExtra("selectSeason", selectSeason)
+            putExtra("selectyear", selectyear)
 //            putExtra("area_acers", )
         }
         startActivity(intent)
@@ -339,6 +389,7 @@ class PipeActivity : AppCompatActivity() {
                 }
                 else{
                     Log.e("statusCode", response.code().toString())
+                    progress.dismiss()
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -539,5 +590,22 @@ class PipeActivity : AppCompatActivity() {
     private fun backScreen() {
         super.onBackPressed()
         finish()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        edtMobile_number.setText("")
+        txtArea.setText("")
+        edtFarmer_name.setText("")
+
+        IDList.clear()
+        FarmerUniqueList.clear()
+        SubPlotList.clear()
+        PlotArea.clear()
+        FarmerPlotUniqueID.clear()
+
+        plot_ID.setAdapter(null)
+        sub_plot.setAdapter(null)
     }
 }

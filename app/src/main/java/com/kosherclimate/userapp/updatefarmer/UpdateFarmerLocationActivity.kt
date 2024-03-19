@@ -72,6 +72,9 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
     var baseValue: String = ""
     var baseunit: String = ""
 
+    var financial_year :String = ""
+    var season :String = ""
+
     private var statePosition: Int = 0
     private var districtPosition: Int = 0
     private var talukaPosition: Int = 0
@@ -111,13 +114,30 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
 
         val bundle = intent.extras
         if (bundle != null) {
-            farmerUniqueId = bundle.getString("farmer_unique_id")!!
-            state = bundle.getString("state")!!
-            stateId = bundle.getString("stateId")!!
-            baseValue = bundle.getString("base_value")!!
-            baseunit = bundle.getString("base_unit")!!
-            stateIDList.add(stateId)
-            stateNameList.add(state)
+            var message = bundle.getString("message")!!
+            if (message.equals("editMessage")){
+
+                var unique_id = bundle.getString("unique_id")!!
+                financial_year = bundle.getString("financial_year")!!
+                season = bundle.getString("season")!!
+                getFarmerDetails(unique_id)
+
+            }else{
+
+                farmerUniqueId = bundle.getString("farmer_unique_id")!!
+                state = bundle.getString("state")!!
+                stateId = bundle.getString("stateId")!!
+                baseValue = bundle.getString("base_value")!!
+                baseunit = bundle.getString("base_unit")!!
+                financial_year = bundle.getString("financial_year")!!
+                season = bundle.getString("season")!!
+                stateIDList.add(stateId)
+                stateNameList.add(state)
+
+                Log.d("data","financial_year : "+financial_year)
+                Log.d("data","season : "+season)
+            }
+
         } else {
             Log.e("NEW_TEST", "Nope")
         }
@@ -214,7 +234,7 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdateFarmerLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdateFarmerLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
@@ -228,6 +248,11 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
             putExtra("state_id",stateId)
             putExtra("base_value",baseValue)
             putExtra("base_unit",baseunit)
+            putExtra("financial_year",financial_year)
+            putExtra("season",season)
+
+            Log.d("data1","financial_year : "+financial_year)
+            Log.d("data1","season : "+season)
         }
         startActivity(intent)
     }
@@ -258,6 +283,8 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
                         panchayatId = common.getStringFromJSON(farmerObject, "panchayat_id")
                         village = common.getStringFromJSON(farmerObject, "village")
                         villageId = common.getStringFromJSON(farmerObject, "village_id")
+                       // financial_year = common.getStringFromJSON(farmerObject, "financial_year")
+                       // season = common.getStringFromJSON(farmerObject, "season")
 
 
                         stateSpinner()
@@ -462,7 +489,7 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdateFarmerLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdateFarmerLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -499,7 +526,7 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdateFarmerLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdateFarmerLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -539,7 +566,7 @@ class UpdateFarmerLocationActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@UpdateFarmerLocationActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UpdateFarmerLocationActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
 
         })

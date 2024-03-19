@@ -449,7 +449,7 @@ class ExistingSubmitActivity : AppCompatActivity() {
                 println("failure reposne $call")
                 Toast.makeText(
                     this@ExistingSubmitActivity,
-                    "Internet Connection Issue",
+                    "Please Retry",
                     Toast.LENGTH_SHORT
                 ).show()
                 button.isEnabled = true
@@ -518,7 +518,7 @@ class ExistingSubmitActivity : AppCompatActivity() {
                         cardview.visibility = View.GONE
                         Toast.makeText(
                             this@ExistingSubmitActivity,
-                            "Internet Connection Issue",
+                            "Please Retry",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -609,7 +609,7 @@ class ExistingSubmitActivity : AppCompatActivity() {
                     cardview.visibility = View.GONE
                     Toast.makeText(
                         this@ExistingSubmitActivity,
-                        "Internet Connection Issue",
+                        "Please Retry",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

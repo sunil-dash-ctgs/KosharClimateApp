@@ -31,7 +31,7 @@ class WeatherForecastViewModel : ViewModel() {
                 }
             }
             override fun onFailure(call: Call<WeatherForecastModel>, t: Throwable) {
-//                Toast.makeText(this@DashboardActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@DashboardActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }

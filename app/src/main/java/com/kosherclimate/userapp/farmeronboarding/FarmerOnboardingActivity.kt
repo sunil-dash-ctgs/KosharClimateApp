@@ -30,6 +30,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.load.engine.Resource
 import com.kosherclimate.userapp.BuildConfig
 import com.kosherclimate.userapp.R
+import com.kosherclimate.userapp.TimerData
 import com.kosherclimate.userapp.cropintellix.DashboardActivity
 import com.kosherclimate.userapp.models.FarmerInfoModel
 import com.kosherclimate.userapp.models.MobileVerifyModel
@@ -48,27 +49,8 @@ import java.util.Locale
 class FarmerOnboardingActivity : AppCompatActivity() {
     val access = arrayOf("--Select--", "Own Number", "Relatives Number")
     val plots = arrayOf(
-        "--Select--",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20"
+        "--Select--", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14",
+        "15", "16", "17", "18", "19", "20"
     )
     var plotNumberList = ArrayList<String>()
     var plotAreaList = ArrayList<String>()
@@ -103,6 +85,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     private lateinit var tvCall: TextView
     private lateinit var tvTotalArea: TextView
     private lateinit var tvOwnArea: TextView
+    private lateinit var text_timer: TextView
     private lateinit var tvLeaseArea: TextView
 
     private lateinit var edTotalArea: EditText
@@ -144,6 +127,11 @@ class FarmerOnboardingActivity : AppCompatActivity() {
     //    Call
     var REQUEST_PHONE_CALL = 1
 
+    lateinit var timerData: TimerData
+    var StartTime = 0;
+    var StartTime1 = 0;
+    var selectSeason: String = ""
+    var selectyear: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_farmer_onboarding)
@@ -173,6 +161,9 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             unit = bundle.getString("unit").toString()
             minBValue = bundle.getDouble("min_base_value")
             maxBValue = bundle.getDouble("max_base_value")
+            selectSeason = bundle.getString("selectSeason").toString()
+            selectyear = bundle.getString("selectyear").toString()
+            StartTime1 = bundle.getInt("StartTime")
         }
 
         val next_button = findViewById<Button>(R.id.assam_farmer_Next)
@@ -190,6 +181,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
         valid_nonValid = findViewById(R.id.assam_valid_nonValid)
 
         radioGroup = findViewById(R.id.assam_radioGroup)
+        text_timer = findViewById(R.id.text_timer)
 
 //        New Onboarding Process changes
         tvCall = findViewById(R.id.tvVerify)
@@ -207,6 +199,9 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 //        New Onboarding Process changes
 
         token = sharedPreference.getString("token", "")!!
+
+        timerData = TimerData(this@FarmerOnboardingActivity, text_timer)
+        StartTime = timerData.startTime(StartTime1.toLong()).toInt()
 
 
 //        New Onboarding Process changes
@@ -342,11 +337,6 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 tvCall.setTextColor(resources.getColor(R.color.main_green_color));
             }
         })
-
-
-
-
-
 
         back_button.setOnClickListener {
             super.onBackPressed()
@@ -667,8 +657,10 @@ class FarmerOnboardingActivity : AppCompatActivity() {
 
                     lkjs == 0
                     nextScreen()
+
                 } else if (response.code() == 500) {
                     progress.dismiss()
+
                 }
             }
 
@@ -691,12 +683,15 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             putExtra("unique_id", txtUniqueID.text)
             putExtra("FarmerId", FarmerId)
             putExtra("area_unit", unit)
+            putExtra("StartTime", StartTime)
             putExtra("area_value", areaValue)
             putExtra("areaAcres", edTotalArea.text.toString())
             putExtra("areaHectare", tvTotalAreaInAcres.text.toString())
 
             putExtra("state", state)
             putExtra("state_id", state_id)
+            putExtra("selectyear", selectyear)
+            putExtra("selectSeason", selectSeason)
 
 //            putExtra("total_area", edT)
 
@@ -756,7 +751,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Toast.makeText(
                     this@FarmerOnboardingActivity,
-                    "Internet Connection Issue",
+                    "Please Retry",
                     Toast.LENGTH_SHORT
                 ).show()
                 progress.dismiss()
@@ -814,7 +809,7 @@ class FarmerOnboardingActivity : AppCompatActivity() {
                 progress.dismiss()
                 Toast.makeText(
                     this@FarmerOnboardingActivity,
-                    "Internet Connection Issue",
+                    "Please Retry",
                     Toast.LENGTH_SHORT
                 ).show()
             }

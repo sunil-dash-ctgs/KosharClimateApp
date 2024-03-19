@@ -54,6 +54,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
+
     private val MY_PERMISSIONS_REQUEST_LOCATION = 99
     private lateinit var plot_no: String
     private lateinit var pipe_no: String
@@ -66,6 +67,8 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
     private lateinit var farmer_uniqueId: String
     private lateinit var pipeImageLatitude: String
     private lateinit var pipeImageLongitude: String
+    private var financial_year: String = ""
+    private var season: String = ""
     private lateinit var plotArea: String
     private var threshold: String = ""
     private var token: String = ""
@@ -105,6 +108,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
 
         val bundle = intent.extras
         if (bundle != null) {
+
             pipe_img_id = bundle.getString("pipe_img_id").toString()
             farmer_uniqueId = bundle.getString("farmer_uniqueId").toString()
             farmer_name = bundle.getString("farmer_name").toString()
@@ -116,6 +120,8 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
             distance = bundle.getString("distance").toString()
             reasons = bundle.getString("reasons").toString()
             reason_id = bundle.getString("reason_id").toString()
+            financial_year = bundle.getString("financial_year").toString()
+            season = bundle.getString("season").toString()
 
         } else {
             Log.e("bundle", "Nope")
@@ -154,7 +160,9 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
             val add = distance.toDouble() + threshold.toDouble()
             Log.e("add", add.toString())
 
-            if (polygon_area > minus && polygon_area < add){
+            postData(latLngArrayListPolygon)
+
+          /*  if (polygon_area > minus && polygon_area < add){
                 Log.e("polygon_area", polygon_area.toString())
 
                 progress.progressHelper.barColor = Color.parseColor("#06c238")
@@ -173,13 +181,13 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
 
             }
-            else if (polygon_area < minus){
+            *//*else if (polygon_area < minus){
                 val WarningDialog = SweetAlertDialog(this@PipeReportMapActivity, SweetAlertDialog.WARNING_TYPE)
                 WarningDialog.titleText = resources.getString(R.string.warning)
                 WarningDialog.contentText = "Area drawn is less than plot \n area"
                 WarningDialog.confirmText = resources.getString(R.string.ok)
                 WarningDialog.setCancelClickListener { WarningDialog.cancel() }.show()
-            }
+            }*/
         })
 
         getThreshold()
@@ -243,7 +251,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@PipeReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PipeReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -292,7 +300,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
                 if (response.code() == 200){
 //                    if (response.body() != null){
 
-                        Toast.makeText(this@PipeReportMapActivity, "Point overlapping", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PipeReportMapActivity, "Point overlapping sunil", Toast.LENGTH_SHORT).show()
                         pointOverlappingMsg()
 //                    }
 //                    else{
@@ -308,7 +316,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@PipeReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PipeReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
                 resetMarkers()
             }
@@ -544,7 +552,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progress.dismiss()
-                Toast.makeText(this@PipeReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PipeReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -608,7 +616,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progress.dismiss()
-                Toast.makeText(this@PipeReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PipeReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
             }
         })
         }
@@ -628,7 +636,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
             latList.add(locationModel)
         }
 
-        val updatePolygonModel = UpdatePolygonModel(farmer_uniqueId, area, currentTime.toString(), latList)
+        val updatePolygonModel = UpdatePolygonModel(farmer_uniqueId, area, currentTime.toString(), latList, financial_year,season)
 
         val apiInterface = ApiClient.getRetrofitInstance().create(ApiInterface::class.java)
         apiInterface.updatePipePolygon("Bearer $token", updatePolygonModel).enqueue(object : Callback<ResponseBody> {
@@ -652,7 +660,7 @@ class PipeReportMapActivity: AppCompatActivity() , OnMapReadyCallback {
                 }
             }
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Toast.makeText(this@PipeReportMapActivity, "Internet Connection Issue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PipeReportMapActivity, "Please Retry", Toast.LENGTH_SHORT).show()
                 progress.dismiss()
             }
         })
