@@ -10,9 +10,9 @@ class ApiClient {
 
     companion object {
 
-     //   private val BASE_URL: String = "https://kc.carbonintellix.com/api/"  // AWS (Live)
+        private val BASE_URL: String = "https://kc.carbonintellix.com/api/"  // AWS (Live)
      //   private const val BASE_URL: String = "https://ks.cropintellix.com/api/"  // C Panel (Test)
-     private const val BASE_URL: String = "https://kctest.carbonintellix.com/api/"  // C Panel (Test)
+    // private const val BASE_URL: String = "https://kctest.carbonintellix.com/api/"  // C Panel (Test)
 
 
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {

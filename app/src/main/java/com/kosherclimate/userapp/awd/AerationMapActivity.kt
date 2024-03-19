@@ -228,18 +228,39 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
                         val stringResponse = JSONObject(response.body()!!.string())
                         val jsonArray = stringResponse.optJSONArray("polygon")
 
-                        for (i in 0 until jsonArray.length()) {
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            val lat = jsonObject.optString("lat")
-                            val lng = jsonObject.optString("lng")
+                        if (jsonArray != null){
 
-                            var latLng = LatLng(lat.toDouble(), lng.toDouble())
-                            latlngList.add(latLng)
+                            for (i in 0 until jsonArray.length()) {
+                                val jsonObject = jsonArray.getJSONObject(i)
+                                val lat = jsonObject.optString("lat")
+                                val lng = jsonObject.optString("lng")
+
+                                var latLng = LatLng(lat.toDouble(), lng.toDouble())
+                                latlngList.add(latLng)
+                            }
+
+                            val pipeLocationArray =  stringResponse.optJSONObject("PipeLocation")
+                            pipeLatitude = pipeLocationArray.getDouble("lat")
+                            pipeLongitude = pipeLocationArray.getDouble("lng")
+
+                        }else{
+
+                            val WarningDialog = SweetAlertDialog(this@AerationMapActivity, SweetAlertDialog.WARNING_TYPE)
+
+                            WarningDialog.titleText = resources.getString(R.string.warning)
+                            WarningDialog.contentText = "Please Fill The Polygon"
+                            WarningDialog.confirmText = " OK "
+                            WarningDialog.showCancelButton(false)
+                            WarningDialog.setCancelable(false)
+                            WarningDialog.setConfirmClickListener {
+                                WarningDialog.cancel()
+
+                                backScreen()
+
+                            }.show()
                         }
 
-                        val pipeLocationArray =  stringResponse.optJSONObject("PipeLocation")
-                        pipeLatitude = pipeLocationArray.getDouble("lat")
-                        pipeLongitude = pipeLocationArray.getDouble("lng")
+
 
                     }
 
@@ -372,6 +393,11 @@ class AerationMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationLis
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
+    private fun backScreen() {
         super.onBackPressed()
         finish()
     }

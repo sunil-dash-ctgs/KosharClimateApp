@@ -251,8 +251,11 @@ class AerationImageActivity : AppCompatActivity() {
 //                progress.show()
 //
 //                sendData(imagePathList)
+//
 //            }
+
             else if (imageModelPath1.isNotEmpty() && imageModelPath2.isNotEmpty()) {
+
                 imagePathList.add(imageModelPath1)
                 imagePathList.add(imageModelPath2)
 
@@ -262,13 +265,14 @@ class AerationImageActivity : AppCompatActivity() {
                 progress.setCancelable(false)
                 progress.show()
 
-                sendData(imagePathList)
+                sendImageData(imagePathList)
             }
         })
         gpsCheck()
     }
 
     private fun sendData(imagePathList: ArrayList<String>) {
+
         val pipeInstallationId =
             pipe_installation_id.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         val uniqueId = unique_id.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -309,7 +313,8 @@ class AerationImageActivity : AppCompatActivity() {
         ).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.code() == 200) {
-                    sendImageData(imagePathList)
+                    //sendImageData(imagePathList)
+                    homeScreen()
                 } else if (response.code() == 422) {
                     alreadySubmitted()
                 }
@@ -327,9 +332,11 @@ class AerationImageActivity : AppCompatActivity() {
     }
 
     private fun sendImageData(imagePathList: ArrayList<String>) {
+
         if (imagePathList.isEmpty()) {
-            homeScreen()
-        } else {
+            sendData(imagePathList)
+        }
+        else {
             val currentUrl: String = imagePathList[0]
             val file = File(currentUrl)
 
@@ -385,7 +392,24 @@ class AerationImageActivity : AppCompatActivity() {
                     if (response.code() == 200) {
                         imagePathList.removeAt(0)
                         sendImageData(imagePathList)
-                    } else {
+                    } else if (response.code() == 422){
+
+                        progress.dismiss()
+                        val WarningDialog = SweetAlertDialog(this@AerationImageActivity, SweetAlertDialog.WARNING_TYPE)
+
+                        WarningDialog.titleText = resources.getString(R.string.warning)
+                        WarningDialog.contentText = "Image Path Not Found"
+                        WarningDialog.confirmText = " OK "
+                        WarningDialog.showCancelButton(false)
+                        WarningDialog.setCancelable(false)
+                        WarningDialog.setConfirmClickListener {
+                            WarningDialog.cancel()
+
+                            backScreen()
+
+                        }.show()
+                    }
+                    else {
                         Toast.makeText(
                             this@AerationImageActivity,
                             "Something went wrong",
@@ -515,7 +539,8 @@ class AerationImageActivity : AppCompatActivity() {
             val df = DecimalFormat("#####")
             val distance = df.format(
                 SphericalUtil.computeDistanceBetween(
-                    LatLng(imageLat.toDouble(), imageLng.toDouble()), LatLng(pipeImageLatitude, pipeImageLongitude)
+                    LatLng(imageLat.toDouble(), imageLng.toDouble()),
+                    LatLng(pipeImageLatitude, pipeImageLongitude)
                 )
             )
 
@@ -563,8 +588,10 @@ class AerationImageActivity : AppCompatActivity() {
 
 // Adding watermark to the image.
 
-                val edittedImage = watermark.addWatermark(application.applicationContext, image, "#$timeStamp | " +
-                        "$imageLat | $imageLng | $selectyear | $selectSeason")
+                    val edittedImage = watermark.addWatermark(
+                        application.applicationContext, image, "#$timeStamp | " +
+                                "$imageLat | $imageLng | $selectyear | $selectSeason"
+                    )
 
 //                    val watermarkData = listOf(
 //                        "#$unique_id",
@@ -588,9 +615,9 @@ class AerationImageActivity : AppCompatActivity() {
 
 
                     //val watermarkData = "#$unique_id | P$plot_no | $timeStamp | $imageLat | $imageLng \n | $selectyear | $selectSeason"
-                    val watermarkData = "#$unique_id - P$plot_no - $timeStamp \n $location - $imageLat , $imageLng \n  $year - $selectyear , " +
-                            "$season - $selectSeason \n $nameImage"
-
+                    val watermarkData =
+                        "#$unique_id - P$plot_no - $timeStamp \n $location - $imageLat , $imageLng \n  $year - $selectyear , " +
+                                "$season - $selectSeason \n $nameImage"
 
 
 //                    image1.setImageBitmap(edittedImage)
@@ -601,7 +628,11 @@ class AerationImageActivity : AppCompatActivity() {
 
                     try {
 
-                        val bitmap = watermark1.drawTextToBitmap(this@AerationImageActivity,image,watermarkData)
+                        val bitmap = watermark1.drawTextToBitmap(
+                            this@AerationImageActivity,
+                            image,
+                            watermarkData
+                        )
                         image1.setImageBitmap(bitmap)
                         bitmapList[0] = bitmap
                         image1.rotation = rotate.toFloat()
@@ -623,7 +654,10 @@ class AerationImageActivity : AppCompatActivity() {
                         var length = file.length()
                         length = length / 1024
                         println("File Path : " + file.path + ", File size : " + length + " KB")
-                        Log.d("FileImagePath","File Path1 : " + file.path + ", File size1 : " + length + " KB")
+                        Log.d(
+                            "FileImagePath",
+                            "File Path1 : " + file.path + ", File size1 : " + length + " KB"
+                        )
 
                     } catch (e: FileNotFoundException) {
                         Log.d("NEW_TEST", "Error While photo 1 --> " + e.message)
@@ -668,13 +702,18 @@ class AerationImageActivity : AppCompatActivity() {
                     val nameImage = "Aeration Image 2"
 
                     //val watermarkData = "#$unique_id | P$plot_no | $timeStamp | $imageLat | $imageLng \n | $selectyear | $selectSeason"
-                    val watermarkData = "#$unique_id - P$plot_no - $timeStamp \n $location - $imageLat , $imageLng \n " +
-                            " $year - $selectyear , $season - $selectSeason \n $nameImage"
+                    val watermarkData =
+                        "#$unique_id - P$plot_no - $timeStamp \n $location - $imageLat , $imageLng \n " +
+                                " $year - $selectyear , $season - $selectSeason \n $nameImage"
 
                     imageNumber2 = "1"
 
                     try {
-                        val bitmap = watermark1.drawTextToBitmap(this@AerationImageActivity,image,watermarkData)
+                        val bitmap = watermark1.drawTextToBitmap(
+                            this@AerationImageActivity,
+                            image,
+                            watermarkData
+                        )
                         image2.setImageBitmap(bitmap)
                         bitmapList[0] = bitmap
                         image1.rotation = rotate.toFloat()
@@ -696,7 +735,10 @@ class AerationImageActivity : AppCompatActivity() {
                         var length = file.length()
                         length = length / 1024
                         println("File Path : " + file.path + ", File size : " + length + " KB")
-                        Log.d("FileImagePath","File Path1 : " + file.path + ", File size1 : " + length + " KB")
+                        Log.d(
+                            "FileImagePath",
+                            "File Path1 : " + file.path + ", File size1 : " + length + " KB"
+                        )
 
                     } catch (e: FileNotFoundException) {
 
@@ -707,9 +749,10 @@ class AerationImageActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            }else{
+            } else {
 
-                Toast.makeText(this@AerationImageActivity,"Image not selected",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AerationImageActivity, "Image not selected", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -736,24 +779,64 @@ class AerationImageActivity : AppCompatActivity() {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
         progress.dismiss()
 
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            try {
-                photoPath = createImageFile()
-            } catch (ex: IOException) {
-            }
-// Continue only if the File was successfully created
-            if (photoPath != null) {
-                uri = FileProvider.getUriForFile(
-                    this@AerationImageActivity,
-                    BuildConfig.APPLICATION_ID + ".provider", photoPath
-                )
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                if (imageNumber == 1) {
-                    resultLauncher1.launch(intent)
-                } else if (imageNumber == 2) {
-                    resultLauncher2.launch(intent)
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        if (intent.resolveActivity(packageManager) != null) {
+//            try {
+//                photoPath = createImageFile()
+//            } catch (ex: IOException) {
+//            }
+//// Continue only if the File was successfully created
+//            if (photoPath != null) {
+//                uri = FileProvider.getUriForFile(
+//                    this@AerationImageActivity,
+//                    BuildConfig.APPLICATION_ID + ".provider", photoPath
+//                )
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+//                if (imageNumber == 1) {
+//                    resultLauncher1.launch(intent)
+//                } else if (imageNumber == 2) {
+//                    resultLauncher2.launch(intent)
+//                }
+//            }
+//        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                0
+            )
+        } else {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (takePictureIntent.resolveActivity(packageManager) != null) {
+                // Create the File where the photo should go
+                try {
+                    photoPath = createImageFile()
+                    // Continue only if the File was successfully created
+                    uri = FileProvider.getUriForFile(
+                        this,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        photoPath
+                    )
+                    takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                    if (imageNumber == 1) {
+                        resultLauncher1.launch(takePictureIntent)
+                    } else if (imageNumber == 2) {
+                        resultLauncher2.launch(takePictureIntent)
+                    }
+
+                } catch (ex: Exception) {
+                    // Error occurred while creating the File
+                    displayMessage(baseContext, ex.message.toString())
                 }
+
+            } else {
+                displayMessage(baseContext, "Null")
             }
         }
     }
@@ -763,6 +846,10 @@ class AerationImageActivity : AppCompatActivity() {
         Log.e("Stopped", "Location Update Stopped")
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
         progress.dismiss()
+    }
+
+    private fun displayMessage(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
     override fun onBackPressed() {
@@ -778,7 +865,7 @@ class AerationImageActivity : AppCompatActivity() {
             SweetAlertDialog(this@AerationImageActivity, SweetAlertDialog.SUCCESS_TYPE)
 
         SuccessDialog.titleText = " Success "
-        SuccessDialog.contentText = " Data Submitted Successfully. "
+        SuccessDialog.contentText = " Data Submitted SuccessFully "
         SuccessDialog.confirmText = " OK "
         SuccessDialog.showCancelButton(false)
         SuccessDialog.setCancelable(false)
@@ -836,6 +923,9 @@ class AerationImageActivity : AppCompatActivity() {
         )
         //window.setBackgroundDrawableResource(R.drawable.homecard_back1);
     }
-
+    private fun backScreen() {
+        super.onBackPressed()
+        finish()
+    }
 
 }
